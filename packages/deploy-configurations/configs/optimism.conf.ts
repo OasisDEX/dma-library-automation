@@ -332,6 +332,10 @@ export const config: SystemConfig = {
       address: '0x1111111254EEB25477B68fb85Ed929f73A960582',
       serviceRegistryName: SERVICE_REGISTRY_NAMES.common.ONE_INCH_AGGREGATOR,
     },
+    OneInchAggregator5: {
+      name: 'OneInchAggregator5',
+      address: '0x1111111254EEB25477B68fb85Ed929f73A960582',
+    },
     MerkleRedeemer: {
       name: 'MerkleRedeemer',
       address: '0x7D1405e1Bafd1c48721403D2Eb2F394e10a67A1b',
