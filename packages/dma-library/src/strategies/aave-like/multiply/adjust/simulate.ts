@@ -32,6 +32,9 @@ export async function simulate(
   )
 
   const currentPosition = await resolveCurrentPositionForProtocol(args, dependencies)
+  if (!args.debtCoverage.isZero()) {
+    currentPosition.debt.amount = currentPosition.debt.amount.plus(args.debtCoverage)
+  }
   const protocolData = await resolveProtocolData(
     {
       collateralTokenAddress,
