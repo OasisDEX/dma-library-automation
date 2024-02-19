@@ -74,14 +74,18 @@ export const close: AaveV3CloseOperation = async ({
 
   const withdrawCollateralFromAAVE = actions.aave.v3.aaveV3Withdraw(network, {
     asset: collateral.address,
-    amount: collateralAmountToBeSwapped.minus(1),
+    amount: shouldExit ? collateralAmountToBeSwapped.minus(1) : collateralAmountToBeSwapped,
     to: proxy.address,
   })
 
   const swapCollateralTokensForDebtTokens = actions.common.swap(network, {
     fromAsset: collateral.address,
     toAsset: debt.address,
-    amount: collateralAmountToBeSwapped.minus(1) || ZERO,
+    amount: collateralAmountToBeSwapped
+      ? shouldExit
+        ? collateralAmountToBeSwapped.minus(1)
+        : collateralAmountToBeSwapped
+      : ZERO,
     receiveAtLeast: swap.receiveAtLeast,
     fee: swap.fee,
     withData: swap.data,
