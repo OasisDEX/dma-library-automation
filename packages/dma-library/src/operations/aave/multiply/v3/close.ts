@@ -117,7 +117,7 @@ export const close: AaveV3CloseOperation = async ({
   )
 
   let withdrawCollateral
-  if (!shouldExit) {
+  if (shouldExit) {
     withdrawCollateral = actions.aave.v3.aaveV3Withdraw(network, {
       asset: collateral.address,
       amount: new BigNumber(MAX_UINT),
@@ -130,7 +130,7 @@ export const close: AaveV3CloseOperation = async ({
   })
 
   let returnCollateralFunds
-  if (!shouldExit) {
+  if (shouldExit) {
     returnCollateralFunds = actions.common.returnFunds(network, {
       asset: collateral.isEth ? addresses.tokens.ETH : collateral.address,
     })
