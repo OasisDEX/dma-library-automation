@@ -86,10 +86,10 @@ export async function buildOperation(
     /**
      * This is a temporary solution in the AUTO variant of dma-library
      * It uses the shouldCloseToCollateral flag to determine if the position
-     * should be closed to collateral AND EXITED from the protocol.
+     * should be closed to collateral AND REMAIN on the protocol.
      *
      */
-    shouldExit: Boolean(args.shouldCloseToCollateral),
+    shouldExit: !args.shouldCloseToCollateral,
   }
 
   return {
