@@ -15,7 +15,8 @@ export const OPERATION_NAMES = {
     },
     v3: {
       OPEN_POSITION: 'OpenAAVEV3Position',
-      CLOSE_POSITION: 'CloseAAVEV3Position_4',
+      CLOSE_AND_EXIT: 'CloseAAVEV3Position_4',
+      CLOSE_AND_REMAIN: 'CloseAndRemainAAVEV3Position',
       ADJUST_RISK_UP: 'AdjustRiskUpAAVEV3Position_5',
       ADJUST_RISK_DOWN: 'AdjustRiskDownAAVEV3Position_6',
       DEPOSIT_BORROW: 'AAVEV3DepositBorrow',
@@ -27,7 +28,8 @@ export const OPERATION_NAMES = {
   },
   spark: {
     OPEN_POSITION: 'SparkOpenPosition',
-    CLOSE_POSITION: 'SparkClosePosition',
+    CLOSE_AND_EXIT: 'SparkClosePosition',
+    CLOSE_AND_REMAIN: 'CloseAndRemainSparkPosition',
     ADJUST_RISK_UP: 'SparkAdjustRiskUp',
     ADJUST_RISK_DOWN: 'SparkAdjustRiskDown',
     DEPOSIT_BORROW: 'SparkDepositBorrow',
