@@ -2,11 +2,20 @@ import { loadContractNames, OPERATION_NAMES } from '@deploy-configurations/const
 import { Network } from '@deploy-configurations/types/network'
 import { getActionHash } from '@deploy-configurations/utils/action-hash'
 
-export function getSparkCloseOperationDefinition(network: Network) {
+/**
+ * Operation Definition for Spark Close and Remain
+ *
+ * @remarks
+ * Actions not required relative to Close and Exit left for context
+ * This operation is used to close a position and remain with the collateral in protocol
+ *
+ * @param network
+ */
+export function getSparkCloseAndRemainOperationDefinition(network: Network) {
   const SERVICE_REGISTRY_NAMES = loadContractNames(network)
 
   return {
-    name: OPERATION_NAMES.spark.CLOSE_POSITION,
+    name: OPERATION_NAMES.spark.CLOSE_AND_REMAIN,
     actions: [
       {
         hash: getActionHash(SERVICE_REGISTRY_NAMES.common.TAKE_A_FLASHLOAN),
@@ -40,10 +49,11 @@ export function getSparkCloseOperationDefinition(network: Network) {
         hash: getActionHash(SERVICE_REGISTRY_NAMES.common.UNWRAP_ETH),
         optional: true,
       },
-      {
-        hash: getActionHash(SERVICE_REGISTRY_NAMES.common.RETURN_FUNDS),
-        optional: false,
-      },
+        // @dev see comment above
+        // {
+        //   hash: getActionHash(SERVICE_REGISTRY_NAMES.common.RETURN_FUNDS),
+        //   optional: false,
+        // },
       {
         hash: getActionHash(SERVICE_REGISTRY_NAMES.common.RETURN_FUNDS),
         optional: false,
