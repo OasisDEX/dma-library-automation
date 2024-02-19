@@ -49,7 +49,7 @@ export function getAaveV3CloseAndRemainOperationDefinition(network: Network) {
         hash: getActionHash(SERVICE_REGISTRY_NAMES.aave.v3.WITHDRAW_AUTO),
         optional: false,
       },
-      // @dev see comment above
+      // @remarks see comment above
       // {
       //   hash: getActionHash(SERVICE_REGISTRY_NAMES.aave.v3.WITHDRAW),
       //   optional: false,
@@ -58,7 +58,7 @@ export function getAaveV3CloseAndRemainOperationDefinition(network: Network) {
         hash: getActionHash(SERVICE_REGISTRY_NAMES.common.RETURN_FUNDS),
         optional: false,
       },
-      // @dev see comment above
+      // @remarks see comment above
       // {
       //   hash: getActionHash(SERVICE_REGISTRY_NAMES.common.RETURN_FUNDS),
       //   optional: false,

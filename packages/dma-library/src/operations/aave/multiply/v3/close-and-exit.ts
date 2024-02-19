@@ -1,4 +1,4 @@
-import { getAaveCloseV3OperationDefinition } from '@deploy-configurations/operation-definitions'
+import { getAaveV3CloseAndExitOperationDefinition } from '@deploy-configurations/operation-definitions'
 import { MAX_UINT, ZERO } from '@dma-common/constants'
 import { actions } from '@dma-library/actions'
 import {
@@ -144,6 +144,6 @@ export const close: AaveV3CloseOperation = async ({
 
   return {
     calls: [takeAFlashLoan, setEModeOnCollateral],
-    operationName: getAaveCloseV3OperationDefinition(network).name,
+    operationName: getAaveV3CloseAndExitOperationDefinition(network).name,
   }
 }

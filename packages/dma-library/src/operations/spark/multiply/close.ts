@@ -1,4 +1,4 @@
-import { getSparkCloseOperationDefinition } from '@deploy-configurations/operation-definitions'
+import { getSparkCloseAndExitOperationDefinition } from '@deploy-configurations/operation-definitions'
 import { FEE_BASE, MAX_UINT, ZERO } from '@dma-common/constants'
 import { actions } from '@dma-library/actions'
 import { BALANCER_FEE } from '@dma-library/config/flashloan-fees'
@@ -115,6 +115,6 @@ export const close: SparkCloseOperation = async ({
 
   return {
     calls: [takeAFlashLoan, returnDebtFunds, returnCollateralFunds],
-    operationName: getSparkCloseOperationDefinition(network).name,
+    operationName: getSparkCloseAndExitOperationDefinition(network).name,
   }
 }
