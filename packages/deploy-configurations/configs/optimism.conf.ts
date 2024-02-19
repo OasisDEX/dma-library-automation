@@ -332,6 +332,10 @@ export const config: SystemConfig = {
       address: '0x1111111254EEB25477B68fb85Ed929f73A960582',
       serviceRegistryName: SERVICE_REGISTRY_NAMES.common.ONE_INCH_AGGREGATOR,
     },
+    OneInchAggregator5: {
+      name: 'OneInchAggregator5',
+      address: '0x1111111254EEB25477B68fb85Ed929f73A960582',
+    },
     MerkleRedeemer: {
       name: 'MerkleRedeemer',
       address: '0x7D1405e1Bafd1c48721403D2Eb2F394e10a67A1b',
@@ -609,19 +613,20 @@ export const config: SystemConfig = {
       name: 'UNIV2WBTCETH',
       address: '0x0000000000000000000000000000000000000000',
     },
-    USDC: {
-      name: 'USDC',
+    'USDC.E': {
+      name: 'USDC.E',
       address: '0x7F5c764cBc14f9669B88837ca1490cCa17c31607',
       serviceRegistryName: SERVICE_REGISTRY_NAMES.common.USDC,
+    },
+    USDC: {
+      name: 'USDC',
+      address: '0x0b2C639c533813f4Aa9D7837CAf62653d097Ff85',
     },
     USDBC: {
       name: 'USDBC',
       address: '0x0000000000000000000000000000000000000000',
     },
-    USDT: {
-      name: 'USDT',
-      address: '0x0000000000000000000000000000000000000000',
-    },
+    USDT: { name: 'USDT', address: '0x94b008aa00579c1307b0ef2c499ad98a8ce58e58' },
     WBTC: {
       name: 'WBTC',
       address: '0x68f180fcce6836688e9084f035309e29bf0a2095',
