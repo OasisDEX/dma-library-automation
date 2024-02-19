@@ -22,7 +22,9 @@ export type CloseArgs = WithCollateral &
   WithProxy &
   WithPositionAndLockedCollateral &
   WithAaveLikeStrategyAddresses &
-  WithNetwork
+  WithNetwork & {
+    shouldExit: boolean
+  }
 
 export type SparkCloseOperation = ({
   collateral,
