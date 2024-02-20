@@ -2,11 +2,20 @@ import { loadContractNames, OPERATION_NAMES } from '@deploy-configurations/const
 import { Network } from '@deploy-configurations/types/network'
 import { getActionHash } from '@deploy-configurations/utils/action-hash'
 
-export function getSparkCloseOperationDefinition(network: Network) {
+/**
+ * Operation Definition for Spark Close and Exit
+ *
+ * @remarks
+ * Defines an operation that closes the position and withdraws
+ * the remaining value as either collateral or debt from the protocol
+ *
+ * @param network
+ */
+export function getSparkCloseAndExitOperationDefinition(network: Network) {
   const SERVICE_REGISTRY_NAMES = loadContractNames(network)
 
   return {
-    name: OPERATION_NAMES.spark.CLOSE_POSITION,
+    name: OPERATION_NAMES.spark.CLOSE_AND_EXIT,
     actions: [
       {
         hash: getActionHash(SERVICE_REGISTRY_NAMES.common.TAKE_A_FLASHLOAN),

@@ -1,4 +1,8 @@
-import { getAaveCloseV3OperationDefinition } from '@deploy-configurations/operation-definitions'
+import {
+  getAaveV3CloseAndExitOperationDefinition,
+  getAaveV3CloseAndRemainOperationDefinition,
+} from '@deploy-configurations/operation-definitions'
+import { Network } from '@deploy-configurations/types/network'
 import { MAX_UINT, ZERO } from '@dma-common/constants'
 import { actions } from '@dma-library/actions'
 import {
@@ -21,7 +25,9 @@ export type CloseArgs = WithCollateral &
   WithProxy &
   WithPositionAndLockedCollateral &
   WithAaveLikeStrategyAddresses &
-  WithNetwork
+  WithNetwork & {
+    shouldExit: boolean
+  }
 
 export type AaveV3CloseOperation = ({
   collateral,
@@ -32,6 +38,7 @@ export type AaveV3CloseOperation = ({
   position,
   addresses,
   network,
+  shouldExit,
 }: CloseArgs) => Promise<IOperation>
 
 export const close: AaveV3CloseOperation = async ({
@@ -45,11 +52,12 @@ export const close: AaveV3CloseOperation = async ({
   },
   addresses,
   network,
+  shouldExit,
 }) => {
   const setEModeOnCollateral = actions.aave.v3.aaveV3SetEMode(network, {
     categoryId: 0,
   })
-  
+
   const setFlashLoanApproval = actions.common.setApproval(network, {
     amount: flashloan.token.amount,
     asset: flashloan.token.address,
@@ -66,20 +74,23 @@ export const close: AaveV3CloseOperation = async ({
 
   const withdrawCollateralFromAAVE = actions.aave.v3.aaveV3Withdraw(network, {
     asset: collateral.address,
-    amount: collateralAmountToBeSwapped.minus(1),
+    amount: shouldExit ? collateralAmountToBeSwapped.minus(1) : collateralAmountToBeSwapped,
     to: proxy.address,
   })
 
   const swapCollateralTokensForDebtTokens = actions.common.swap(network, {
     fromAsset: collateral.address,
     toAsset: debt.address,
-    amount: collateralAmountToBeSwapped.minus(1) || ZERO,
+    amount: collateralAmountToBeSwapped
+      ? shouldExit
+        ? collateralAmountToBeSwapped.minus(1)
+        : collateralAmountToBeSwapped
+      : ZERO,
     receiveAtLeast: swap.receiveAtLeast,
     fee: swap.fee,
     withData: swap.data,
     collectFeeInFromToken: swap.collectFeeFrom === 'sourceToken',
   })
-
 
   const swapActionStorageIndex = 4
   const setDebtTokenApprovalOnLendingPool = actions.common.setApproval(
@@ -99,32 +110,53 @@ export const close: AaveV3CloseOperation = async ({
     paybackAll: true,
   })
 
-  const withdrawFlashLoan = actions.aave.v3.aaveV3WithdrawAuto(network, {
-    asset: flashloan.token.address,
-    amount: flashloan.token.amount,
-    to: addresses.operationExecutor,
-  },
-  [1])
+  const withdrawFlashLoan = actions.aave.v3.aaveV3WithdrawAuto(
+    network,
+    {
+      asset: flashloan.token.address,
+      amount: flashloan.token.amount,
+      to: addresses.operationExecutor,
+    },
+    [1],
+  )
 
-  const withdrawCollateral = actions.aave.v3.aaveV3Withdraw(network, {
-    asset: collateral.address,
-    amount: new BigNumber(MAX_UINT),
-    to: proxy.address,
-  })
-
-  const unwrapEth = actions.common.unwrapEth(network, {
-    amount: new BigNumber(MAX_UINT),
-  })
+  let withdrawCollateral
+  if (shouldExit) {
+    withdrawCollateral = actions.aave.v3.aaveV3Withdraw(network, {
+      asset: collateral.address,
+      amount: new BigNumber(MAX_UINT),
+      to: proxy.address,
+    })
+  }
 
   const returnDebtFunds = actions.common.returnFunds(network, {
     asset: debt.isEth ? addresses.tokens.ETH : debt.address,
   })
 
-  const returnCollateralFunds = actions.common.returnFunds(network, {
-    asset: collateral.isEth ? addresses.tokens.ETH : collateral.address,
-  })
+  let returnCollateralFunds
+  if (shouldExit) {
+    returnCollateralFunds = actions.common.returnFunds(network, {
+      asset: collateral.isEth ? addresses.tokens.ETH : collateral.address,
+    })
+  }
 
-  unwrapEth.skipped = !debt.isEth && !collateral.isEth
+  const calls = [
+    setFlashLoanApproval,
+    depositFlashLoan,
+    withdrawCollateralFromAAVE,
+    swapCollateralTokensForDebtTokens,
+    setDebtTokenApprovalOnLendingPool,
+    paybackInAAVE,
+    withdrawFlashLoan,
+    withdrawCollateral,
+    returnDebtFunds,
+    returnCollateralFunds,
+  ]
+
+  // Filter out undefined calls
+  const filteredCalls = calls.filter(call => {
+    return call !== undefined
+  })
 
   const takeAFlashLoan = actions.common.takeAFlashLoanBalancer(network, {
     isDPMProxy: proxy.isDPMProxy,
@@ -132,22 +164,23 @@ export const close: AaveV3CloseOperation = async ({
     flashloanAmount: flashloan.token.amount,
     isProxyFlashloan: true,
     provider: flashloan.provider,
-    calls: [
-      setFlashLoanApproval,
-      depositFlashLoan,
-      withdrawCollateralFromAAVE,
-      swapCollateralTokensForDebtTokens,
-      setDebtTokenApprovalOnLendingPool,
-      paybackInAAVE,
-      withdrawFlashLoan,
-      withdrawCollateral,
-      returnDebtFunds,
-      returnCollateralFunds,
-    ],
+    calls: filteredCalls,
   })
 
   return {
     calls: [takeAFlashLoan, setEModeOnCollateral],
-    operationName: getAaveCloseV3OperationDefinition(network).name,
+    operationName: getAaveV3CloseOperationDefinition(network, shouldExit).name,
   }
+}
+
+function getAaveV3CloseOperationDefinition(network: Network, shouldExit: boolean) {
+  if (shouldExit) {
+    return getAaveV3CloseAndExitOperationDefinition(network)
+  }
+
+  if (!shouldExit) {
+    return getAaveV3CloseAndRemainOperationDefinition(network)
+  }
+
+  throw new Error('Invalid operation definition')
 }
