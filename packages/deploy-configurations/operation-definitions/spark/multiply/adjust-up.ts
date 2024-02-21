@@ -9,7 +9,7 @@ export function getSparkAdjustUpOperationDefinition(network: Network) {
     name: OPERATION_NAMES.spark.ADJUST_RISK_UP,
     actions: [
       {
-        hash: getActionHash(SERVICE_REGISTRY_NAMES.common.TAKE_A_FLASHLOAN),
+        hash: getActionHash(SERVICE_REGISTRY_NAMES.common.TAKE_A_FLASHLOAN_BALANCER),
         optional: false,
       },
       {
