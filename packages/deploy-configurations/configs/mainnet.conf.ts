@@ -208,6 +208,14 @@ export const config: SystemConfig = {
         ],
         constructorArgs: ['address:ServiceRegistry'],
       },
+      SendTokenAuto: {
+        name: 'SendTokenAuto',
+        deploy: true,
+        address: '',
+        serviceRegistryName: SERVICE_REGISTRY_NAMES.common.SEND_TOKEN_AUTO,
+        history: [],
+        constructorArgs: ['address:ServiceRegistry'],
+      },
       WrapEth: {
         name: 'WrapEth',
         deploy: false,
