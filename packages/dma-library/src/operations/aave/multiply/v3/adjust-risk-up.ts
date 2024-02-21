@@ -48,12 +48,6 @@ export const adjustRiskUp: AaveV3AdjustUpOperation = async ({
   const depositAmount = deposit?.amount || ZERO
   const depositAddress = deposit?.address || NULL_ADDRESS
 
-  // const pullDepositTokensToProxy = actions.common.pullToken(network, {
-  //   asset: depositAddress,
-  //   amount: depositAmount,
-  //   from: proxy.owner,
-  // })
-
   const setFlashLoanApproval = actions.common.setApproval(network, {
     amount: flashloan.token.amount,
     asset: flashloan.token.address,
@@ -71,10 +65,6 @@ export const adjustRiskUp: AaveV3AdjustUpOperation = async ({
     amount: debt.borrow.amount,
     asset: debt.address,
     to: proxy.address,
-  })
-
-  const wrapEth = actions.common.wrapEth(network, {
-    amount: new BigNumber(ethers.constants.MaxUint256.toHexString()),
   })
 
   const swapDebtTokensForCollateralTokens = actions.common.swap(network, {
@@ -114,7 +104,7 @@ export const adjustRiskUp: AaveV3AdjustUpOperation = async ({
     network,
     {
       asset: flashloan.token.address,
-      amount: flashloan.token.amount,
+      amount: ZERO, // Is taken from mapping
       to: addresses.operationExecutor,
     },
     [1],

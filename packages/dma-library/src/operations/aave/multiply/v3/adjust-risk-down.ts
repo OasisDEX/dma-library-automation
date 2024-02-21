@@ -1,4 +1,5 @@
 import { getAaveAdjustDownV3OperationDefinition } from '@deploy-configurations/operation-definitions'
+import {ZERO} from "@dma-common/constants";
 import { actions } from '@dma-library/actions'
 import { IOperation } from '@dma-library/types'
 import {
@@ -94,7 +95,7 @@ export const adjustRiskDown: AaveV3AdjustDownOperation = async ({
     network,
     {
       asset: flashloan.token.address,
-      amount: flashloan.token.amount,
+      amount: ZERO, // Is taken from mapping
       to: addresses.operationExecutor,
     },
     [flashloanActionStorageIndex],
