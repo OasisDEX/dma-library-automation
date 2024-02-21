@@ -12,6 +12,7 @@ import { UseRegistry } from "../../libs/UseRegistry.sol";
 /**
  * @title SendToken Action contract
  * @notice Transfer token from the calling contract to the destination address
+ * with the amount to send being read from a storage slot
  */
 contract SendToken is Executable, UseStorageSlot, UseRegistry {
   using SafeERC20 for IERC20;
@@ -24,7 +25,8 @@ contract SendToken is Executable, UseStorageSlot, UseRegistry {
    */
   function execute(bytes calldata data, uint8[] memory paramsMap) external payable override {
     SendTokenData memory send = parseInputs(data);
-    send.amount = store().readUint(bytes32(send.amount), paramsMap[2]);
+    // Note: bytes32(0) meaning no amount passed directly in calldata can be used
+    send.amount = store().readUint(bytes32(0), paramsMap[2]);
 
     if (send.asset != ETH) {
       if (send.amount == type(uint256).max) {

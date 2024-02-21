@@ -14,6 +14,7 @@ import { ServiceRegistry } from "../../../core/ServiceRegistry.sol";
 /**
  * @title Withdraw | AAVE V3 Action contract
  * @notice Withdraw collateral from AAVE's lending pool
+ * with the amount to withdraw being read from a storage slot
  */
 contract AaveV3WithdrawAuto is Executable, UseStorageSlot, UseRegistry {
   using Write for StorageSlot.TransactionStorage;
