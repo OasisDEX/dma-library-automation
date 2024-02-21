@@ -89,6 +89,7 @@ export const adjustRiskDown: AaveV3AdjustDownOperation = async ({
     [0, 4, 0],
   )
 
+  const flashloanActionStorageIndex = 1
   const withdrawFlashloanTokenFromAave = actions.aave.v3.aaveV3WithdrawAuto(
     network,
     {
@@ -96,7 +97,7 @@ export const adjustRiskDown: AaveV3AdjustDownOperation = async ({
       amount: flashloan.token.amount,
       to: addresses.operationExecutor,
     },
-    [1],
+    [flashloanActionStorageIndex],
   )
 
   const returnDebtFunds = actions.common.returnFunds(network, {
