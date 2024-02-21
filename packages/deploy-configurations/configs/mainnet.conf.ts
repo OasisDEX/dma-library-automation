@@ -384,6 +384,14 @@ export const config: SystemConfig = {
         history: ['0x0000000000000000000000000000000000000000'],
         constructorArgs: ['address:ServiceRegistry'],
       },
+      SparkWithdrawAuto: {
+        name: 'SparkWithdrawAuto',
+        deploy: true,
+        address: '',
+        serviceRegistryName: SERVICE_REGISTRY_NAMES.spark.WITHDRAW_AUTO,
+        history: [''],
+        constructorArgs: ['address:ServiceRegistry'],
+      },
       SparkDeposit: {
         name: 'SparkDeposit',
         deploy: false,
