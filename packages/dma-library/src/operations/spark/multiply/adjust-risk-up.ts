@@ -97,12 +97,12 @@ export const adjustRiskUp: SparkAdjustUpOperation = async ({
   })
 
   const flashloanActionStorageIndex = 1
-  const sendDebtTokenToOpExecutor = actions.common.sendToken(
+  const sendDebtTokenToOpExecutor = actions.common.sendTokenAuto(
     network,
     {
       asset: debt.address,
       to: addresses.operationExecutor,
-      amount: debt.borrow.amount,
+      amount: ZERO, // Taken from mapping
     },
     [0, 0, flashloanActionStorageIndex],
   )

@@ -1,5 +1,5 @@
 import { getSparkAdjustDownOperationDefinition } from '@deploy-configurations/operation-definitions'
-import { FEE_BASE } from '@dma-common/constants'
+import {FEE_BASE, ZERO} from '@dma-common/constants'
 import { actions } from '@dma-library/actions'
 import { BALANCER_FEE } from '@dma-library/config/flashloan-fees'
 import { IOperation } from '@dma-library/types'
@@ -80,12 +80,12 @@ export const adjustRiskDown: SparkAdjustDownOperation = async ({
   // Param Map [0, 0, 1 (amount)] is used to indicate that the flash-loaned amount
   // should be sent to the operation executor
   const flashloanActionStorageIndex = 1
-  const sendDebtTokenToOpExecutor = actions.common.sendToken(
+  const sendDebtTokenToOpExecutor = actions.common.sendTokenAuto(
     network,
     {
       asset: debt.address,
       to: addresses.operationExecutor,
-      amount: flashloan.token.amount.plus(BALANCER_FEE.div(FEE_BASE).times(flashloan.token.amount)),
+      amount: ZERO, // Taken from mapping
     },
     [0, 0, flashloanActionStorageIndex],
   )

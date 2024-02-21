@@ -110,23 +110,20 @@ export const adjustRiskUp: AaveV3AdjustUpOperation = async ({
     [0, 4, 0, 0],
   )
 
-  const withdrawFlashloan = actions.aave.v3.aaveV3WithdrawAuto(network, {
-    asset: flashloan.token.address,
-    amount: flashloan.token.amount,
-    to: addresses.operationExecutor,
-  },
-    [1]
+  const withdrawFlashloan = actions.aave.v3.aaveV3WithdrawAuto(
+    network,
+    {
+      asset: flashloan.token.address,
+      amount: flashloan.token.amount,
+      to: addresses.operationExecutor,
+    },
+    [1],
   )
 
-  // pullDepositTokensToProxy.skipped = depositAmount.eq(ZERO) || debt.isEth
-  // wrapEth.skipped = !debt.isEth && !collateral.isEth
-
   const flashloanCalls = [
-    // pullDepositTokensToProxy,
     setFlashLoanApproval,
     depositFlashloan,
     borrowDebtTokensFromAAVE,
-    // wrapEth,
     swapDebtTokensForCollateralTokens,
     setCollateralTokenApprovalOnLendingPool,
     depositCollateral,
