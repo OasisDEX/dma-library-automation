@@ -98,10 +98,6 @@ export const adjustRiskDown: AaveV3AdjustDownOperation = async ({
     },
     [1],
   )
-  //
-  // const unwrapEth = actions.common.unwrapEth(network, {
-  //   amount: new BigNumber(MAX_UINT),
-  // })
 
   const returnDebtFunds = actions.common.returnFunds(network, {
     asset: debt.address,
@@ -111,8 +107,6 @@ export const adjustRiskDown: AaveV3AdjustDownOperation = async ({
     asset: collateral.address,
   })
 
-  // unwrapEth.skipped = !debt.isEth && !collateral.isEth
-
   const flashloanCalls = [
     setFlashloanTokenApprovalOnLendingPool,
     depositFlashloanTokenInAave,
@@ -121,7 +115,6 @@ export const adjustRiskDown: AaveV3AdjustDownOperation = async ({
     setDebtTokenApprovalOnLendingPool,
     paybackInAAVE,
     withdrawFlashloanTokenFromAave,
-    // unwrapEth,
     returnDebtFunds,
     returnCollateralFunds,
   ]

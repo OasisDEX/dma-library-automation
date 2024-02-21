@@ -56,7 +56,7 @@ contract TakeFlashloanBalancer is Executable, ProxyPermission, UseStorageSlot, U
     uint256 feePercentage = IProtocolFeesCollector(
       IVault(getRegisteredService(BALANCER_VAULT)).getProtocolFeesCollector()
     ).getFlashLoanFeePercentage();
-    if( feePercentage > 0) {
+    if (feePercentage > 0) {
       uint256 fullFlashloanAmount = amounts[0] + FixedPoint.mulUp(amounts[0], feePercentage);
       store().write(bytes32(fullFlashloanAmount));
     } else {
