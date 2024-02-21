@@ -51,10 +51,6 @@ export const adjustRiskUp: SparkAdjustUpOperation = async ({
     from: proxy.owner,
   })
 
-  const hasAmountToDeposit = depositAmount.gt(ZERO)
-  const shouldSkipPullCollateralTokensToProxy = !hasAmountToDeposit || collateral.isEth
-  pullCollateralTokensToProxy.skipped = shouldSkipPullCollateralTokensToProxy
-
   // No previous actions store values with OpStorage
   const swapActionStorageIndex = 1
   const swapDebtTokensForCollateralTokens = actions.common.swap(network, {

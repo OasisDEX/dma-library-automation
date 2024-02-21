@@ -14,11 +14,7 @@ export function getSparkAdjustUpOperationDefinition(network: Network) {
       },
       {
         hash: getActionHash(SERVICE_REGISTRY_NAMES.common.PULL_TOKEN),
-        optional: true,
-      },
-      {
-        hash: getActionHash(SERVICE_REGISTRY_NAMES.common.WRAP_ETH),
-        optional: true,
+        optional: false,
       },
       {
         hash: getActionHash(SERVICE_REGISTRY_NAMES.common.SWAP_ACTION),
