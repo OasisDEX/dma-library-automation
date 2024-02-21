@@ -106,7 +106,7 @@ export const adjustRiskDown: SparkAdjustDownOperation = async ({
     sendDebtTokenToOpExecutor,
   ]
 
-  const takeAFlashLoan = actions.common.takeAFlashLoan(network, {
+  const takeAFlashLoan = actions.common.takeAFlashLoanBalancer(network, {
     isDPMProxy: proxy.isDPMProxy,
     asset: flashloan.token.address,
     flashloanAmount: flashloan.token.amount,
