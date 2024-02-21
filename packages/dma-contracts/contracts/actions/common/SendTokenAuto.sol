@@ -25,7 +25,7 @@ contract SendToken is Executable, UseStorageSlot, UseRegistry {
    */
   function execute(bytes calldata data, uint8[] memory paramsMap) external payable override {
     SendTokenData memory send = parseInputs(data);
-    // Note: bytes32(0) meaning no amount passed directly in calldata can be used
+    // Note: bytes32(0) indicates no amount passed as an arg in calldata can be used
     send.amount = store().readUint(bytes32(0), paramsMap[2]);
 
     if (send.asset != ETH) {
