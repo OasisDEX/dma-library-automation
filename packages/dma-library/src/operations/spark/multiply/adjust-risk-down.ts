@@ -79,6 +79,7 @@ export const adjustRiskDown: SparkAdjustDownOperation = async ({
 
   // Param Map [0, 0, 1 (amount)] is used to indicate that the flash-loaned amount
   // should be sent to the operation executor
+  const flashloanActionStorageIndex = 1
   const sendDebtTokenToOpExecutor = actions.common.sendToken(
     network,
     {
@@ -86,7 +87,7 @@ export const adjustRiskDown: SparkAdjustDownOperation = async ({
       to: addresses.operationExecutor,
       amount: flashloan.token.amount.plus(BALANCER_FEE.div(FEE_BASE).times(flashloan.token.amount)),
     },
-    [0, 0, 1],
+    [0, 0, flashloanActionStorageIndex],
   )
 
   const returnDebtFunds = actions.common.returnFunds(network, {
