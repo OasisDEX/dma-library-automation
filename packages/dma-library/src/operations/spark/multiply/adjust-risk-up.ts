@@ -12,8 +12,6 @@ import {
   WithProxy,
   WithSwap,
 } from '@dma-library/types/operations'
-import BigNumber from 'bignumber.js'
-import { ethers } from 'ethers'
 
 export type AdjustRiskUpArgs = WithCollateral &
   WithDebtAndBorrow &
@@ -52,14 +50,6 @@ export const adjustRiskUp: SparkAdjustUpOperation = async ({
     amount: depositAmount,
     from: proxy.owner,
   })
-  const hasAmountToDeposit = depositAmount.gt(ZERO)
-  const shouldSkipPullCollateralTokensToProxy = !hasAmountToDeposit || collateral.isEth
-  pullCollateralTokensToProxy.skipped = shouldSkipPullCollateralTokensToProxy
-
-  const wrapEth = actions.common.wrapEth(network, {
-    amount: new BigNumber(ethers.constants.MaxUint256.toHexString()),
-  })
-  wrapEth.skipped = !collateral.isEth
 
   // No previous actions store values with OpStorage
   const swapActionStorageIndex = 1
@@ -102,23 +92,27 @@ export const adjustRiskUp: SparkAdjustUpOperation = async ({
     to: addresses.operationExecutor,
   })
 
-  const sendQuoteTokenToOpExecutor = actions.common.sendToken(network, {
-    asset: debt.address,
-    to: addresses.operationExecutor,
-    amount: debt.borrow.amount,
-  })
+  const flashloanActionStorageIndex = 1
+  const sendDebtTokenToOpExecutor = actions.common.sendTokenAuto(
+    network,
+    {
+      asset: debt.address,
+      to: addresses.operationExecutor,
+      amount: ZERO, // Taken from mapping
+    },
+    [0, 0, flashloanActionStorageIndex],
+  )
 
   const flashloanCalls = [
     pullCollateralTokensToProxy,
-    wrapEth,
     swapDebtTokensForCollateralTokens,
     setCollateralTokenApprovalOnLendingPool,
     depositCollateral,
     borrowDebtToRepayFL,
-    sendQuoteTokenToOpExecutor,
+    sendDebtTokenToOpExecutor,
   ]
 
-  const takeAFlashLoan = actions.common.takeAFlashLoan(network, {
+  const takeAFlashLoan = actions.common.takeAFlashLoanBalancer(network, {
     isDPMProxy: proxy.isDPMProxy,
     asset: flashloan.token.address,
     flashloanAmount: flashloan.token.amount,

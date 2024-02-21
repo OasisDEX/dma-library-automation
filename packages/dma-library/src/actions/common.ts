@@ -103,6 +103,27 @@ export function sendToken(
   )
 }
 
+export function sendTokenAuto(
+  network: Network,
+  args: { asset: string; to: string; amount: BigNumber },
+  paramsMapping: [asset: number, to: number, amount: number] = [0, 0, 0],
+) {
+  const SERVICE_REGISTRY_NAMES = loadContractNames(network)
+
+  return createAction(
+    getActionHash(SERVICE_REGISTRY_NAMES.common.SEND_TOKEN_AUTO),
+    [calldataTypes.common.SendToken],
+    [
+      {
+        asset: args.asset,
+        to: 0, // always taken from mapping
+        amount: args.amount.toFixed(0),
+      },
+      paramsMapping,
+    ],
+  )
+}
+
 export function takeAFlashLoan(
   network: Network,
   args: {

@@ -21,6 +21,7 @@ import {
   pullToken,
   returnFunds,
   sendToken,
+  sendTokenAuto,
   setApproval,
   swap,
   takeAFlashLoan,
@@ -56,6 +57,7 @@ const aave = {
 const common = {
   pullToken,
   sendToken,
+  sendTokenAuto,
   setApproval,
   swap,
   returnFunds,

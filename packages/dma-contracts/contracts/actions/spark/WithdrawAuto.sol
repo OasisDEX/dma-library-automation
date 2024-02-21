@@ -13,7 +13,7 @@ import { ServiceRegistry } from "../../../core/ServiceRegistry.sol";
 /**
  * @title Withdraw | Spark Action contract
  * @notice Withdraw collateral from Spark's lending pool
- * with the amount to withdraw being read from a storage slot
+ * with the amount to withdraw being read from an OperationStorage slot
  */
 contract SparkWithdrawAuto is Executable, UseStorageSlot, UseRegistry {
   using Write for StorageSlot.TransactionStorage;
