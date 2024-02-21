@@ -26,6 +26,7 @@ export type SparkActions =
   | `SparkBorrow`
   | `SparkDeposit`
   | `SparkWithdraw`
+  | `SparkWithdrawAuto`
   | `SparkPayback`
   | `SparkSetEMode`
 
