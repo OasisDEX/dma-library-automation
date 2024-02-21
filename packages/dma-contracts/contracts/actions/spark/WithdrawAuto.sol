@@ -2,13 +2,13 @@
 pragma solidity ^0.8.15;
 
 import { Executable } from "../../common/Executable.sol";
-import { OperationStorage } from "../../../core/OperationStorage.sol";
-import { WithdrawData } from "../../../core/types/Spark.sol";
-import { SPARK_LENDING_POOL } from "../../../core/constants/Spark.sol";
+import { OperationStorage } from "../../core/OperationStorage.sol";
+import { WithdrawData } from "../../core/types/Spark.sol";
+import { SPARK_LENDING_POOL } from "../../core/constants/Spark.sol";
 import { IPool } from "../../interfaces/spark/IPool.sol";
-import { UseStorageSlot, StorageSlot, Write, Read } from "../../../libs/UseStorageSlot.sol";
-import { UseRegistry } from "../../../libs/UseRegistry.sol";
-import { ServiceRegistry } from "../../../core/ServiceRegistry.sol";
+import { UseStorageSlot, StorageSlot, Write, Read } from "../../libs/UseStorageSlot.sol";
+import { UseRegistry } from "../../libs/UseRegistry.sol";
+import { ServiceRegistry } from "../../core/ServiceRegistry.sol";
 
 /**
  * @title Withdraw | Spark Action contract
