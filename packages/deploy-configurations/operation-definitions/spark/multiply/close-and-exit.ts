@@ -18,7 +18,7 @@ export function getSparkCloseAndExitOperationDefinition(network: Network) {
     name: OPERATION_NAMES.spark.CLOSE_AND_EXIT,
     actions: [
       {
-        hash: getActionHash(SERVICE_REGISTRY_NAMES.common.TAKE_A_FLASHLOAN),
+        hash: getActionHash(SERVICE_REGISTRY_NAMES.common.TAKE_A_FLASHLOAN_BALANCER),
         optional: false,
       },
       {
@@ -42,7 +42,7 @@ export function getSparkCloseAndExitOperationDefinition(network: Network) {
         optional: false,
       },
       {
-        hash: getActionHash(SERVICE_REGISTRY_NAMES.common.SEND_TOKEN),
+        hash: getActionHash(SERVICE_REGISTRY_NAMES.common.SEND_TOKEN_AUTO),
         optional: false,
       },
       {
