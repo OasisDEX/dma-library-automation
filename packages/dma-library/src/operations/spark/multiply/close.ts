@@ -82,12 +82,16 @@ export const close: SparkCloseOperation = async ({
     withData: swap.data,
     collectFeeInFromToken: swap.collectFeeFrom === 'sourceToken',
   })
-
-  const sendDebtToOpExecutor = actions.common.sendTokenAuto(network, {
-    asset: debt.address,
-    to: addresses.operationExecutor,
-    amount: new BigNumber(0),
-  })
+  const flashloanActionStorageIndex = 1
+  const sendDebtToOpExecutor = actions.common.sendTokenAuto(
+    network,
+    {
+      asset: debt.address,
+      to: addresses.operationExecutor,
+      amount: new BigNumber(0),
+    },
+    [0, 0, flashloanActionStorageIndex],
+  )
 
   const returnDebtFunds = actions.common.returnFunds(network, {
     asset: debt.isEth ? addresses.tokens.ETH : debt.address,
