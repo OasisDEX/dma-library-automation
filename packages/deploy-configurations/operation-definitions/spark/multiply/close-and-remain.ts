@@ -11,11 +11,11 @@ import { getActionHash } from '@deploy-configurations/utils/action-hash'
  *
  * @param network
  */
-export function getSparkCloseAndExitOperationDefinition(network: Network) {
+export function getSparkCloseAndRemainOperationDefinition(network: Network) {
   const SERVICE_REGISTRY_NAMES = loadContractNames(network)
 
   return {
-    name: OPERATION_NAMES.spark.CLOSE_AND_EXIT,
+    name: OPERATION_NAMES.spark.CLOSE_AND_REMAIN,
     actions: [
       {
         hash: getActionHash(SERVICE_REGISTRY_NAMES.common.TAKE_A_FLASHLOAN),
@@ -43,14 +43,6 @@ export function getSparkCloseAndExitOperationDefinition(network: Network) {
       },
       {
         hash: getActionHash(SERVICE_REGISTRY_NAMES.common.SEND_TOKEN),
-        optional: false,
-      },
-      {
-        hash: getActionHash(SERVICE_REGISTRY_NAMES.common.RETURN_FUNDS),
-        optional: false,
-      },
-      {
-        hash: getActionHash(SERVICE_REGISTRY_NAMES.common.WITHDRAW),
         optional: false,
       },
       {
