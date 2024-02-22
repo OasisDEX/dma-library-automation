@@ -3,7 +3,7 @@ import {
   getSparkCloseAndRemainOperationDefinition,
 } from '@deploy-configurations/operation-definitions'
 import { Network } from '@deploy-configurations/types/network'
-import { ZERO } from '@dma-common/constants'
+import { MAX_UINT, ZERO } from '@dma-common/constants'
 import { actions } from '@dma-library/actions'
 import {
   IOperation,
@@ -99,7 +99,7 @@ export const close: SparkCloseOperation = async ({
   if (shouldExit) {
     withdrawRemainingCollateral = actions.spark.withdraw(network, {
       asset: collateral.address,
-      amount: swap.amount,
+      amount: new BigNumber(MAX_UINT),
       to: proxy.address,
     })
     returnCollateralFunds = actions.common.returnFunds(network, {
