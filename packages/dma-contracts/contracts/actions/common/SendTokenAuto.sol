@@ -14,7 +14,7 @@ import { UseRegistry } from "../../libs/UseRegistry.sol";
  * @notice Transfer token from the calling contract to the destination address
  * with the amount to send being read from an OperationStorage slot
  */
-contract SendToken is Executable, UseStorageSlot, UseRegistry {
+contract SendTokenAuto is Executable, UseStorageSlot, UseRegistry {
   using SafeERC20 for IERC20;
   using Read for StorageSlot.TransactionStorage;
 

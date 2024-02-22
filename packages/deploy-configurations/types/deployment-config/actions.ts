@@ -12,6 +12,7 @@ export type CommonActions =
   | 'SwapAction'
   | 'PullToken'
   | 'SendToken'
+  | 'SendTokenAuto'
   | 'SetApproval'
   | 'WrapEth'
   | 'UnwrapEth'

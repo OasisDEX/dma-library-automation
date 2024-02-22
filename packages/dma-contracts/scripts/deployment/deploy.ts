@@ -674,8 +674,8 @@ export class DeploymentSystem extends DeployedSystemHelpers {
         this.ethers.getContractFactory(configItem.name as string, this.signer),
         constructorParams,
       )
-
-      // Note: Useful for verifying contracts retrospectively. Comment out the lines above
+      //
+      // // Note: Useful for verifying contracts retrospectively. Comment out the lines above
       // const contractInstance = await this.ethers.getContractAt(configItem.name, configItem.address)
 
       if (configItem.name === 'ServiceRegistry') {
