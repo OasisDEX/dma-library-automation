@@ -50,7 +50,7 @@ export function getSparkCloseAndExitOperationDefinition(network: Network) {
         optional: false,
       },
       {
-        hash: getActionHash(SERVICE_REGISTRY_NAMES.common.WITHDRAW),
+        hash: getActionHash(SERVICE_REGISTRY_NAMES.spark.WITHDRAW),
         optional: false,
       },
       {
