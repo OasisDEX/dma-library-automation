@@ -13,7 +13,6 @@ import { getActionHash } from '@deploy-configurations/utils/action-hash'
  */
 export function getSparkCloseAndExitOperationDefinition(network: Network) {
   const SERVICE_REGISTRY_NAMES = loadContractNames(network)
-
   return {
     name: OPERATION_NAMES.spark.CLOSE_AND_EXIT,
     actions: [
