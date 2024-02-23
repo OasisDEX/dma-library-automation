@@ -35,6 +35,7 @@ export { getSparkOpenDepositBorrowOperationDefinition } from './spark/borrow'
 export { getSparkPaybackWithdrawOperationDefinition } from './spark/borrow'
 export { getSparkOpenOperationDefinition } from './spark/multiply'
 export { getSparkCloseAndExitOperationDefinition } from './spark/multiply'
+export { getSparkCloseAndRemainOperationDefinition } from './spark/multiply'
 export { getSparkAdjustDownOperationDefinition } from './spark/multiply'
 export { getSparkAdjustUpOperationDefinition } from './spark/multiply'
 

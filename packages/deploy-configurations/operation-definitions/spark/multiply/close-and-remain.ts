@@ -3,19 +3,19 @@ import { Network } from '@deploy-configurations/types/network'
 import { getActionHash } from '@deploy-configurations/utils/action-hash'
 
 /**
- * Operation Definition for Spark Close and Exit
+ * Operation Definition for Spark Close and Remain
  *
  * @remarks
- * Defines an operation that closes the position and withdraws
- * the remaining value as either collateral or debt from the protocol
+ * Actions not required relative to Close and Exit left for context
+ * This operation is used to close a position and remain with the collateral in protocol
  *
  * @param network
  */
-export function getSparkCloseAndExitOperationDefinition(network: Network) {
+export function getSparkCloseAndRemainOperationDefinition(network: Network) {
   const SERVICE_REGISTRY_NAMES = loadContractNames(network)
 
   return {
-    name: OPERATION_NAMES.spark.CLOSE_AND_EXIT,
+    name: OPERATION_NAMES.spark.CLOSE_AND_REMAIN,
     actions: [
       {
         hash: getActionHash(SERVICE_REGISTRY_NAMES.common.TAKE_A_FLASHLOAN_BALANCER),
@@ -49,14 +49,17 @@ export function getSparkCloseAndExitOperationDefinition(network: Network) {
         hash: getActionHash(SERVICE_REGISTRY_NAMES.common.RETURN_FUNDS),
         optional: false,
       },
-      {
-        hash: getActionHash(SERVICE_REGISTRY_NAMES.spark.WITHDRAW),
-        optional: false,
-      },
-      {
-        hash: getActionHash(SERVICE_REGISTRY_NAMES.common.RETURN_FUNDS),
-        optional: false,
-      },
+      /**
+        @dev for close and remain we don't ithdraw remaining collateral and return it to the user
+      */
+      // {
+      //   hash: getActionHash(SERVICE_REGISTRY_NAMES.common.WITHDRAW),
+      //   optional: false,
+      // },
+      // {
+      //   hash: getActionHash(SERVICE_REGISTRY_NAMES.common.RETURN_FUNDS),
+      //   optional: false,
+      // },
     ],
     log: false,
   }

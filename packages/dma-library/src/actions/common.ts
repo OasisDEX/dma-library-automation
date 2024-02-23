@@ -116,8 +116,8 @@ export function sendTokenAuto(
     [
       {
         asset: args.asset,
-        to: 0, // always taken from mapping
-        amount: args.amount.toFixed(0),
+        to: args.to,
+        amount: 0, // always taken from mapping
       },
       paramsMapping,
     ],

@@ -194,6 +194,14 @@ export const config: SystemConfig = {
         history: [],
         constructorArgs: ['address:ServiceRegistry'],
       },
+      SendTokenAuto: {
+        name: 'SendTokenAuto',
+        deploy: false,
+        address: '',
+        serviceRegistryName: SERVICE_REGISTRY_NAMES.common.SEND_TOKEN_AUTO,
+        history: [],
+        constructorArgs: ['address:ServiceRegistry'],
+      },
       WrapEth: {
         name: 'WrapEth',
         deploy: true,

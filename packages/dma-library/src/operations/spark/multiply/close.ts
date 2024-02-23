@@ -1,7 +1,10 @@
-import { getSparkCloseAndExitOperationDefinition } from '@deploy-configurations/operation-definitions'
-import { FEE_BASE, MAX_UINT, ZERO } from '@dma-common/constants'
+import {
+  getSparkCloseAndExitOperationDefinition,
+  getSparkCloseAndRemainOperationDefinition,
+} from '@deploy-configurations/operation-definitions'
+import { Network } from '@deploy-configurations/types/network'
+import { MAX_UINT, ZERO } from '@dma-common/constants'
 import { actions } from '@dma-library/actions'
-import { BALANCER_FEE } from '@dma-library/config/flashloan-fees'
 import {
   IOperation,
   WithCollateral,
@@ -34,6 +37,7 @@ export type SparkCloseOperation = ({
   proxy,
   addresses,
   network,
+  shouldExit,
 }: CloseArgs) => Promise<IOperation>
 
 export const close: SparkCloseOperation = async ({
@@ -44,6 +48,7 @@ export const close: SparkCloseOperation = async ({
   proxy,
   addresses,
   network,
+  shouldExit,
 }) => {
   const setDebtTokenApprovalOnPool = actions.common.setApproval(network, {
     asset: debt.address,
@@ -64,59 +69,86 @@ export const close: SparkCloseOperation = async ({
 
   const withdrawCollateral = actions.spark.withdraw(network, {
     asset: collateral.address,
-    amount: new BigNumber(MAX_UINT),
+    amount: shouldExit ? swap.amount.minus(1) : swap.amount,
     to: proxy.address,
   })
 
   const swapCollateralTokensForDebtTokens = actions.common.swap(network, {
     fromAsset: collateral.address,
     toAsset: debt.address,
-    amount: swap.amount,
+    amount: shouldExit ? swap.amount.minus(1) : swap.amount,
     receiveAtLeast: swap.receiveAtLeast,
     fee: swap.fee,
     withData: swap.data,
     collectFeeInFromToken: swap.collectFeeFrom === 'sourceToken',
   })
-
-  const sendDebtToOpExecutor = actions.common.sendToken(network, {
-    asset: debt.address,
-    to: addresses.operationExecutor,
-    amount: flashloan.token.amount.plus(BALANCER_FEE.div(FEE_BASE).times(flashloan.token.amount)),
-  })
-
-  const unwrapEth = actions.common.unwrapEth(network, {
-    amount: new BigNumber(MAX_UINT),
-  })
-
-  unwrapEth.skipped = !debt.isEth && !collateral.isEth
+  const flashloanActionStorageIndex = 1
+  const sendDebtToOpExecutor = actions.common.sendTokenAuto(
+    network,
+    {
+      asset: debt.address,
+      to: addresses.operationExecutor,
+      amount: new BigNumber(0),
+    },
+    [0, 0, flashloanActionStorageIndex],
+  )
 
   const returnDebtFunds = actions.common.returnFunds(network, {
     asset: debt.isEth ? addresses.tokens.ETH : debt.address,
   })
 
-  const returnCollateralFunds = actions.common.returnFunds(network, {
-    asset: collateral.isEth ? addresses.tokens.ETH : collateral.address,
+  let returnCollateralFunds
+  let withdrawRemainingCollateral
+
+  if (shouldExit) {
+    withdrawRemainingCollateral = actions.spark.withdraw(network, {
+      asset: collateral.address,
+      amount: new BigNumber(MAX_UINT),
+      to: proxy.address,
+    })
+    returnCollateralFunds = actions.common.returnFunds(network, {
+      asset: collateral.isEth ? addresses.tokens.ETH : collateral.address,
+    })
+  }
+
+  const calls = [
+    setDebtTokenApprovalOnPool,
+    paybackDebt,
+    setEModeOnCollateral,
+    withdrawCollateral,
+    swapCollateralTokensForDebtTokens,
+    sendDebtToOpExecutor,
+    returnDebtFunds,
+    withdrawRemainingCollateral,
+    returnCollateralFunds,
+  ]
+  // Filter out undefined calls
+  const filteredCalls = calls.filter(call => {
+    return call !== undefined
   })
 
-  const takeAFlashLoan = actions.common.takeAFlashLoan(network, {
+  const takeAFlashLoan = actions.common.takeAFlashLoanBalancer(network, {
     isDPMProxy: proxy.isDPMProxy,
     asset: flashloan.token.address,
     flashloanAmount: flashloan.token.amount,
     isProxyFlashloan: true,
     provider: flashloan.provider,
-    calls: [
-      setDebtTokenApprovalOnPool,
-      paybackDebt,
-      setEModeOnCollateral,
-      withdrawCollateral,
-      swapCollateralTokensForDebtTokens,
-      sendDebtToOpExecutor,
-      unwrapEth,
-    ],
+    calls: filteredCalls,
   })
 
   return {
-    calls: [takeAFlashLoan, returnDebtFunds, returnCollateralFunds],
-    operationName: getSparkCloseAndExitOperationDefinition(network).name,
+    calls: [takeAFlashLoan],
+    operationName: getSparkCloseOperationDefinition(network, shouldExit).name,
   }
+}
+function getSparkCloseOperationDefinition(network: Network, shouldExit: boolean) {
+  if (shouldExit) {
+    return getSparkCloseAndExitOperationDefinition(network)
+  }
+
+  if (!shouldExit) {
+    return getSparkCloseAndRemainOperationDefinition(network)
+  }
+
+  throw new Error('Invalid operation definition')
 }

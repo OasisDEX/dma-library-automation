@@ -1,4 +1,5 @@
 export { getSparkAdjustDownOperationDefinition } from './adjust-down'
 export { getSparkAdjustUpOperationDefinition } from './adjust-up'
 export { getSparkCloseAndExitOperationDefinition } from './close-and-exit'
+export { getSparkCloseAndRemainOperationDefinition } from './close-and-remain'
 export { getSparkOpenOperationDefinition } from './open'

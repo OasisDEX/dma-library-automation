@@ -1,18 +1,22 @@
 import { Network } from '@deploy-configurations/types/network'
-import { SERVICE_REGISTRY_NAMES } from '@dma-common/constants'
+import { getActionHash } from '@deploy-configurations/utils/action-hash'
 import { getAddressesFor } from '@dma-common/utils/common/addresses'
 import { utils } from 'ethers'
 import { task } from 'hardhat/config'
 
+import { loadContractNames } from '../../../deploy-configurations/constants/load-contract-names'
+
 task('get-hashes', 'get Addresses hashes').setAction(async (_: any, hre) => {
   const { name: network } = hre.network
   console.log(`Network: ${network}. Verifying contracts...\n`)
+  const SERVICE_REGISTRY_NAMES = loadContractNames(network as Network)
   const {
     OPERATION_EXECUTOR,
     OPERATION_STORAGE,
     OPERATIONS_REGISTRY,
     PULL_TOKEN_ACTION,
     SEND_TOKEN_ACTION,
+    SEND_TOKEN_AUTO_ACTION,
     SET_APPROVAL_ACTION,
     SWAP_ACTION,
     TAKE_FLASHLOAN_ACTION,
@@ -71,7 +75,18 @@ task('get-hashes', 'get Addresses hashes').setAction(async (_: any, hre) => {
     SERVICE_REGISTRY_NAMES.common.SEND_TOKEN,
     sendTokenHash,
   )
-
+  const sendTokenAutoHash = utils.keccak256(
+    utils.toUtf8Bytes(SERVICE_REGISTRY_NAMES.common.SEND_TOKEN_AUTO),
+  )
+  getActionHash(SERVICE_REGISTRY_NAMES.common.SEND_TOKEN_AUTO)
+  console.log(
+    'SEND_TOKEN_AUTO',
+    SEND_TOKEN_AUTO_ACTION,
+    SERVICE_REGISTRY_NAMES.common.SEND_TOKEN_AUTO,
+    sendTokenAutoHash,
+    getActionHash(SERVICE_REGISTRY_NAMES.common.SEND_TOKEN_AUTO),
+    `\n`,
+  )
   const setApprovalHash = utils.keccak256(
     utils.toUtf8Bytes(SERVICE_REGISTRY_NAMES.common.SET_APPROVAL),
   )
