@@ -28,8 +28,8 @@ export const OPERATION_NAMES = {
   },
   spark: {
     OPEN_POSITION: 'SparkOpenPosition',
-    CLOSE_AND_EXIT: 'SparkClosePosition',
-    CLOSE_AND_REMAIN: 'CloseAndRemainSparkPosition',
+    CLOSE_AND_EXIT: 'SparkClosePosition_2',
+    CLOSE_AND_REMAIN: 'CloseAndRemainSparkPosition_2',
     ADJUST_RISK_UP: 'SparkAdjustRiskUp_Auto_3',
     ADJUST_RISK_DOWN: 'SparkAdjustRiskDown_Auto_3',
     DEPOSIT_BORROW: 'SparkDepositBorrow',

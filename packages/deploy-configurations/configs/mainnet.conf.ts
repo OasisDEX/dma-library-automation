@@ -389,7 +389,8 @@ export const config: SystemConfig = {
         serviceRegistryName: SERVICE_REGISTRY_NAMES.spark.BORROW,
         history: [
           '0x0000000000000000000000000000000000000000',
-          '0xc69156420307048c9BAAe8191f9012391521a88d'
+          '0xc69156420307048c9BAAe8191f9012391521a88d',
+          '0x1389deD188d0537c7e484B67FbD604C0Ac75010b'
         ],
         constructorArgs: [ 'address:ServiceRegistry' ]
       },
@@ -400,7 +401,8 @@ export const config: SystemConfig = {
         serviceRegistryName: SERVICE_REGISTRY_NAMES.spark.WITHDRAW,
         history: [
           '0x0000000000000000000000000000000000000000',
-          '0x0cCa782002c4fE95e1ed7A75d41bB56bEfa0C167'
+          '0x0cCa782002c4fE95e1ed7A75d41bB56bEfa0C167',
+          '0x6E7Ad143DaFD96Eb2076A77765e6798F74f39d87'
         ],
         constructorArgs: [ 'address:ServiceRegistry' ]
       },
@@ -419,7 +421,8 @@ export const config: SystemConfig = {
         serviceRegistryName: SERVICE_REGISTRY_NAMES.spark.DEPOSIT,
         history: [
           '0x0000000000000000000000000000000000000000',
-          '0xC58F2Ee4Ef92F2bE314743442496D6Fad0339d56'
+          '0xC58F2Ee4Ef92F2bE314743442496D6Fad0339d56',
+          '0x92FFdf17b48a90430A920beA1C6f0cBF0168a149'
         ],
         constructorArgs: [ 'address:ServiceRegistry' ]
       },
@@ -430,7 +433,8 @@ export const config: SystemConfig = {
         serviceRegistryName: SERVICE_REGISTRY_NAMES.spark.PAYBACK,
         history: [
           '0x0000000000000000000000000000000000000000',
-          '0x068875B4254aC431BE7B8a10C56D80324fA0d043'
+          '0x068875B4254aC431BE7B8a10C56D80324fA0d043',
+          '0xe3e20198556adf8ea1764a6c835f66F617c6E8E1'
         ],
         constructorArgs: [ 'address:ServiceRegistry' ]
       },
