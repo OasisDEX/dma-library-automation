@@ -384,7 +384,7 @@ export const config: SystemConfig = {
       },
       SparkBorrow: {
         name: 'SparkBorrow',
-        deploy: true,
+        deploy: false,
         address: '0x1389deD188d0537c7e484B67FbD604C0Ac75010b',
         serviceRegistryName: SERVICE_REGISTRY_NAMES.spark.BORROW,
         history: [
@@ -395,7 +395,7 @@ export const config: SystemConfig = {
       },
       SparkWithdraw: {
         name: 'SparkWithdraw',
-        deploy: true,
+        deploy: false,
         address: '0x6E7Ad143DaFD96Eb2076A77765e6798F74f39d87',
         serviceRegistryName: SERVICE_REGISTRY_NAMES.spark.WITHDRAW,
         history: [
@@ -414,7 +414,7 @@ export const config: SystemConfig = {
       },
       SparkDeposit: {
         name: 'SparkDeposit',
-        deploy: true,
+        deploy: false,
         address: '0x92FFdf17b48a90430A920beA1C6f0cBF0168a149',
         serviceRegistryName: SERVICE_REGISTRY_NAMES.spark.DEPOSIT,
         history: [
@@ -425,7 +425,7 @@ export const config: SystemConfig = {
       },
       SparkPayback: {
         name: 'SparkPayback',
-        deploy: true,
+        deploy: false,
         address: '0xe3e20198556adf8ea1764a6c835f66F617c6E8E1',
         serviceRegistryName: SERVICE_REGISTRY_NAMES.spark.PAYBACK,
         history: [
