@@ -52,7 +52,7 @@ export const adjustRiskUp: SparkAdjustUpOperation = async ({
   })
 
   // No previous actions store values with OpStorage
-  const swapActionStorageIndex = 1
+  const swapActionStorageIndex = 2
   const swapDebtTokensForCollateralTokens = actions.common.swap(network, {
     fromAsset: debt.address,
     toAsset: collateral.address,
