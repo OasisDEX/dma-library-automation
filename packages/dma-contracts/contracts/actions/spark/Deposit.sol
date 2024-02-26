@@ -31,15 +31,14 @@ contract SparkDeposit is Executable, UseStorageSlot, UseRegistry {
 
     uint256 mappedDepositAmount = store().readUint(
       bytes32(deposit.amount),
-      paramsMap[1],
-      address(this)
+      paramsMap[1]
     );
 
     uint256 actualDepositAmount = deposit.sumAmounts
       ? mappedDepositAmount.add(deposit.amount)
       : mappedDepositAmount;
 
-    IPool(registry.getRegisteredService(SPARK_LENDING_POOL)).supply(
+    IPool(getRegisteredService(SPARK_LENDING_POOL)).supply(
       deposit.asset,
       actualDepositAmount,
       address(this),
@@ -47,7 +46,7 @@ contract SparkDeposit is Executable, UseStorageSlot, UseRegistry {
     );
 
     if (deposit.setAsCollateral) {
-      IPool(registry.getRegisteredService(SPARK_LENDING_POOL)).setUserUseReserveAsCollateral(
+      IPool(getRegisteredService(SPARK_LENDING_POOL)).setUserUseReserveAsCollateral(
         deposit.asset,
         true
       );

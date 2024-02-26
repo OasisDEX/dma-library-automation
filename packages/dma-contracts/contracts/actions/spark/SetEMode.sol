@@ -24,7 +24,7 @@ contract SparkSetEMode is Executable, UseStorageSlot, UseRegistry {
   function execute(bytes calldata data, uint8[] memory) external payable override {
     SetEModeData memory emode = parseInputs(data);
 
-    IPool(registry.getRegisteredService(SPARK_LENDING_POOL)).setUserEMode(emode.categoryId);
+    IPool(getRegisteredService(SPARK_LENDING_POOL)).setUserEMode(emode.categoryId);
 
     store().write(bytes32(uint256(emode.categoryId)));
   }

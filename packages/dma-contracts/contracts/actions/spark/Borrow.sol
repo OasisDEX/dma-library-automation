@@ -14,7 +14,6 @@ import { UseRegistry } from "../../libs/UseRegistry.sol";
  * @notice Borrows tokens from Spark's lending pool
  */
 contract SparkBorrow is Executable, UseStorageSlot, UseRegistry {
-  using Read for StorageSlot.TransactionStorage;
   using Write for StorageSlot.TransactionStorage;
 
   constructor(address _registry) UseRegistry(ServiceRegistry(_registry)) {}
@@ -25,7 +24,7 @@ contract SparkBorrow is Executable, UseStorageSlot, UseRegistry {
   function execute(bytes calldata data, uint8[] memory) external payable override {
     BorrowData memory borrow = parseInputs(data);
 
-    IPool(registry.getRegisteredService(SPARK_LENDING_POOL)).borrow(
+    IPool(getRegisteredService(SPARK_LENDING_POOL)).borrow(
       borrow.asset,
       borrow.amount,
       2,

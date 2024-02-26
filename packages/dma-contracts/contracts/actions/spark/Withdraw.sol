@@ -24,7 +24,7 @@ contract SparkWithdraw is Executable, UseStorageSlot, UseRegistry {
   function execute(bytes calldata data, uint8[] memory) external payable override {
     WithdrawData memory withdraw = parseInputs(data);
 
-    uint256 amountWithdrawn = IPool(registry.getRegisteredService(SPARK_LENDING_POOL)).withdraw(
+    uint256 amountWithdrawn = IPool(getRegisteredService(SPARK_LENDING_POOL)).withdraw(
       withdraw.asset,
       withdraw.amount,
       withdraw.to
