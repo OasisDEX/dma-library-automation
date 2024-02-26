@@ -51,7 +51,7 @@ export const adjustRiskUp: SparkAdjustUpOperation = async ({
     from: proxy.owner,
   })
 
-  // No previous actions store values with OpStorage
+  // Stored in first index of inner storage array (based on who)
   const swapActionStorageIndex = 2
   const swapDebtTokensForCollateralTokens = actions.common.swap(network, {
     fromAsset: debt.address,
