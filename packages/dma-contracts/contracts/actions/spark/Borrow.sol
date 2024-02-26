@@ -2,20 +2,22 @@
 pragma solidity ^0.8.15;
 
 import { Executable } from "../common/Executable.sol";
-import { Write, UseStore } from "../common/UseStore.sol";
-import { OperationStorage } from "../../core/OperationStorage.sol";
+import { UseStorageSlot, StorageSlot, Write, Read } from "../../libs/UseStorageSlot.sol";
 import { BorrowData } from "../../core/types/Spark.sol";
 import { SPARK_LENDING_POOL } from "../../core/constants/Spark.sol";
 import { IPool } from "../../interfaces/spark/IPool.sol";
+import { ServiceRegistry } from "../../core/ServiceRegistry.sol";
+import { UseRegistry } from "../../libs/UseRegistry.sol";
 
 /**
  * @title Borrow | Spark Action contract
  * @notice Borrows tokens from Spark's lending pool
  */
-contract SparkBorrow is Executable, UseStore {
-  using Write for OperationStorage;
+contract SparkBorrow is Executable, UseStorageSlot, UseRegistry {
+  using Read for StorageSlot.TransactionStorage;
+  using Write for StorageSlot.TransactionStorage;
 
-  constructor(address _registry) UseStore(_registry) {}
+  constructor(address _registry) UseRegistry(ServiceRegistry(_registry)) {}
 
   /**
    * @param data Encoded calldata that conforms to the BorrowData struct

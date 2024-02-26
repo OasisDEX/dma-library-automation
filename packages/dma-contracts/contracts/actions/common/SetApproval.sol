@@ -32,6 +32,7 @@ contract SetApproval is Executable, UseStorageSlot, UseRegistry {
       bytes32(approval.amount),
       paramsMap[2]
     );
+
     uint256 actualApprovalAmount = approval.sumAmounts
       ? mappedApprovalAmount.add(approval.amount)
       : mappedApprovalAmount;

@@ -2,10 +2,12 @@
 pragma solidity ^0.8.15;
 
 import { Executable } from "../common/Executable.sol";
-import { Read, Write, UseStore } from "../common/UseStore.sol";
+import { UseStorageSlot, StorageSlot, Write, Read } from "../../libs/UseStorageSlot.sol";
 import { OperationStorage } from "../../core/OperationStorage.sol";
 import { PaybackData } from "../../core/types/Spark.sol";
 import { SPARK_LENDING_POOL } from "../../core/constants/Spark.sol";
+import { ServiceRegistry } from "../../core/ServiceRegistry.sol";
+import { UseRegistry } from "../../libs/UseRegistry.sol";
 import { IPool } from "../../interfaces/spark/IPool.sol";
 
 /**
@@ -13,10 +15,10 @@ import { IPool } from "../../interfaces/spark/IPool.sol";
  * @notice Pays back a specified amount to Spark's lending pool
  */
 contract SparkPayback is Executable, UseStore {
-  using Write for OperationStorage;
-  using Read for OperationStorage;
+  using Read for StorageSlot.TransactionStorage;
+  using Write for StorageSlot.TransactionStorage;
 
-  constructor(address _registry) UseStore(_registry) {}
+  constructor(address _registry) UseRegistry(ServiceRegistry(_registry)) {}
 
   /**
    * @dev Look at UseStore.sol to get additional info on paramsMapping.
