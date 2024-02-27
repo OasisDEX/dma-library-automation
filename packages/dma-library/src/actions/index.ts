@@ -67,7 +67,7 @@ const common = {
   unwrapEth,
   takeAFlashLoan,
   takeAFlashLoanBalancer,
-  collectFee
+  collectFee,
 }
 
 const ajna: {

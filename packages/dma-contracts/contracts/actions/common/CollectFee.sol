@@ -1,11 +1,11 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 pragma solidity ^0.8.15;
 
-import { Executable } from "../../common/Executable.sol";
-import { UseStorageSlot, StorageSlot, Write, Read } from "../../../libs/UseStorageSlot.sol";
-import { UseRegistry } from "../../../libs/UseRegistry.sol";
-import { ServiceRegistry } from "../../../core/ServiceRegistry.sol";
-import { SafeERC20, IERC20 } from "../../../libs/SafeERC20.sol";
+import { Executable } from "../common/Executable.sol";
+import { UseStorageSlot, StorageSlot, Write, Read } from "../../libs/UseStorageSlot.sol";
+import { UseRegistry } from "../../libs/UseRegistry.sol";
+import { ServiceRegistry } from "../../core/ServiceRegistry.sol";
+import { SafeERC20, IERC20 } from "../../libs/SafeERC20.sol";
 
 /**
  * @title CollectFee | Fee Collection Action Contract

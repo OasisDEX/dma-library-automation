@@ -1,7 +1,6 @@
 import { getSparkAdjustDownOperationDefinition } from '@deploy-configurations/operation-definitions'
-import {FEE_BASE, ZERO} from '@dma-common/constants'
+import { ZERO } from '@dma-common/constants'
 import { actions } from '@dma-library/actions'
-import { BALANCER_FEE } from '@dma-library/config/flashloan-fees'
 import { IOperation } from '@dma-library/types'
 import {
   WithAaveLikeStrategyAddresses,
