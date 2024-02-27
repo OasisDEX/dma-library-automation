@@ -1,3 +1,6 @@
+import {
+    getAaveV3WithdrawToDebtOperationDefinition
+} from "@deploy-configurations/operation-definitions/aave/v3/withdraw-to-debt";
 import { Network } from '@deploy-configurations/types/network'
 import { MAX_UINT, ZERO} from '@dma-common/constants'
 import { actions } from '@dma-library/actions'
@@ -14,7 +17,6 @@ type WithdrawAndSwapArgs = {
     receiveAtLeast: BigNumber
     swapData: string
     collateralTokenAddress: string
-    collateralIsEth: boolean
     debtTokenAddress: string
     debtIsEth: boolean
     proxy: string
@@ -54,7 +56,7 @@ export const withdraw: AaveV3WithdrawAndSwapOperation = async args => {
     })
 
     const returnFunds = actions.common.returnFunds(network, {
-        asset: args.collateralIsEth ? args.addresses.tokens.ETH : args.collateralTokenAddress,
+        asset: args.debtIsEth ? args.addresses.tokens.ETH : args.debtTokenAddress,
     })
 
     const calls = [
@@ -67,6 +69,6 @@ export const withdraw: AaveV3WithdrawAndSwapOperation = async args => {
 
     return {
         calls: calls,
-        operationName: getAaveV3WithdrawOperationDefinition(args.network).name,
+        operationName: getAaveV3WithdrawToDebtOperationDefinition(args.network).name,
     }
 }
