@@ -33,7 +33,7 @@ contract CollectFee is Executable, UseStorageSlot, UseRegistry {
     function execute(bytes calldata data, uint8[] memory paramsMap) external payable override {
         address asset = parseInputs(data);
         uint256 transactionAmount = store().readUint(bytes32(0), paramsMap[0]);
-        uint256 feeAmount = (transactionAmount * feePercentage) / 10000; // Assuming feePercentage is based on a per ten thousand division
+        uint256 feeAmount = (transactionAmount * feePercentage) / 10000;
 
         // Transfer fee from the user's proxy to the feeRecipient
         IERC20(asset).safeTransferFrom(msg.sender, feeRecipient, feeAmount);

@@ -186,6 +186,18 @@ export const config: SystemConfig = {
         history: [ '0xf7c7168b965215420E15cDE6F7e54570Ec171D67', '0xC58F2Ee4Ef92F2bE314743442496D6Fad0339d56' ],
         constructorArgs: []
       },
+      CollectFee: {
+        name: 'CollectFee',
+        deploy: true,
+        address: '',
+        serviceRegistryName: SERVICE_REGISTRY_NAMES.common.COLLECT_FEE,
+        history: [],
+        constructorArgs: [
+          'address:ServiceRegistry',
+          20,
+          '0x49ab24Da055B8550fF88456E701e4FAB72D6987B',
+        ],
+      },
       AaveV3Borrow: {
         name: 'AaveV3Borrow',
         deploy: false,
