@@ -12,8 +12,6 @@ import {
   WithProxy,
   WithSwap,
 } from '@dma-library/types/operations'
-import BigNumber from 'bignumber.js'
-import { ethers } from 'ethers'
 
 export type AdjustRiskUpArgs = WithCollateral &
   WithDebtAndBorrow &

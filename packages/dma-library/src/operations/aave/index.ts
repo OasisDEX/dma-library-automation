@@ -63,6 +63,8 @@ const borrow = {
     depositBorrow: aaveV3DepositBorrow,
     openDepositBorrow: aaveV3OpenDepositBorrow,
     paybackWithdraw: aaveV3PaybackWithdraw,
+    withdraw: () => null,
+    withdrawToDebt: () => null,
   },
 }
 
