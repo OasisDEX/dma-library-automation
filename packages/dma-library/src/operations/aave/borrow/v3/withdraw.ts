@@ -14,8 +14,6 @@ type WithdrawArgs = {
     withdrawAmount: BigNumber
     collateralTokenAddress: string
     collateralIsEth: boolean
-    debtTokenAddress: string
-    debtTokenIsEth: boolean
     proxy: string
     user: string
     addresses: AaveLikeStrategyAddresses
@@ -33,6 +31,10 @@ export const withdraw: AaveV3WithdrawOperation = async args => {
         to: args.proxy,
     })
 
+    const collectFeeAfterWithdraw = actions.common.collectFee(args.network, {
+        asset: args.collateralTokenAddress,
+    })
+
     const unwrapEth = actions.common.unwrapEth(network, {
         amount: new BigNumber(MAX_UINT),
     })
@@ -43,6 +45,7 @@ export const withdraw: AaveV3WithdrawOperation = async args => {
 
     const calls = [
         withdrawCollateralFromAAVE,
+        collectFeeAfterWithdraw,
         unwrapEth,
         returnFunds,
     ]
