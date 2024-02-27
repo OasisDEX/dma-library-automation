@@ -15,7 +15,6 @@ type WithdrawArgs = {
   collateralTokenAddress: string
   collateralIsEth: boolean
   proxy: string
-  user: string
   addresses: AaveLikeStrategyAddresses
   network: Network
 }

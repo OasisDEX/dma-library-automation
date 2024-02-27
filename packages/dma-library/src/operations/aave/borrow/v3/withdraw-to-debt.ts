@@ -6,7 +6,7 @@ import { AaveLikeStrategyAddresses } from '@dma-library/operations/aave-like'
 import { IOperation } from '@dma-library/types'
 import BigNumber from 'bignumber.js'
 
-type WithdrawAndSwapArgs = {
+type WithdrawToDebtArgs = {
   /**
    * Send withdrawal amount with no decimal precision applied
    * EG 1.02 USDC should be sent as 1.02e6 which is 1020000
@@ -18,14 +18,13 @@ type WithdrawAndSwapArgs = {
   debtTokenAddress: string
   debtIsEth: boolean
   proxy: string
-  user: string
   addresses: AaveLikeStrategyAddresses
   network: Network
 }
 
-export type AaveV3WithdrawAndSwapOperation = (args: WithdrawAndSwapArgs) => Promise<IOperation>
+export type AaveV3WithdrawToDebtOperation = (args: WithdrawToDebtArgs) => Promise<IOperation>
 
-export const withdraw: AaveV3WithdrawAndSwapOperation = async args => {
+export const withdrawToDebt: AaveV3WithdrawToDebtOperation = async args => {
   const { network } = args
 
   const withdrawCollateralFromAAVE = actions.aave.v3.aaveV3Withdraw(args.network, {
