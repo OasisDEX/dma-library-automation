@@ -1,14 +1,18 @@
 import { ZERO } from '@dma-common/constants'
+import { withdraw as withdrawOp } from '@dma-library/operations/aave/auto/withdraw'
+import { withdrawToDebt } from '@dma-library/operations/aave/auto/withdraw-to-debt'
+import { getAaveTokenAddress } from '@dma-library/strategies/aave/common'
+import { AaveLikeTokens } from '@dma-library/types'
 import { WithV3Protocol } from '@dma-library/types/aave/protocol'
 import * as Strategies from '@dma-library/types/strategies'
 import * as StrategyParams from '@dma-library/types/strategy-params'
+import { getSwapDataHelper } from '@dma-library/utils/swap'
 import BigNumber from 'bignumber.js'
-
-import { withdraw as withdrawOp } from '../../../../operations/aave/borrow/v3/withdraw'
 
 export type AaveV3WithdrawArgs = {
   oraclePrice: BigNumber
   targetLTV: BigNumber
+  slippage: BigNumber
   shouldWithdrawToDebt: boolean
 }
 
@@ -16,14 +20,15 @@ export type AaveV3WithdrawDependencies = Omit<
   StrategyParams.WithAaveLikeStrategyDependencies,
   'protocolType'
 > &
+  StrategyParams.WithGetSwap &
   WithV3Protocol
 
-export type AaveV3Withdraw = (
+export type AaveV3WithdrawToLTV = (
   args: AaveV3WithdrawArgs,
   dependencies: Omit<AaveV3WithdrawDependencies, 'protocol'>,
-) => Promise<Strategies.IStrategy>
+) => Promise<Omit<Strategies.IStrategy, 'simulation'>>
 
-export const withdraw: AaveV3Withdraw = async (args, dependencies) => {
+export const withdraw: AaveV3WithdrawToLTV = async (args, dependencies) => {
   const currentPosition = dependencies.currentPosition
 
   const amountToWithdraw = determineWithdrawalAmount(
@@ -37,13 +42,29 @@ export const withdraw: AaveV3Withdraw = async (args, dependencies) => {
   const debtTokenSymbol = currentPosition.debt.symbol
 
   if (args.shouldWithdrawToDebt) {
-    const operation = await withdrawOp({
+    const { swapData } = await getSwapDataHelper<typeof dependencies.addresses, AaveLikeTokens>({
+      args: {
+        fromToken: { symbol: collateralTokenSymbol as AaveLikeTokens },
+        toToken: { symbol: debtTokenSymbol as AaveLikeTokens },
+        slippage: args.slippage,
+        fee: ZERO,
+        swapAmountBeforeFees: amountToWithdraw,
+      },
+      addresses: dependencies.addresses,
+      services: {
+        getSwapData: dependencies.getSwapData,
+        getTokenAddress: getAaveTokenAddress,
+      },
+    })
+
+    const operation = await withdrawToDebt({
       withdrawAmount: amountToWithdraw,
       collateralTokenAddress: getTokenAddressFromDependencies(
         dependencies,
         currentPosition.collateral.symbol,
       ),
-      collateralIsEth: collateralTokenSymbol === 'ETH',
+      receiveAtLeast: swapData.minToTokenAmount,
+      swapData: `${swapData.exchangeCalldata}`,
       debtTokenAddress: getTokenAddressFromDependencies(dependencies, debtTokenSymbol),
       debtIsEth: debtTokenSymbol === 'ETH',
       proxy: dependencies.proxy,
@@ -54,8 +75,8 @@ export const withdraw: AaveV3Withdraw = async (args, dependencies) => {
     return {
       transaction: {
         calls: operation.calls,
-        operationName: operation.operationName
-      }
+        operationName: operation.operationName,
+      },
     }
   }
 
@@ -67,8 +88,6 @@ export const withdraw: AaveV3Withdraw = async (args, dependencies) => {
         currentPosition.collateral.symbol,
       ),
       collateralIsEth: collateralTokenSymbol === 'ETH',
-      // debtTokenAddress: getTokenAddressFromDependencies(dependencies, debtTokenSymbol),
-      // debtIsEth: debtTokenSymbol === 'ETH',
       proxy: dependencies.proxy,
       addresses: dependencies.addresses,
       network: dependencies.network,
@@ -77,13 +96,12 @@ export const withdraw: AaveV3Withdraw = async (args, dependencies) => {
     return {
       transaction: {
         calls: operation.calls,
-        operationName: operation.operationName
-      }
+        operationName: operation.operationName,
+      },
     }
   }
 
-  throw new Error("Should not be reached")
-  // If withdrawing to debt calculate swap
+  throw new Error('Should not be reached')
 }
 
 function determineWithdrawalAmount(
