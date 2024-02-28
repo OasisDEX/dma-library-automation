@@ -17,8 +17,9 @@ contract CollectFee is Executable, UseStorageSlot, UseRegistry {
     using Read for StorageSlot.TransactionStorage;
 
     // Fee percentage (e.g., 1% = 100, 0.5% = 50)
-    uint256 public feePercentage;
-    address public feeRecipient;
+    uint256 public immutable feePercentage;
+    address public immutable feeRecipient;
+    uint256 constant DIVISOR = 10000;
 
     constructor(address _registry, uint256 _feePercentage, address _feeRecipient) UseRegistry(ServiceRegistry(_registry)) {
         feePercentage = _feePercentage;
@@ -33,7 +34,7 @@ contract CollectFee is Executable, UseStorageSlot, UseRegistry {
     function execute(bytes calldata data, uint8[] memory paramsMap) external payable override {
         address asset = parseInputs(data);
         uint256 transactionAmount = store().readUint(bytes32(0), paramsMap[0]);
-        uint256 feeAmount = (transactionAmount * feePercentage) / 10000;
+        uint256 feeAmount = (transactionAmount * feePercentage) / DIVISOR;
 
         // Transfer fee from the user's proxy to the feeRecipient
         IERC20(asset).safeTransferFrom(msg.sender, feeRecipient, feeAmount);
