@@ -216,9 +216,9 @@ export const config: SystemConfig = {
       CollectFee: {
         name: 'CollectFee',
         deploy: false,
-        address: '0x875580943beFfAE73D6c4a654DBb22F8c0A0c02B',
+        address: '0x6AB4f6168E30489000eDc13DaB22c4EDB1d511C4',
         serviceRegistryName: SERVICE_REGISTRY_NAMES.common.COLLECT_FEE,
-        history: [],
+        history: [ '0x875580943beFfAE73D6c4a654DBb22F8c0A0c02B' ],
         constructorArgs: [
           'address:ServiceRegistry',
           20,

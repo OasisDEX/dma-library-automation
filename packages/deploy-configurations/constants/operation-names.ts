@@ -24,8 +24,8 @@ export const OPERATION_NAMES = {
       DEPOSIT: 'AAVEV3Deposit',
       BORROW: 'AAVEV3Borrow',
       PAYBACK_WITHDRAW: 'AAVEV3PaybackWithdraw',
-      WITHDRAW: 'AAVEV3Withdraw',
-      WITHDRAW_TO_DEBT: 'AAVEV3WithdrawToDebt',
+      WITHDRAW: 'AAVEV3Withdraw_2',
+      WITHDRAW_TO_DEBT: 'AAVEV3WithdrawToDebt_2',
     },
   },
   spark: {
