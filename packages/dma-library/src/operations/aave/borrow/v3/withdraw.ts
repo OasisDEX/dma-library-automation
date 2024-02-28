@@ -26,9 +26,13 @@ export const withdraw: AaveV3WithdrawOperation = async args => {
     to: args.proxy,
   })
 
-  const collectFeeAfterWithdraw = actions.common.collectFee(args.network, {
-    asset: args.collateralTokenAddress,
-  })
+  const collectFeeAfterWithdraw = actions.common.collectFee(
+    args.network,
+    {
+      asset: args.collateralTokenAddress,
+    },
+    [1],
+  )
 
   const unwrapEth = actions.common.unwrapEth(network, {
     amount: new BigNumber(MAX_UINT),

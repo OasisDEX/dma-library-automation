@@ -234,7 +234,11 @@ export function returnFunds(network: Network, args: { asset: string }) {
   )
 }
 
-export function collectFee(network: Network, args: { asset: string }) {
+export function collectFee(
+  network: Network,
+  args: { asset: string },
+  paramsMapping: [amount: number] = [0],
+) {
   const SERVICE_REGISTRY_NAMES = loadContractNames(network)
 
   return createAction(
@@ -244,6 +248,7 @@ export function collectFee(network: Network, args: { asset: string }) {
       {
         asset: args.asset,
       },
+      paramsMapping,
     ],
   )
 }
