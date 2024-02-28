@@ -29,9 +29,13 @@ export const withdrawToDebt: AaveV3WithdrawToDebtOperation = async args => {
     to: args.proxy,
   })
 
-  const collectFeeAfterWithdraw = actions.common.collectFee(args.network, {
-    asset: args.collateralTokenAddress,
-  })
+  const collectFeeAfterWithdraw = actions.common.collectFee(
+    args.network,
+    {
+      asset: args.collateralTokenAddress,
+    },
+    [1],
+  )
 
   const swapCollateralTokensForDebtTokens = actions.common.swap(network, {
     fromAsset: args.collateralTokenAddress,
