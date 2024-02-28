@@ -35,19 +35,54 @@ export const withdraw: AaveV3Withdraw = async (args, dependencies) => {
 
   const collateralTokenSymbol = currentPosition.collateral.symbol
   const debtTokenSymbol = currentPosition.debt.symbol
-  await withdrawOp({
-    withdrawAmount: amountToWithdraw,
-    collateralTokenAddress: getTokenAddressFromDependencies(
-      dependencies,
-      currentPosition.collateral.symbol,
-    ),
-    collateralIsEth: collateralTokenSymbol === 'ETH',
-    // debtTokenAddress: getTokenAddressFromDependencies(dependencies, debtTokenSymbol),
-    // debtIsEth: debtTokenSymbol === 'ETH',
-    proxy: dependencies.proxy,
-    addresses: dependencies.addresses,
-    network: dependencies.network,
-  })
+
+  if (args.shouldWithdrawToDebt) {
+    const operation = await withdrawOp({
+      withdrawAmount: amountToWithdraw,
+      collateralTokenAddress: getTokenAddressFromDependencies(
+        dependencies,
+        currentPosition.collateral.symbol,
+      ),
+      collateralIsEth: collateralTokenSymbol === 'ETH',
+      debtTokenAddress: getTokenAddressFromDependencies(dependencies, debtTokenSymbol),
+      debtIsEth: debtTokenSymbol === 'ETH',
+      proxy: dependencies.proxy,
+      addresses: dependencies.addresses,
+      network: dependencies.network,
+    })
+
+    return {
+      transaction: {
+        calls: operation.calls,
+        operationName: operation.operationName
+      }
+    }
+  }
+
+  if (!args.shouldWithdrawToDebt) {
+    const operation = await withdrawOp({
+      withdrawAmount: amountToWithdraw,
+      collateralTokenAddress: getTokenAddressFromDependencies(
+        dependencies,
+        currentPosition.collateral.symbol,
+      ),
+      collateralIsEth: collateralTokenSymbol === 'ETH',
+      // debtTokenAddress: getTokenAddressFromDependencies(dependencies, debtTokenSymbol),
+      // debtIsEth: debtTokenSymbol === 'ETH',
+      proxy: dependencies.proxy,
+      addresses: dependencies.addresses,
+      network: dependencies.network,
+    })
+
+    return {
+      transaction: {
+        calls: operation.calls,
+        operationName: operation.operationName
+      }
+    }
+  }
+
+  throw new Error("Should not be reached")
   // If withdrawing to debt calculate swap
 }
 
