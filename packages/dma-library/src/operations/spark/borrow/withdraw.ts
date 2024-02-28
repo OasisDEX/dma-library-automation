@@ -1,4 +1,4 @@
-import { getSparkWithdrawOperationDefinition } from "@deploy-configurations/operation-definitions";
+import { getSparkWithdrawOperationDefinition } from '@deploy-configurations/operation-definitions'
 import { Network } from '@deploy-configurations/types/network'
 import { MAX_UINT } from '@dma-common/constants'
 import { actions } from '@dma-library/actions'
@@ -26,9 +26,13 @@ export const withdraw: SparkWithdrawOperation = async args => {
     to: args.proxy,
   })
 
-  const collectFeeAfterWithdraw = actions.common.collectFee(args.network, {
-    asset: args.collateralTokenAddress,
-  })
+  const collectFeeAfterWithdraw = actions.common.collectFee(
+    args.network,
+    {
+      asset: args.collateralTokenAddress,
+    },
+    [1],
+  )
 
   const unwrapEth = actions.common.unwrapEth(network, {
     amount: new BigNumber(MAX_UINT),
