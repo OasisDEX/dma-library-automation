@@ -261,14 +261,14 @@ export const config: SystemConfig = {
       CollectFee: {
         name: 'CollectFee',
         deploy: true,
-        address: '',
+        address: '0x7c31665154caC48EB37a92dA52f63CEA78f3BA6C',
         serviceRegistryName: SERVICE_REGISTRY_NAMES.common.COLLECT_FEE,
-        history: [],
+        history: [ '0x7c31665154caC48EB37a92dA52f63CEA78f3BA6C' ],
         constructorArgs: [
-            'address:ServiceRegistry',
-            20,
-          '0xC7b548AD9Cf38721810246C079b2d8083aba8909',
-        ],
+          'address:ServiceRegistry',
+          20,
+          '0xC7b548AD9Cf38721810246C079b2d8083aba8909'
+        ]
       },
       AaveBorrow: {
         name: 'AaveBorrow',

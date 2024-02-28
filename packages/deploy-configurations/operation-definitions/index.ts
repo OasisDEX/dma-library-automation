@@ -19,6 +19,8 @@ export { getAaveDepositBorrowV3OperationDefinition } from './aave/v3/deposit-bor
 export { getAaveOpenV3OperationDefinition } from './aave/v3/open'
 export { getAaveOpenDepositBorrowV3OperationDefinition } from './aave/v3/open-deposit-borrow'
 export { getAavePaybackWithdrawV3OperationDefinition } from './aave/v3/payback-withdraw'
+export { getAaveV3WithdrawOperationDefinition } from './aave/v3/withdraw'
+export { getAaveV3WithdrawToDebtOperationDefinition } from './aave/v3/withdraw-to-debt'
 
 // AJNA
 export { getAjnaAdjustDownOperationDefinition } from './ajna/adjust-down'

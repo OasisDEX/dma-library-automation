@@ -111,7 +111,10 @@ export const config: SystemConfig = {
         deploy: false,
         address: '0xe3e20198556adf8ea1764a6c835f66F617c6E8E1',
         serviceRegistryName: SERVICE_REGISTRY_NAMES.common.SWAP_ACTION,
-        history: [ '0x7f3C01B83DfC1935c4f80B270982e6Ea91AD4047', '0x663A9525ffE09b736eb153092c90aaB144eDBa03' ],
+        history: [
+          '0x7f3C01B83DfC1935c4f80B270982e6Ea91AD4047',
+          '0x663A9525ffE09b736eb153092c90aaB144eDBa03'
+        ],
         constructorArgs: [ 'address:ServiceRegistry' ]
       },
       TakeFlashloan: {
@@ -119,7 +122,10 @@ export const config: SystemConfig = {
         deploy: false,
         address: '0xCeEb07b5F147094AF1b492560BC4cA0f20867df5',
         serviceRegistryName: SERVICE_REGISTRY_NAMES.common.TAKE_A_FLASHLOAN,
-        history: [ '0xB5CD6E322De1798A9C409Cb86e86C0CA5aeA37f9', '0x0d8e5D7A5B45Ce86a75489C7166dF69C9f453D0A' ],
+        history: [
+          '0xB5CD6E322De1798A9C409Cb86e86C0CA5aeA37f9',
+          '0x0d8e5D7A5B45Ce86a75489C7166dF69C9f453D0A'
+        ],
         constructorArgs: [
           'address:ServiceRegistry',
           '0x50c5725949A6F0c72E6C4a641F24049A917DB0Cb',
@@ -131,7 +137,10 @@ export const config: SystemConfig = {
         deploy: false,
         address: '0x8e810D5a9De2dBc846F78F2B61745f3c4801Af51',
         serviceRegistryName: SERVICE_REGISTRY_NAMES.common.TAKE_A_FLASHLOAN_BALANCER,
-        history: [ '0xe4c3aDd19f5A82b38B9f553122D8a890f81D652B', '0x03644F489Bf16B1eAFa68F495955eb5a78189314' ],
+        history: [
+          '0xe4c3aDd19f5A82b38B9f553122D8a890f81D652B',
+          '0x03644F489Bf16B1eAFa68F495955eb5a78189314'
+        ],
         constructorArgs: [
           'address:ServiceRegistry',
           '0x6B175474E89094C44Da98b954EedeAC495271d0F',
@@ -143,7 +152,10 @@ export const config: SystemConfig = {
         deploy: false,
         address: '0x73022668d1E176f8aB56F0A988F358Dc9C8FFD15',
         serviceRegistryName: SERVICE_REGISTRY_NAMES.common.SET_APPROVAL,
-        history: [ '0x8CCf69d7D74ce35A843b222678346CCd766cfF69', '0x35e847e3dAD2847C9E39196FCbF1c057b32c6469' ],
+        history: [
+          '0x8CCf69d7D74ce35A843b222678346CCd766cfF69',
+          '0x35e847e3dAD2847C9E39196FCbF1c057b32c6469'
+        ],
         constructorArgs: [ 'address:ServiceRegistry' ]
       },
       PullToken: {
@@ -151,7 +163,10 @@ export const config: SystemConfig = {
         deploy: false,
         address: '0x3dA7A8EdAB8465438Ac0F5B542f111F12188A2cd',
         serviceRegistryName: SERVICE_REGISTRY_NAMES.common.PULL_TOKEN,
-        history: [ '0xAA777F9A6a31ad862D688a6789c393014dA59770', '0x52a9bC9a904B9eE6A4714eF883cCf14cb7283B0F' ],
+        history: [
+          '0xAA777F9A6a31ad862D688a6789c393014dA59770',
+          '0x52a9bC9a904B9eE6A4714eF883cCf14cb7283B0F'
+        ],
         constructorArgs: []
       },
       SendToken: {
@@ -159,7 +174,10 @@ export const config: SystemConfig = {
         deploy: false,
         address: '0xe21A00828fbC6D10079A519c87C532E17B56393E',
         serviceRegistryName: SERVICE_REGISTRY_NAMES.common.SEND_TOKEN,
-        history: [ '0xfff30C67EEa809123596252e132d30e1EB75BC83', '0x98191F148AC0A1EaB75315989b357D83d728Fc43' ],
+        history: [
+          '0xfff30C67EEa809123596252e132d30e1EB75BC83',
+          '0x98191F148AC0A1EaB75315989b357D83d728Fc43'
+        ],
         constructorArgs: [ 'address:ServiceRegistry' ]
       },
       WrapEth: {
@@ -167,7 +185,10 @@ export const config: SystemConfig = {
         deploy: false,
         address: '0x739838d896B50703968e43876f2D43885C9ff8aD',
         serviceRegistryName: SERVICE_REGISTRY_NAMES.common.WRAP_ETH,
-        history: [ '0x184401060DC438e411F4a4Fd5F4076a05C358bBB', '0x499afBC7aE808e51e48A29FD30e80DfC5B1F2e56' ],
+        history: [
+          '0x184401060DC438e411F4a4Fd5F4076a05C358bBB',
+          '0x499afBC7aE808e51e48A29FD30e80DfC5B1F2e56'
+        ],
         constructorArgs: [ 'address:ServiceRegistry' ]
       },
       UnwrapEth: {
@@ -175,7 +196,10 @@ export const config: SystemConfig = {
         deploy: false,
         address: '0x4D063cF85562Dd43f0434d397e510dd0291FC5Ae',
         serviceRegistryName: SERVICE_REGISTRY_NAMES.common.UNWRAP_ETH,
-        history: [ '0x05C2292528694b4030A766c47e9F2bE525b4e8BC', '0xc69156420307048c9BAAe8191f9012391521a88d' ],
+        history: [
+          '0x05C2292528694b4030A766c47e9F2bE525b4e8BC',
+          '0xc69156420307048c9BAAe8191f9012391521a88d'
+        ],
         constructorArgs: [ 'address:ServiceRegistry' ]
       },
       ReturnFunds: {
@@ -183,27 +207,33 @@ export const config: SystemConfig = {
         deploy: false,
         address: '0x8DA1109207Ed8e529Ba21Cd8187126053c07EC3E',
         serviceRegistryName: SERVICE_REGISTRY_NAMES.common.RETURN_FUNDS,
-        history: [ '0xf7c7168b965215420E15cDE6F7e54570Ec171D67', '0xC58F2Ee4Ef92F2bE314743442496D6Fad0339d56' ],
+        history: [
+          '0xf7c7168b965215420E15cDE6F7e54570Ec171D67',
+          '0xC58F2Ee4Ef92F2bE314743442496D6Fad0339d56'
+        ],
         constructorArgs: []
       },
       CollectFee: {
         name: 'CollectFee',
         deploy: true,
-        address: '',
+        address: '0x875580943beFfAE73D6c4a654DBb22F8c0A0c02B',
         serviceRegistryName: SERVICE_REGISTRY_NAMES.common.COLLECT_FEE,
         history: [],
         constructorArgs: [
           'address:ServiceRegistry',
           20,
-          '0x49ab24Da055B8550fF88456E701e4FAB72D6987B',
-        ],
+          '0x49ab24Da055B8550fF88456E701e4FAB72D6987B'
+        ]
       },
       AaveV3Borrow: {
         name: 'AaveV3Borrow',
         deploy: false,
         address: '0x4c0eB46fb2a26129ba5e666fc6E03b8c8aA4728e',
         serviceRegistryName: SERVICE_REGISTRY_NAMES.aave.v3.BORROW,
-        history: [ '0xb2b872d285EECfc999002594f695d08A67889513','0x79d428e563D946DaBe43C681f92c8D714F5157cE' ],
+        history: [
+          '0xb2b872d285EECfc999002594f695d08A67889513',
+          '0x79d428e563D946DaBe43C681f92c8D714F5157cE'
+        ],
         constructorArgs: [ 'address:ServiceRegistry' ]
       },
       AaveV3Withdraw: {
@@ -211,7 +241,10 @@ export const config: SystemConfig = {
         deploy: false,
         address: '0x333f99019DF5c880d1C5191ca4eD4Ba9d8D7E0C3',
         serviceRegistryName: SERVICE_REGISTRY_NAMES.aave.v3.WITHDRAW,
-        history: [ '0x8CcB5D70D4E8110312ddd6a64fE79FcD01e11B20','0xFBcB0bf3A7BcD1a368e8e8Ad2Ab601160088b39C' ],
+        history: [
+          '0x8CcB5D70D4E8110312ddd6a64fE79FcD01e11B20',
+          '0xFBcB0bf3A7BcD1a368e8e8Ad2Ab601160088b39C'
+        ],
         constructorArgs: [ 'address:ServiceRegistry' ]
       },
       AaveV3WithdrawAuto: {
@@ -219,7 +252,10 @@ export const config: SystemConfig = {
         deploy: false,
         address: '0x81b5936c30e2E72112878577c8E50436591c4FA8',
         serviceRegistryName: SERVICE_REGISTRY_NAMES.aave.v3.WITHDRAW_AUTO,
-        history: [ '0x32Dae0AD2A6D9813854ad085d71932Ed409EF265', '0xB186178E3076CE299b187c1d2c12544F6db52f8f' ],
+        history: [
+          '0x32Dae0AD2A6D9813854ad085d71932Ed409EF265',
+          '0xB186178E3076CE299b187c1d2c12544F6db52f8f'
+        ],
         constructorArgs: [ 'address:ServiceRegistry' ]
       },
       AaveV3Deposit: {
@@ -227,7 +263,10 @@ export const config: SystemConfig = {
         deploy: false,
         address: '0xE25027C62374CdB225d77592f5CCa4C6eb7DD4C6',
         serviceRegistryName: SERVICE_REGISTRY_NAMES.aave.v3.DEPOSIT,
-        history: [ '0xb34356236f894d289D74a2d352AbF119f81393c0', '0x53546083A3C8841e0813C6800e19F7E736585D31' ],
+        history: [
+          '0xb34356236f894d289D74a2d352AbF119f81393c0',
+          '0x53546083A3C8841e0813C6800e19F7E736585D31'
+        ],
         constructorArgs: [ 'address:ServiceRegistry' ]
       },
       AaveV3Payback: {
@@ -235,7 +274,10 @@ export const config: SystemConfig = {
         deploy: false,
         address: '0x68ed9854026F7DBc36BDe9C6C3346c1B9a462C8C',
         serviceRegistryName: SERVICE_REGISTRY_NAMES.aave.v3.PAYBACK,
-        history: [ '0x10943e7094f0b10469ec7019F7aC1910703e85c8', '0x0835703172ad872561Ea667073A71561C5910Cca' ],
+        history: [
+          '0x10943e7094f0b10469ec7019F7aC1910703e85c8',
+          '0x0835703172ad872561Ea667073A71561C5910Cca'
+        ],
         constructorArgs: [ 'address:ServiceRegistry' ]
       },
       AaveV3SetEMode: {
@@ -243,7 +285,10 @@ export const config: SystemConfig = {
         deploy: false,
         address: '0x08194Ef0BF668040d3936bc39Bf627A46ff07C6B',
         serviceRegistryName: SERVICE_REGISTRY_NAMES.aave.v3.SET_EMODE,
-        history: [ '0x5ddCe95A385EdF3B26214Bd89Cf84eC5BdF503fB','0x9F47b484E921619028eF1c6F7fE73F9921B5AC6D' ],
+        history: [
+          '0x5ddCe95A385EdF3B26214Bd89Cf84eC5BdF503fB',
+          '0x9F47b484E921619028eF1c6F7fE73F9921B5AC6D'
+        ],
         constructorArgs: [ 'address:ServiceRegistry' ]
       },
       AjnaDepositBorrow: {
@@ -576,7 +621,7 @@ export const config: SystemConfig = {
     },
     'USDC.E': {
       name: 'USDC.E',
-      address: '0x0000000000000000000000000000000000000000',
+      address: '0x0000000000000000000000000000000000000000'
     },
     USDT: {
       name: 'USDT',

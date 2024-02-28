@@ -1,4 +1,4 @@
-import { getAaveV3WithdrawToDebtOperationDefinition } from '@deploy-configurations/operation-definitions/aave/v3/withdraw-to-debt'
+import { getAaveV3WithdrawToDebtOperationDefinition } from '@deploy-configurations/operation-definitions'
 import { Network } from '@deploy-configurations/types/network'
 import { MAX_UINT, ZERO } from '@dma-common/constants'
 import { actions } from '@dma-library/actions'
