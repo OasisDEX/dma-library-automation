@@ -7,10 +7,6 @@ import { IOperation } from '@dma-library/types'
 import BigNumber from 'bignumber.js'
 
 type WithdrawArgs = {
-  /**
-   * Send withdrawal amount with no decimal precision applied
-   * EG 1.02 USDC should be sent as 1.02e6 which is 1020000
-   */
   withdrawAmount: BigNumber
   collateralTokenAddress: string
   collateralIsEth: boolean
