@@ -55,7 +55,7 @@ export const SERVICE_REGISTRY_NAMES = {
     WRAP_ETH: 'WrapEth_6',
     UNWRAP_ETH: 'UnwrapEth_6',
     RETURN_FUNDS: 'ReturnFunds_6',
-    COLLECT_FEE: 'CollectFee',
+    COLLECT_FEE: 'CollectFee_2',
     POSITION_CREATED: 'PositionCreated',
     ACCOUNT_GUARD: 'AccountGuard',
     ACCOUNT_FACTORY: 'AccountFactory',
