@@ -260,7 +260,7 @@ export const config: SystemConfig = {
       },
       CollectFee: {
         name: 'CollectFee',
-        deploy: true,
+        deploy: false,
         address: '0x7c31665154caC48EB37a92dA52f63CEA78f3BA6C',
         serviceRegistryName: SERVICE_REGISTRY_NAMES.common.COLLECT_FEE,
         history: [ '0x7c31665154caC48EB37a92dA52f63CEA78f3BA6C' ],
