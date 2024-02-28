@@ -1,4 +1,4 @@
-import { getSparkWithdrawOperationDefinition } from '@deploy-configurations/operation-definitions/aave/v3/withdraw'
+import { getSparkWithdrawOperationDefinition } from "@deploy-configurations/operation-definitions";
 import { Network } from '@deploy-configurations/types/network'
 import { MAX_UINT } from '@dma-common/constants'
 import { actions } from '@dma-library/actions'
