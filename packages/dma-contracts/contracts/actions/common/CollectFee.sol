@@ -17,8 +17,8 @@ contract CollectFee is Executable, UseStorageSlot, UseRegistry {
     using Read for StorageSlot.TransactionStorage;
 
     // Fee percentage (e.g., 1% = 100, 0.5% = 50)
-    uint256 public feePercentage;
-    address public feeRecipient;
+    uint256 public immutable feePercentage;
+    address public immutable feeRecipient;
     uint256 constant DIVISOR = 10000;
 
     constructor(address _registry, uint256 _feePercentage, address _feeRecipient) UseRegistry(ServiceRegistry(_registry)) {
