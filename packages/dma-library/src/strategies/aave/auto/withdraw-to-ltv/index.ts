@@ -7,6 +7,7 @@ import { WithV3Protocol } from '@dma-library/types/aave/protocol'
 import * as Strategies from '@dma-library/types/strategies'
 import * as StrategyParams from '@dma-library/types/strategy-params'
 import { getSwapDataHelper } from '@dma-library/utils/swap'
+import { PositionBalance } from '@domain'
 import BigNumber from 'bignumber.js'
 
 export type AaveV3WithdrawArgs = {
@@ -32,8 +33,8 @@ export const withdraw: AaveV3WithdrawToLTV = async (args, dependencies) => {
   const currentPosition = dependencies.currentPosition
 
   const amountToWithdraw = determineWithdrawalAmount(
-    currentPosition.debt.amount,
-    currentPosition.collateral.amount,
+    currentPosition.debt,
+    currentPosition.collateral,
     args.targetLTV,
     args.oraclePrice,
   )
@@ -105,14 +106,24 @@ export const withdraw: AaveV3WithdrawToLTV = async (args, dependencies) => {
 }
 
 function determineWithdrawalAmount(
-  existingDebt: BigNumber,
-  existingCollateral: BigNumber,
+  existingDebt: PositionBalance,
+  existingCollateral: PositionBalance,
   targetLTV: BigNumber,
   oraclePrice: BigNumber,
 ) {
+  const COLLATERAL_PRECISION = existingCollateral.precision
+  const DEBT_PRECISION = existingDebt.precision
+
+  // We scale down because BigNumber can handle precision maths
+  // with large floating point numbers
+  const scaledDownDebt = existingDebt.amount.div(new BigNumber(10).pow(DEBT_PRECISION))
+
   // nextCollateral = existingDebt / (targetLTV * oraclePrice)
-  const nextCollateral = existingDebt.div(targetLTV.times(oraclePrice))
-  const amountToWithdraw = existingCollateral.minus(nextCollateral)
+  const scaledDownNextCollateral = scaledDownDebt.div(targetLTV.times(oraclePrice))
+  const nextCollateral = scaledDownNextCollateral.multipliedBy(
+    new BigNumber(10).pow(COLLATERAL_PRECISION),
+  )
+  const amountToWithdraw = existingCollateral.amount.minus(nextCollateral)
 
   if (amountToWithdraw.lte(ZERO)) {
     console.debug('next-collateral', nextCollateral.toString())
