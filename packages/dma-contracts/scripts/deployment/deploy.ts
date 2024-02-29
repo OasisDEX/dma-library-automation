@@ -42,48 +42,34 @@ import {
   getSparkDepositOperationDefinition,
   getSparkOpenDepositBorrowOperationDefinition,
   getSparkOpenOperationDefinition,
-  getSparkPaybackWithdrawOperationDefinition,
-} from '@deploy-configurations/operation-definitions'
-import {
-  ContractProps,
-  DeployedSystem,
-  System,
-  SystemTemplate,
-} from '@deploy-configurations/types/deployed-system'
+  getSparkPaybackWithdrawOperationDefinition
+} from "@deploy-configurations/operation-definitions";
+import { ContractProps, DeployedSystem, System, SystemTemplate } from "@deploy-configurations/types/deployed-system";
 import {
   ConfigEntry,
   SystemConfig,
   SystemConfigEntry,
-  SystemContracts,
-} from '@deploy-configurations/types/deployment-config'
-import { EtherscanGasPrice } from '@deploy-configurations/types/etherscan'
-import { Network } from '@deploy-configurations/types/network'
-import { NetworkByChainId } from '@deploy-configurations/utils/network/index'
-import { OperationsRegistry, ServiceRegistry } from '@deploy-configurations/utils/wrappers/index'
-import { loadContractNames } from '@dma-contracts/../deploy-configurations/constants'
-import { RecursivePartial } from '@dma-contracts/utils/recursive-partial'
-import Safe from '@safe-global/safe-core-sdk'
-import { SafeTransactionDataPartial } from '@safe-global/safe-core-sdk-types'
-import EthersAdapter from '@safe-global/safe-ethers-lib'
-import SafeServiceClient from '@safe-global/safe-service-client'
-import axios from 'axios'
-import BigNumber from 'bignumber.js'
-import {
-  BigNumber as EthersBN,
-  constants,
-  Contract,
-  ContractFactory,
-  ethers,
-  providers,
-  Signer,
-  utils,
-} from 'ethers'
-import { HardhatRuntimeEnvironment } from 'hardhat/types'
-import _ from 'lodash'
-import NodeCache from 'node-cache'
-import * as path from 'path'
-import prompts from 'prompts'
-import { inspect } from 'util'
+  SystemContracts
+} from "@deploy-configurations/types/deployment-config";
+import { EtherscanGasPrice } from "@deploy-configurations/types/etherscan";
+import { Network } from "@deploy-configurations/types/network";
+import { NetworkByChainId } from "@deploy-configurations/utils/network/index";
+import { OperationsRegistry, ServiceRegistry } from "@deploy-configurations/utils/wrappers/index";
+import { loadContractNames } from "@dma-contracts/../deploy-configurations/constants";
+import { RecursivePartial } from "@dma-contracts/utils/recursive-partial";
+import Safe from "@safe-global/safe-core-sdk";
+import { SafeTransactionDataPartial } from "@safe-global/safe-core-sdk-types";
+import EthersAdapter from "@safe-global/safe-ethers-lib";
+import SafeServiceClient from "@safe-global/safe-service-client";
+import axios from "axios";
+import BigNumber from "bignumber.js";
+import { BigNumber as EthersBN, constants, Contract, ContractFactory, ethers, providers, Signer, utils } from "ethers";
+import { HardhatRuntimeEnvironment } from "hardhat/types";
+import _ from "lodash";
+import NodeCache from "node-cache";
+import * as path from "path";
+import prompts from "prompts";
+import { inspect } from "util";
 
 const restrictedNetworks = [Network.MAINNET, Network.OPTIMISM, Network.BASE, Network.GOERLI]
 
@@ -500,6 +486,7 @@ export class DeploymentSystem extends DeployedSystemHelpers {
       this.network === Network.MAINNET ||
       this.network === Network.ARBITRUM ||
       this.network === Network.GOERLI ||
+      this.network === Network.BASE ||
       this.network === Network.OPTIMISM
     ) {
       await this.verifyContract(contract.address, constructorArguments)
@@ -676,7 +663,7 @@ export class DeploymentSystem extends DeployedSystemHelpers {
         this.ethers.getContractFactory(configItem.name as string, this.signer),
         constructorParams,
       )
-      //
+
       // // Note: Useful for verifying contracts retrospectively. Comment out the lines above
       // const contractInstance = await this.ethers.getContractAt(configItem.name, configItem.address)
 

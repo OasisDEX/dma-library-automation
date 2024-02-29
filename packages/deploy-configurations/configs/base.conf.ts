@@ -220,7 +220,9 @@ export const config: SystemConfig = {
         serviceRegistryName: SERVICE_REGISTRY_NAMES.common.COLLECT_FEE,
         history: [
           '0x875580943beFfAE73D6c4a654DBb22F8c0A0c02B',
-          '0x6AB4f6168E30489000eDc13DaB22c4EDB1d511C4'
+          '0x6AB4f6168E30489000eDc13DaB22c4EDB1d511C4',
+          '0xaf668d2faEEeB55b8E719fB44811C1374010f465',
+          '0xaf668d2faEEeB55b8E719fB44811C1374010f465'
         ],
         constructorArgs: [
           'address:ServiceRegistry',
