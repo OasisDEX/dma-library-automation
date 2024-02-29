@@ -8,6 +8,7 @@ import BigNumber from 'bignumber.js'
 
 type WithdrawToDebtArgs = {
   withdrawAmount: BigNumber
+  swapAmount: BigNumber
   receiveAtLeast: BigNumber
   swapData: string
   collateralTokenAddress: string
@@ -40,7 +41,7 @@ export const withdrawToDebt: AaveV3WithdrawToDebtOperation = async args => {
   const swapCollateralTokensForDebtTokens = actions.common.swap(network, {
     fromAsset: args.collateralTokenAddress,
     toAsset: args.debtTokenAddress,
-    amount: args.withdrawAmount,
+    amount: args.swapAmount,
     receiveAtLeast: args.receiveAtLeast,
     fee: ZERO.toNumber(),
     withData: args.swapData,

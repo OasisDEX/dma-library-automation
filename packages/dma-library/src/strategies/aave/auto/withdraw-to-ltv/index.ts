@@ -1,4 +1,4 @@
-import { ZERO } from '@dma-common/constants'
+import { ONE, ZERO } from "@dma-common/constants";
 import { withdraw as withdrawOp } from '@dma-library/operations/aave/auto/withdraw'
 import { withdrawToDebt } from '@dma-library/operations/aave/auto/withdraw-to-debt'
 import { getAaveTokenAddress } from '@dma-library/strategies/aave/common'
@@ -43,13 +43,19 @@ export const withdraw: AaveV3WithdrawToLTV = async (args, dependencies) => {
   const debtTokenSymbol = currentPosition.debt.symbol
 
   if (args.shouldWithdrawToDebt) {
+    const FEE = new BigNumber(20)
+    const FEE_BASIS = new BigNumber(10000)
+    const feeAmount = amountToWithdraw.times(FEE.div(FEE_BASIS)).integerValue(BigNumber.ROUND_FLOOR);
+    const amountToSwap = amountToWithdraw.minus(feeAmount)
     const { swapData } = await getSwapDataHelper<typeof dependencies.addresses, AaveLikeTokens>({
       args: {
         fromToken: { symbol: collateralTokenSymbol as AaveLikeTokens },
         toToken: { symbol: debtTokenSymbol as AaveLikeTokens },
         slippage: args.slippage,
         fee: ZERO,
-        swapAmountBeforeFees: amountToWithdraw,
+        // Before fees here refers to fees collected by the Swap contract
+        // not by CollectFee.sol
+        swapAmountBeforeFees: amountToSwap,
       },
       addresses: dependencies.addresses,
       services: {
@@ -65,6 +71,7 @@ export const withdraw: AaveV3WithdrawToLTV = async (args, dependencies) => {
         currentPosition.collateral.symbol,
       ),
       receiveAtLeast: swapData.minToTokenAmount,
+      swapAmount: amountToSwap,
       swapData: `${swapData.exchangeCalldata}`,
       debtTokenAddress: getTokenAddressFromDependencies(dependencies, debtTokenSymbol),
       debtIsEth: debtTokenSymbol === 'ETH',
