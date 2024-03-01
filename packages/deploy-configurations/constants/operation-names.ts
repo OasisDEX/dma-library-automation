@@ -39,8 +39,8 @@ export const OPERATION_NAMES = {
     DEPOSIT: 'SparkDeposit',
     BORROW: 'SparkBorrow',
     PAYBACK_WITHDRAW: 'SparkPaybackWithdraw',
-    WITHDRAW: 'SparkWithdraw',
-    WITHDRAW_TO_DEBT: 'SparkWithdrawToDebt',
+    WITHDRAW: 'SparkWithdraw_2',
+    WITHDRAW_TO_DEBT: 'SparkWithdrawToDebt_2',
   },
   maker: {
     OPEN_AND_DRAW: 'OpenAndDraw',
