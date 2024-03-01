@@ -8,6 +8,7 @@ import BigNumber from 'bignumber.js'
 
 type WithdrawToDebtArgs = {
   withdrawAmount: BigNumber
+  swapAmount: BigNumber
   receiveAtLeast: BigNumber
   swapData: string
   collateralTokenAddress: string
