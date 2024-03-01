@@ -1,3 +1,8 @@
+import { AaveV3WithdrawOperation, withdraw as aaveV3Withdraw } from "@dma-library/operations/aave/auto/withdraw";
+import {
+  AaveV3WithdrawToDebtOperation,
+  withdrawToDebt as aaveV3WithdrawToDebt
+} from "@dma-library/operations/aave/auto/withdraw-to-debt";
 import { borrow as sparkBorrow, SparkBorrowOperation } from './borrow/borrow'
 import { deposit as sparkDeposit, SparkDepositOperation } from './borrow/deposit'
 import {
@@ -13,14 +18,6 @@ import {
   SparkPaybackWithdrawOperation,
 } from './borrow/payback-withdraw'
 import {
-  withdraw as sparkWithdraw,
-  SparkWithdrawOperation,
-} from './borrow/withdraw'
-import {
-  withdrawToDebt as sparkWithdrawToDebt,
-  SparkWithdrawToDebtOperation,
-} from './borrow/withdraw-to-debt'
-import {
   adjustRiskDown as sparkAdjustRiskDown,
   SparkAdjustDownOperation,
 } from './multiply/adjust-risk-down'
@@ -30,6 +27,15 @@ import {
 } from './multiply/adjust-risk-up'
 import { close as sparkClose, SparkCloseOperation } from './multiply/close'
 import { open as sparkOpen, SparkOpenOperation } from './multiply/open'
+// Auto
+import {
+  withdraw as sparkWithdraw,
+  SparkWithdrawOperation,
+} from './auto/withdraw'
+import {
+  withdrawToDebt as sparkWithdrawToDebt,
+  SparkWithdrawToDebtOperation,
+} from './auto/withdraw-to-debt'
 
 const borrow = {
   borrow: sparkBorrow,
@@ -67,9 +73,17 @@ export type SparkMultiplyOperations = {
 export type SparkOperations = {
   borrow: SparkBorrowOperations
   multiply: SparkMultiplyOperations
+  auto: {
+    withdraw: SparkWithdrawOperation
+    withdrawToDebt: SparkWithdrawToDebtOperation
+  }
 }
 
 export const sparkOperations: SparkOperations = {
   borrow,
   multiply,
+  auto: {
+    withdraw: sparkWithdraw,
+    withdrawToDebt: sparkWithdrawToDebt,
+  },
 }
