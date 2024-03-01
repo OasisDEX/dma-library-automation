@@ -24,10 +24,12 @@ export type AaveV3WithdrawDependencies = Omit<
   StrategyParams.WithGetSwap &
   WithV3Protocol
 
+export type WithdrawToLTVStrategy = Omit<Strategies.IStrategy, 'simulation'>
+
 export type AaveV3WithdrawToLTV = (
   args: AaveV3WithdrawArgs,
   dependencies: Omit<AaveV3WithdrawDependencies, 'protocol'>,
-) => Promise<Omit<Strategies.IStrategy, 'simulation'>>
+) => Promise<WithdrawToLTVStrategy>
 
 export const withdraw: AaveV3WithdrawToLTV = async (args, dependencies) => {
   const currentPosition = dependencies.currentPosition
