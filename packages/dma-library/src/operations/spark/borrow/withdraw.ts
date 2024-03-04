@@ -1,4 +1,4 @@
-import { getAaveV3WithdrawOperationDefinition } from '@deploy-configurations/operation-definitions/aave/v3/withdraw'
+import { getSparkWithdrawOperationDefinition } from '@deploy-configurations/operation-definitions'
 import { Network } from '@deploy-configurations/types/network'
 import { MAX_UINT } from '@dma-common/constants'
 import { actions } from '@dma-library/actions'
@@ -15,12 +15,12 @@ type WithdrawArgs = {
   network: Network
 }
 
-export type AaveV3WithdrawOperation = (args: WithdrawArgs) => Promise<IOperation>
+export type SparkWithdrawOperation = (args: WithdrawArgs) => Promise<IOperation>
 
-export const withdraw: AaveV3WithdrawOperation = async args => {
+export const withdraw: SparkWithdrawOperation = async args => {
   const { network } = args
 
-  const withdrawCollateralFromAAVE = actions.aave.v3.aaveV3Withdraw(args.network, {
+  const withdrawCollateralFromSpark = actions.spark.withdraw(args.network, {
     asset: args.collateralTokenAddress,
     amount: args.withdrawAmount,
     to: args.proxy,
@@ -42,10 +42,10 @@ export const withdraw: AaveV3WithdrawOperation = async args => {
     asset: args.collateralIsEth ? args.addresses.tokens.ETH : args.collateralTokenAddress,
   })
 
-  const calls = [withdrawCollateralFromAAVE, collectFeeAfterWithdraw, unwrapEth, returnFunds]
+  const calls = [withdrawCollateralFromSpark, collectFeeAfterWithdraw, unwrapEth, returnFunds]
 
   return {
     calls: calls,
-    operationName: getAaveV3WithdrawOperationDefinition(args.network).name,
+    operationName: getSparkWithdrawOperationDefinition(args.network).name,
   }
 }
