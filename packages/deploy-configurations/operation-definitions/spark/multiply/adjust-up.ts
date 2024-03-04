@@ -9,16 +9,12 @@ export function getSparkAdjustUpOperationDefinition(network: Network) {
     name: OPERATION_NAMES.spark.ADJUST_RISK_UP,
     actions: [
       {
-        hash: getActionHash(SERVICE_REGISTRY_NAMES.common.TAKE_A_FLASHLOAN),
+        hash: getActionHash(SERVICE_REGISTRY_NAMES.common.TAKE_A_FLASHLOAN_BALANCER),
         optional: false,
       },
       {
         hash: getActionHash(SERVICE_REGISTRY_NAMES.common.PULL_TOKEN),
-        optional: true,
-      },
-      {
-        hash: getActionHash(SERVICE_REGISTRY_NAMES.common.WRAP_ETH),
-        optional: true,
+        optional: false,
       },
       {
         hash: getActionHash(SERVICE_REGISTRY_NAMES.common.SWAP_ACTION),
@@ -37,7 +33,7 @@ export function getSparkAdjustUpOperationDefinition(network: Network) {
         optional: false,
       },
       {
-        hash: getActionHash(SERVICE_REGISTRY_NAMES.common.SEND_TOKEN),
+        hash: getActionHash(SERVICE_REGISTRY_NAMES.common.SEND_TOKEN_AUTO),
         optional: false,
       },
     ],

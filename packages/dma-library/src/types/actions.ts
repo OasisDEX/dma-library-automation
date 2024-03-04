@@ -22,6 +22,7 @@ export const calldataTypes = {
     WrapEth: `tuple(uint256 amount)`,
     UnwrapEth: `tuple(uint256 amount)`,
     ReturnFunds: `tuple(address asset)`,
+    CollectFee: `tuple(address asset)`,
     PullToken: `tuple(address asset, address from, uint256 amount)`,
     PositionCreated: `tuple(string protocol, string positionType, address collateralToken, address debtToken)`,
     TakeAFlashLoan: `tuple(uint256 amount, address asset, bool isDPMProxy, uint8 provider, (bytes32 targetHash, bytes callData)[] calls)`,

@@ -12,12 +12,14 @@ export type CommonActions =
   | 'SwapAction'
   | 'PullToken'
   | 'SendToken'
+  | 'SendTokenAuto'
   | 'SetApproval'
   | 'WrapEth'
   | 'UnwrapEth'
   | 'TakeFlashloan'
   | 'TakeFlashloanBalancer'
   | 'ReturnFunds'
+  | 'CollectFee'
   | 'PositionCreated'
 
 export type AjnaActions = 'AjnaDepositBorrow' | 'AjnaRepayWithdraw'
@@ -26,6 +28,7 @@ export type SparkActions =
   | `SparkBorrow`
   | `SparkDeposit`
   | `SparkWithdraw`
+  | `SparkWithdrawAuto`
   | `SparkPayback`
   | `SparkSetEMode`
 

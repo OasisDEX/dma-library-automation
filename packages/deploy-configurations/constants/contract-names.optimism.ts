@@ -3,6 +3,7 @@ export const SERVICE_REGISTRY_NAMES = {
   common: {
     PULL_TOKEN: 'PullToken_7',
     SEND_TOKEN: 'SendToken_7',
+    SEND_TOKEN_AUTO: 'SendTokenAuto_7',
     SET_APPROVAL: 'SetApproval_6',
     TAKE_A_FLASHLOAN: 'TakeFlashloan_6',
     TAKE_A_FLASHLOAN_BALANCER: 'TakeFlashloanBalancer_3',
@@ -57,6 +58,7 @@ export const SERVICE_REGISTRY_NAMES = {
   spark: {
     DEPOSIT: 'SparkDeposit',
     WITHDRAW: 'SparkWithdraw',
+    WITHDRAW_AUTO: 'SparkWithdrawAuto',
     BORROW: 'SparkBorrow',
     PAYBACK: 'SparkPayback',
     SPARK_LENDING_POOL: 'SparkLendingPool',

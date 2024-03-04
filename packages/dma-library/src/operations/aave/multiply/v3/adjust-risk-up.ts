@@ -12,8 +12,6 @@ import {
   WithProxy,
   WithSwap,
 } from '@dma-library/types/operations'
-import BigNumber from 'bignumber.js'
-import { ethers } from 'ethers'
 
 export type AdjustRiskUpArgs = WithCollateral &
   WithDebtAndBorrow &
@@ -48,12 +46,6 @@ export const adjustRiskUp: AaveV3AdjustUpOperation = async ({
   const depositAmount = deposit?.amount || ZERO
   const depositAddress = deposit?.address || NULL_ADDRESS
 
-  // const pullDepositTokensToProxy = actions.common.pullToken(network, {
-  //   asset: depositAddress,
-  //   amount: depositAmount,
-  //   from: proxy.owner,
-  // })
-
   const setFlashLoanApproval = actions.common.setApproval(network, {
     amount: flashloan.token.amount,
     asset: flashloan.token.address,
@@ -71,10 +63,6 @@ export const adjustRiskUp: AaveV3AdjustUpOperation = async ({
     amount: debt.borrow.amount,
     asset: debt.address,
     to: proxy.address,
-  })
-
-  const wrapEth = actions.common.wrapEth(network, {
-    amount: new BigNumber(ethers.constants.MaxUint256.toHexString()),
   })
 
   const swapDebtTokensForCollateralTokens = actions.common.swap(network, {
@@ -110,23 +98,20 @@ export const adjustRiskUp: AaveV3AdjustUpOperation = async ({
     [0, 4, 0, 0],
   )
 
-  const withdrawFlashloan = actions.aave.v3.aaveV3WithdrawAuto(network, {
-    asset: flashloan.token.address,
-    amount: flashloan.token.amount,
-    to: addresses.operationExecutor,
-  },
-    [1]
+  const withdrawFlashloan = actions.aave.v3.aaveV3WithdrawAuto(
+    network,
+    {
+      asset: flashloan.token.address,
+      amount: ZERO, // Is taken from mapping
+      to: addresses.operationExecutor,
+    },
+    [1],
   )
 
-  // pullDepositTokensToProxy.skipped = depositAmount.eq(ZERO) || debt.isEth
-  // wrapEth.skipped = !debt.isEth && !collateral.isEth
-
   const flashloanCalls = [
-    // pullDepositTokensToProxy,
     setFlashLoanApproval,
     depositFlashloan,
     borrowDebtTokensFromAAVE,
-    // wrapEth,
     swapDebtTokensForCollateralTokens,
     setCollateralTokenApprovalOnLendingPool,
     depositCollateral,

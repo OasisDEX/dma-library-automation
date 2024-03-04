@@ -1,4 +1,5 @@
 import { getAaveAdjustDownV3OperationDefinition } from '@deploy-configurations/operation-definitions'
+import { ZERO } from '@dma-common/constants'
 import { actions } from '@dma-library/actions'
 import { IOperation } from '@dma-library/types'
 import {
@@ -89,19 +90,16 @@ export const adjustRiskDown: AaveV3AdjustDownOperation = async ({
     [0, 4, 0],
   )
 
+  const flashloanActionStorageIndex = 1
   const withdrawFlashloanTokenFromAave = actions.aave.v3.aaveV3WithdrawAuto(
     network,
     {
       asset: flashloan.token.address,
-      amount: flashloan.token.amount,
+      amount: ZERO, // Is taken from mapping
       to: addresses.operationExecutor,
     },
-    [1],
+    [flashloanActionStorageIndex],
   )
-  //
-  // const unwrapEth = actions.common.unwrapEth(network, {
-  //   amount: new BigNumber(MAX_UINT),
-  // })
 
   const returnDebtFunds = actions.common.returnFunds(network, {
     asset: debt.address,
@@ -111,8 +109,6 @@ export const adjustRiskDown: AaveV3AdjustDownOperation = async ({
     asset: collateral.address,
   })
 
-  // unwrapEth.skipped = !debt.isEth && !collateral.isEth
-
   const flashloanCalls = [
     setFlashloanTokenApprovalOnLendingPool,
     depositFlashloanTokenInAave,
@@ -121,7 +117,6 @@ export const adjustRiskDown: AaveV3AdjustDownOperation = async ({
     setDebtTokenApprovalOnLendingPool,
     paybackInAAVE,
     withdrawFlashloanTokenFromAave,
-    // unwrapEth,
     returnDebtFunds,
     returnCollateralFunds,
   ]

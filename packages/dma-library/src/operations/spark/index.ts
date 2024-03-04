@@ -13,6 +13,14 @@ import {
   SparkPaybackWithdrawOperation,
 } from './borrow/payback-withdraw'
 import {
+  withdraw as sparkWithdraw,
+  SparkWithdrawOperation,
+} from './borrow/withdraw'
+import {
+  withdrawToDebt as sparkWithdrawToDebt,
+  SparkWithdrawToDebtOperation,
+} from './borrow/withdraw-to-debt'
+import {
   adjustRiskDown as sparkAdjustRiskDown,
   SparkAdjustDownOperation,
 } from './multiply/adjust-risk-down'
@@ -29,6 +37,8 @@ const borrow = {
   depositBorrow: sparkDepositBorrow,
   openDepositBorrow: sparkOpenDepositBorrow,
   paybackWithdraw: sparkPaybackWithdraw,
+  withdraw: sparkWithdraw,
+  withdrawToDebt: sparkWithdrawToDebt,
 }
 const multiply = {
   open: sparkOpen,
@@ -43,6 +53,8 @@ export type SparkBorrowOperations = {
   depositBorrow: SparkDepositBorrowOperation
   openDepositBorrow: SparkOpenDepositBorrowOperation
   paybackWithdraw: SparkPaybackWithdrawOperation
+  withdraw: SparkWithdrawOperation
+  withdrawToDebt: SparkWithdrawToDebtOperation
 }
 
 export type SparkMultiplyOperations = {

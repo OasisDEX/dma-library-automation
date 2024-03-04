@@ -2,21 +2,22 @@
 pragma solidity ^0.8.15;
 
 import { Executable } from "../common/Executable.sol";
-import { Read, Write, UseStore } from "../common/UseStore.sol";
-import { OperationStorage } from "../../core/OperationStorage.sol";
+import { UseStorageSlot, StorageSlot, Write, Read } from "../../libs/UseStorageSlot.sol";
 import { PaybackData } from "../../core/types/Spark.sol";
 import { SPARK_LENDING_POOL } from "../../core/constants/Spark.sol";
+import { ServiceRegistry } from "../../core/ServiceRegistry.sol";
+import { UseRegistry } from "../../libs/UseRegistry.sol";
 import { IPool } from "../../interfaces/spark/IPool.sol";
 
 /**
  * @title Payback | Spark Action contract
  * @notice Pays back a specified amount to Spark's lending pool
  */
-contract SparkPayback is Executable, UseStore {
-  using Write for OperationStorage;
-  using Read for OperationStorage;
+contract SparkPayback is Executable, UseStorageSlot, UseRegistry {
+  using Read for StorageSlot.TransactionStorage;
+  using Write for StorageSlot.TransactionStorage;
 
-  constructor(address _registry) UseStore(_registry) {}
+  constructor(address _registry) UseRegistry(ServiceRegistry(_registry)) {}
 
   /**
    * @dev Look at UseStore.sol to get additional info on paramsMapping.
@@ -27,9 +28,9 @@ contract SparkPayback is Executable, UseStore {
   function execute(bytes calldata data, uint8[] memory paramsMap) external payable override {
     PaybackData memory payback = parseInputs(data);
 
-    payback.amount = store().readUint(bytes32(payback.amount), paramsMap[1], address(this));
+    payback.amount = store().readUint(bytes32(payback.amount), paramsMap[1]);
 
-    IPool(registry.getRegisteredService(SPARK_LENDING_POOL)).repay(
+    IPool(getRegisteredService(SPARK_LENDING_POOL)).repay(
       payback.asset,
       payback.paybackAll ? type(uint256).max : payback.amount,
       2,

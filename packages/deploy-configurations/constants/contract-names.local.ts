@@ -3,6 +3,7 @@ export const SERVICE_REGISTRY_NAMES = {
   common: {
     PULL_TOKEN: 'PullToken_3',
     SEND_TOKEN: 'SendToken_4',
+    SEND_TOKEN_AUTO: 'SendTokenAuto_7',
     SET_APPROVAL: 'SetApproval_3',
     TAKE_A_FLASHLOAN: 'TakeFlashloan_3',
     SWAP_ACTION: 'SwapAction_3',

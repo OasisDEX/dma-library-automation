@@ -1,22 +1,20 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 pragma solidity ^0.8.15;
 
-import { Executable } from "../../common/Executable.sol";
-import { OperationStorage } from "../../../core/OperationStorage.sol";
-import { ILendingPool } from "../../../interfaces/aave/ILendingPool.sol";
-import { WithdrawData } from "../../../core/types/Aave.sol";
-import { AAVE_POOL } from "../../../core/constants/Aave.sol";
-import { IPoolV3 } from "../../../interfaces/aaveV3/IPoolV3.sol";
-import { UseStorageSlot, StorageSlot, Write, Read } from "../../../libs/UseStorageSlot.sol";
-import { UseRegistry } from "../../../libs/UseRegistry.sol";
-import { ServiceRegistry } from "../../../core/ServiceRegistry.sol";
+import { Executable } from "../common/Executable.sol";
+import { WithdrawData } from "../../core/types/Spark.sol";
+import { SPARK_LENDING_POOL } from "../../core/constants/Spark.sol";
+import { IPool } from "../../interfaces/spark/IPool.sol";
+import { UseStorageSlot, StorageSlot, Write, Read } from "../../libs/UseStorageSlot.sol";
+import { UseRegistry } from "../../libs/UseRegistry.sol";
+import { ServiceRegistry } from "../../core/ServiceRegistry.sol";
 
 /**
- * @title Withdraw | AAVE V3 Action contract
- * @notice Withdraw collateral from AAVE's lending pool
+ * @title Withdraw | Spark Action contract
+ * @notice Withdraw collateral from Spark's lending pool
  * with the amount to withdraw being read from an OperationStorage slot
  */
-contract AaveV3WithdrawAuto is Executable, UseStorageSlot, UseRegistry {
+contract SparkWithdrawAuto is Executable, UseStorageSlot, UseRegistry {
   using Write for StorageSlot.TransactionStorage;
   using Read for StorageSlot.TransactionStorage;
 
@@ -33,7 +31,7 @@ contract AaveV3WithdrawAuto is Executable, UseStorageSlot, UseRegistry {
       paramsMap[0]
     );    
 
-    uint256 amountWithdrawn = IPoolV3(getRegisteredService(AAVE_POOL)).withdraw(
+    uint256 amountWithdrawn = IPool(getRegisteredService(SPARK_LENDING_POOL)).withdraw(
       withdraw.asset,
       mappedWithdrawAmount,
       withdraw.to

@@ -27,6 +27,11 @@ import {
   AaveV3PaybackWithdrawOperation,
   paybackWithdraw as aaveV3PaybackWithdraw,
 } from './borrow/v3/payback-withdraw'
+import { type AaveV3WithdrawOperation, withdraw as aaveV3Withdraw } from './borrow/v3/withdraw'
+import {
+  type AaveV3WithdrawToDebtOperation,
+  withdrawToDebt as aaveV3WithdrawToDebt,
+} from './borrow/v3/withdraw-to-debt'
 // Multiply
 import {
   AaveV2AdjustDownOperation,
@@ -63,6 +68,8 @@ const borrow = {
     depositBorrow: aaveV3DepositBorrow,
     openDepositBorrow: aaveV3OpenDepositBorrow,
     paybackWithdraw: aaveV3PaybackWithdraw,
+    withdraw: aaveV3Withdraw,
+    withdrawToDebt: aaveV3WithdrawToDebt,
   },
 }
 
@@ -95,6 +102,8 @@ export type AaveBorrowOperations = {
     depositBorrow: AaveV3DepositBorrowOperation
     openDepositBorrow: AaveV3OpenDepositBorrowOperation
     paybackWithdraw: AaveV3PaybackWithdrawOperation
+    withdraw: AaveV3WithdrawOperation
+    withdrawToDebt: AaveV3WithdrawToDebtOperation
   }
 }
 
