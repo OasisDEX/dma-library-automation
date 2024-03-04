@@ -17,6 +17,7 @@ import {
   AjnaPaybackWithdrawAction,
 } from './ajna'
 import {
+  collectFee,
   positionCreated,
   pullToken,
   returnFunds,
@@ -66,6 +67,7 @@ const common = {
   unwrapEth,
   takeAFlashLoan,
   takeAFlashLoanBalancer,
+  collectFee,
 }
 
 const ajna: {

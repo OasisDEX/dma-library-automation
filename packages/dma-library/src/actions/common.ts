@@ -234,6 +234,25 @@ export function returnFunds(network: Network, args: { asset: string }) {
   )
 }
 
+export function collectFee(
+  network: Network,
+  args: { asset: string },
+  paramsMapping: [amount: number] = [0],
+) {
+  const SERVICE_REGISTRY_NAMES = loadContractNames(network)
+
+  return createAction(
+    getActionHash(SERVICE_REGISTRY_NAMES.common.COLLECT_FEE),
+    [calldataTypes.common.CollectFee],
+    [
+      {
+        asset: args.asset,
+      },
+      paramsMapping,
+    ],
+  )
+}
+
 export function positionCreated(
   network: Network,
   args: {
