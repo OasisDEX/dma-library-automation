@@ -16,6 +16,12 @@ export const close: AaveLikeClose = async (args, dependencies) => {
     ? getAaveSwapDataToCloseToCollateral
     : getAaveSwapDataToCloseToDebt
 
+  if (!args.debtCoverage.isZero()) {
+    dependencies.currentPosition.debt.amount = dependencies.currentPosition.debt.amount.plus(
+      args.debtCoverage,
+    )
+  }
+
   const collateralTokenAddress = getAaveTokenAddress(args.collateralToken, dependencies.addresses)
   const debtTokenAddress = getAaveTokenAddress(args.debtToken, dependencies.addresses)
   const flashloanArgs =

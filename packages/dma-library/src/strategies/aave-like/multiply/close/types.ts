@@ -5,6 +5,7 @@ import { WithFlashLoanArgs } from '@dma-library/types/strategy-params'
 import { BigNumber } from 'bignumber.js'
 
 export type AaveLikeCloseArgs = StrategyParams.WithAaveLikeMultiplyStrategyArgs &
+  StrategyParams.WithDebtCoverage &
   StrategyParams.WithCloseToCollateralFlag &
   Partial<StrategyParams.WithFlashLoanArgs>
 
