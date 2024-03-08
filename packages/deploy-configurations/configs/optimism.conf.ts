@@ -228,7 +228,7 @@ export const config: SystemConfig = {
       CollectFee: {
         name: 'CollectFee',
         deploy: true,
-        address: '',
+        address: '0x3C407ea1ceDA073adF1b8472648FCD8b5400132a',
         serviceRegistryName: SERVICE_REGISTRY_NAMES.common.COLLECT_FEE,
         history: [],
         constructorArgs: [
@@ -637,7 +637,10 @@ export const config: SystemConfig = {
       name: 'USDBC',
       address: '0x0000000000000000000000000000000000000000',
     },
-    USDT: { name: 'USDT', address: '0x94b008aa00579c1307b0ef2c499ad98a8ce58e58' },
+    USDT: {
+      name: 'USDT',
+      address: '0x94b008aa00579c1307b0ef2c499ad98a8ce58e58',
+    },
     WBTC: {
       name: 'WBTC',
       address: '0x68f180fcce6836688e9084f035309e29bf0a2095',
