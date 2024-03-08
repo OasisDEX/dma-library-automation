@@ -18,7 +18,7 @@ export function getAaveV3WithdrawToDebtOperationDefinition(network: Network) {
                 optional: false,
             },
             {
-                hash: getActionHash(SERVICE_REGISTRY_NAMES.common.SWAP),
+                hash: getActionHash(SERVICE_REGISTRY_NAMES.common.SWAP_ACTION),
                 optional: false,
             },
             {

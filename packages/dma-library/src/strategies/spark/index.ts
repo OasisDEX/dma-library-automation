@@ -10,6 +10,7 @@ import {
 import { adjust as sparkAdjust, SparkAdjust } from './multiply/adjust'
 import { close as sparkClose, SparkClose } from './multiply/close'
 import { open as sparkOpen, SparkOpen } from './multiply/open'
+import { SparkWithdrawToLTV, withdraw } from './auto/withdraw-to-ltv'
 
 export const spark: {
   borrow: {
@@ -22,6 +23,9 @@ export const spark: {
     close: SparkClose
     adjust: SparkAdjust
   }
+  auto: {
+    withdraw: SparkWithdrawToLTV
+  }
 } = {
   borrow: {
     depositBorrow: sparkDepositBorrow,
@@ -32,5 +36,8 @@ export const spark: {
     open: sparkOpen,
     close: sparkClose,
     adjust: sparkAdjust,
+  },
+  auto: {
+    withdraw,
   },
 }
