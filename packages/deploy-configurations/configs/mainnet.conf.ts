@@ -397,7 +397,7 @@ export const config: SystemConfig = {
       SparkBorrow: {
         name: 'SparkBorrow',
         deploy: false,
-        address: '0xc69156420307048c9BAAe8191f9012391521a88d',
+        address: '0x8E6c0131D9F67209Ae540bBD90dBa2223D1f74Ca',
         serviceRegistryName: SERVICE_REGISTRY_NAMES.spark.BORROW,
         history: ['0x0000000000000000000000000000000000000000'],
         constructorArgs: ['address:ServiceRegistry'],
@@ -405,7 +405,7 @@ export const config: SystemConfig = {
       SparkWithdraw: {
         name: 'SparkWithdraw',
         deploy: false,
-        address: '0x0cCa782002c4fE95e1ed7A75d41bB56bEfa0C167',
+        address: '0xCeEb07b5F147094AF1b492560BC4cA0f20867df5',
         serviceRegistryName: SERVICE_REGISTRY_NAMES.spark.WITHDRAW,
         history: ['0x0000000000000000000000000000000000000000'],
         constructorArgs: ['address:ServiceRegistry'],
@@ -421,7 +421,7 @@ export const config: SystemConfig = {
       SparkDeposit: {
         name: 'SparkDeposit',
         deploy: false,
-        address: '0xC58F2Ee4Ef92F2bE314743442496D6Fad0339d56',
+        address: '0x347fedF00Dce16Bbb03CFDC75b2aBC342d96Be9A',
         serviceRegistryName: SERVICE_REGISTRY_NAMES.spark.DEPOSIT,
         history: ['0x0000000000000000000000000000000000000000'],
         constructorArgs: ['address:ServiceRegistry'],
@@ -429,7 +429,7 @@ export const config: SystemConfig = {
       SparkPayback: {
         name: 'SparkPayback',
         deploy: false,
-        address: '0x068875B4254aC431BE7B8a10C56D80324fA0d043',
+        address: '0x8e810D5a9De2dBc846F78F2B61745f3c4801Af51',
         serviceRegistryName: SERVICE_REGISTRY_NAMES.spark.PAYBACK,
         history: ['0x0000000000000000000000000000000000000000'],
         constructorArgs: ['address:ServiceRegistry'],
@@ -437,7 +437,7 @@ export const config: SystemConfig = {
       SparkSetEMode: {
         name: 'SparkSetEMode',
         deploy: false,
-        address: '0x79d428e563D946DaBe43C681f92c8D714F5157cE',
+        address: '0xC4E599220775220c610e8Bba607310096711ba5e',
         serviceRegistryName: SERVICE_REGISTRY_NAMES.spark.SET_EMODE,
         history: ['0x0000000000000000000000000000000000000000'],
         constructorArgs: ['address:ServiceRegistry'],

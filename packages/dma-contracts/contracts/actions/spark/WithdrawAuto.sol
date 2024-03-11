@@ -2,7 +2,6 @@
 pragma solidity ^0.8.15;
 
 import { Executable } from "../common/Executable.sol";
-import { OperationStorage } from "../../core/OperationStorage.sol";
 import { WithdrawData } from "../../core/types/Spark.sol";
 import { SPARK_LENDING_POOL } from "../../core/constants/Spark.sol";
 import { IPool } from "../../interfaces/spark/IPool.sol";
