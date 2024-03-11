@@ -1,4 +1,4 @@
-import { ONE, ZERO } from "@dma-common/constants";
+import { ZERO } from '@dma-common/constants'
 import { withdraw as withdrawOp } from '@dma-library/operations/aave/auto/withdraw'
 import { withdrawToDebt } from '@dma-library/operations/aave/auto/withdraw-to-debt'
 import { getAaveTokenAddress } from '@dma-library/strategies/aave/common'
@@ -47,7 +47,7 @@ export const withdraw: AaveV3WithdrawToLTV = async (args, dependencies) => {
   if (args.shouldWithdrawToDebt) {
     const FEE = new BigNumber(20)
     const FEE_BASIS = new BigNumber(10000)
-    const feeAmount = amountToWithdraw.times(FEE.div(FEE_BASIS)).integerValue(BigNumber.ROUND_FLOOR);
+    const feeAmount = amountToWithdraw.times(FEE.div(FEE_BASIS)).integerValue(BigNumber.ROUND_FLOOR)
     const amountToSwap = amountToWithdraw.minus(feeAmount)
     const { swapData } = await getSwapDataHelper<typeof dependencies.addresses, AaveLikeTokens>({
       args: {
@@ -76,7 +76,7 @@ export const withdraw: AaveV3WithdrawToLTV = async (args, dependencies) => {
       swapAmount: amountToSwap,
       swapData: `${swapData.exchangeCalldata}`,
       debtTokenAddress: getTokenAddressFromDependencies(dependencies, debtTokenSymbol),
-      debtIsEth: debtTokenSymbol === 'ETH',
+      debtIsEth: debtTokenSymbol === 'WETH' || debtTokenSymbol === 'ETH',
       proxy: dependencies.proxy,
       addresses: dependencies.addresses,
       network: dependencies.network,
@@ -97,7 +97,7 @@ export const withdraw: AaveV3WithdrawToLTV = async (args, dependencies) => {
         dependencies,
         currentPosition.collateral.symbol,
       ),
-      collateralIsEth: collateralTokenSymbol === 'ETH',
+      collateralIsEth: collateralTokenSymbol === 'ETH' || collateralTokenSymbol === 'WETH',
       proxy: dependencies.proxy,
       addresses: dependencies.addresses,
       network: dependencies.network,

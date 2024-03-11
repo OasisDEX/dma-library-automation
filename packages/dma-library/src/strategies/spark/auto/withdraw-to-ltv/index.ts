@@ -1,4 +1,4 @@
-import { ZERO } from "@dma-common/constants";
+import { ZERO } from '@dma-common/constants'
 import { withdraw as withdrawOp } from '@dma-library/operations/spark/auto/withdraw'
 import { withdrawToDebt } from '@dma-library/operations/spark/auto/withdraw-to-debt'
 import { getAaveTokenAddress } from '@dma-library/strategies/aave/common'
@@ -45,7 +45,7 @@ export const withdraw: SparkWithdrawToLTV = async (args, dependencies) => {
   if (args.shouldWithdrawToDebt) {
     const FEE = new BigNumber(20)
     const FEE_BASIS = new BigNumber(10000)
-    const feeAmount = amountToWithdraw.times(FEE.div(FEE_BASIS)).integerValue(BigNumber.ROUND_FLOOR);
+    const feeAmount = amountToWithdraw.times(FEE.div(FEE_BASIS)).integerValue(BigNumber.ROUND_FLOOR)
     const amountToSwap = amountToWithdraw.minus(feeAmount)
     const { swapData } = await getSwapDataHelper<typeof dependencies.addresses, AaveLikeTokens>({
       args: {
@@ -74,7 +74,7 @@ export const withdraw: SparkWithdrawToLTV = async (args, dependencies) => {
       swapAmount: amountToSwap,
       swapData: `${swapData.exchangeCalldata}`,
       debtTokenAddress: getTokenAddressFromDependencies(dependencies, debtTokenSymbol),
-      debtIsEth: debtTokenSymbol === 'ETH',
+      debtIsEth: debtTokenSymbol === 'WETH' || debtTokenSymbol === 'ETH',
       proxy: dependencies.proxy,
       addresses: dependencies.addresses,
       network: dependencies.network,
@@ -95,7 +95,7 @@ export const withdraw: SparkWithdrawToLTV = async (args, dependencies) => {
         dependencies,
         currentPosition.collateral.symbol,
       ),
-      collateralIsEth: collateralTokenSymbol === 'ETH',
+      collateralIsEth: collateralTokenSymbol === 'WETH' || collateralTokenSymbol === 'ETH',
       proxy: dependencies.proxy,
       addresses: dependencies.addresses,
       network: dependencies.network,
@@ -141,10 +141,7 @@ function determineWithdrawalAmount(
   return amountToWithdraw
 }
 
-function getTokenAddressFromDependencies(
-  deps: SparkWithdrawDependencies,
-  symbol: string,
-) {
+function getTokenAddressFromDependencies(deps: SparkWithdrawDependencies, symbol: string) {
   const address = deps.addresses.tokens[symbol]
 
   if (!address) {
