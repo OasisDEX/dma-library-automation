@@ -40,7 +40,7 @@ export const withdrawToDebt: AaveV3WithdrawToDebtOperation = async args => {
 
   const swapCollateralTokensForDebtTokens = actions.common.swap(network, {
     fromAsset: args.collateralTokenAddress,
-    toAsset: args.debtTokenAddress,
+    toAsset: args.debtIsEth ? args.addresses.tokens.WETH : args.debtTokenAddress,
     amount: args.swapAmount,
     receiveAtLeast: args.receiveAtLeast,
     fee: ZERO.toNumber(),
@@ -54,7 +54,7 @@ export const withdrawToDebt: AaveV3WithdrawToDebtOperation = async args => {
   })
 
   const returnFunds = actions.common.returnFunds(network, {
-    asset: args.debtIsEth ? args.addresses.tokens.ETH : args.debtTokenAddress,
+    asset: args.debtIsEth ? `0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE` : args.debtTokenAddress,
   })
 
   const calls = [
