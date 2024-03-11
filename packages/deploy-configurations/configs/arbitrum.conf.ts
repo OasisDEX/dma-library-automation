@@ -400,7 +400,7 @@ export const config: SystemConfig = {
     },
     ETH: {
       name: 'ETH',
-      address: '0x82aF49447D8a07e3bd95BD0d56f35241523fBab1',
+      address: '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE',
     },
     FRAX: {
       name: 'FRAX',
