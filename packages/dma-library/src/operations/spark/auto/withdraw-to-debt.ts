@@ -25,7 +25,10 @@ export const withdrawToDebt: SparkWithdrawToDebtOperation = async args => {
   const { network } = args
 
   const withdrawCollateralFromSpark = actions.spark.withdraw(args.network, {
-    asset: args.collateralTokenAddress,
+    asset:
+      args.collateralTokenAddress.toLowerCase() == args.addresses.tokens.ETH.toLowerCase()
+        ? args.addresses.tokens.WETH
+        : args.collateralTokenAddress,
     amount: args.withdrawAmount,
     to: args.proxy,
   })
@@ -33,13 +36,19 @@ export const withdrawToDebt: SparkWithdrawToDebtOperation = async args => {
   const collectFeeAfterWithdraw = actions.common.collectFee(
     args.network,
     {
-      asset: args.collateralTokenAddress,
+      asset:
+        args.collateralTokenAddress.toLowerCase() == args.addresses.tokens.ETH.toLowerCase()
+          ? args.addresses.tokens.WETH
+          : args.collateralTokenAddress,
     },
     [1],
   )
 
   const swapCollateralTokensForDebtTokens = actions.common.swap(network, {
-    fromAsset: args.collateralTokenAddress,
+    fromAsset:
+      args.collateralTokenAddress.toLowerCase() == args.addresses.tokens.ETH.toLowerCase()
+        ? args.addresses.tokens.WETH
+        : args.collateralTokenAddress,
     toAsset: args.debtIsEth ? args.addresses.tokens.WETH : args.debtTokenAddress,
     amount: args.withdrawAmount,
     receiveAtLeast: args.receiveAtLeast,

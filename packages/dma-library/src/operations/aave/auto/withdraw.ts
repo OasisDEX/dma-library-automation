@@ -21,7 +21,10 @@ export const withdraw: AaveV3WithdrawOperation = async args => {
   const { network } = args
 
   const withdrawCollateralFromAAVE = actions.aave.v3.aaveV3Withdraw(args.network, {
-    asset: args.collateralTokenAddress,
+    asset:
+      args.collateralTokenAddress.toLowerCase() == args.addresses.tokens.ETH.toLowerCase()
+        ? args.addresses.tokens.WETH
+        : args.collateralTokenAddress,
     amount: args.withdrawAmount,
     to: args.proxy,
   })
@@ -29,7 +32,10 @@ export const withdraw: AaveV3WithdrawOperation = async args => {
   const collectFeeAfterWithdraw = actions.common.collectFee(
     args.network,
     {
-      asset: args.collateralTokenAddress,
+      asset:
+        args.collateralTokenAddress.toLowerCase() == args.addresses.tokens.ETH.toLowerCase()
+          ? args.addresses.tokens.WETH
+          : args.collateralTokenAddress,
     },
     [1],
   )
