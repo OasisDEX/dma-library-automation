@@ -18,6 +18,7 @@ import {
 import { AaveV2Adjust, AaveV3Adjust, adjust } from './multiply/adjust'
 import { AaveV2Close, AaveV3Close, close } from './multiply/close'
 import { AaveV2Open, AaveV3Open, open } from './multiply/open'
+import { AaveV3WithdrawToLTV, withdraw } from './auto/withdraw-to-ltv'
 
 export const aave: {
   borrow: {
@@ -44,6 +45,9 @@ export const aave: {
       close: AaveV3Close
       adjust: AaveV3Adjust
     }
+  }
+  auto: {
+    withdraw: AaveV3WithdrawToLTV
   }
 } = {
   borrow: {
@@ -72,6 +76,9 @@ export const aave: {
       close: (args, dependencies) => withV3Protocol(close, args, dependencies),
       adjust: (args, dependencies) => withV3Protocol(adjust, args, dependencies),
     },
+  },
+  auto: {
+    withdraw: (args, dependencies) => withV3Protocol(withdraw, args, dependencies),
   },
 }
 
