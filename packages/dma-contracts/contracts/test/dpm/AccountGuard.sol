@@ -5,8 +5,6 @@ pragma solidity 0.8.24;
 // import "hardhat/console.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 
-import "hardhat/console.sol";
-
 contract AccountGuard is Ownable {
   address factory;
   uint8 constant WHITELISTED_EXECUTE_MASK = 1;

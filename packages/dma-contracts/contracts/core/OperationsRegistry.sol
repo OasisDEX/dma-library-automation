@@ -1,6 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 pragma solidity ^0.8.15;
-import { console } from "hardhat/console.sol";
 /**
  * @notice This error is thrown when there is no operation found for a given operation hash
  */
@@ -48,8 +47,6 @@ contract OperationsRegistry {
   function addOperation(string memory name, bytes32 operationHash) external onlyOwner {
     require(operations[operationHash] == bytes32(""), "op-registry/operation-exists");
     require(operationNames[bytes32(bytes(name))] == bytes32(""), "op-registry/name-exists");
-    console.log("Adding operation: %s", name);
-    console.logBytes32(operationHash);
     operations[operationHash] = bytes32(bytes(name));
     operationNames[bytes32(bytes(name))] = operationHash;
     // By packing the string into bytes32 which means the max char length is capped at 64

@@ -17,7 +17,6 @@ import { OperationStorage } from "../../core/OperationStorage.sol";
 import "../../libs/FixedPoint.sol";
 import { UseStorageSlot, StorageSlot, StorageSlot } from "../../libs/UseStorageSlot.sol";
 import { UseRegistry } from "../../libs/UseRegistry.sol";
-import "hardhat/console.sol";
 
 /**
  * @title TakeFlashloanBalancer Action contract

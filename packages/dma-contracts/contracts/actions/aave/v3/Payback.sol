@@ -11,7 +11,6 @@ import { ILendingPool } from "../../../interfaces/aave/ILendingPool.sol";
 import { IPoolV3 } from "../../../interfaces/aaveV3/IPoolV3.sol";
 import { AAVE_POOL } from "../../../core/constants/Aave.sol";
 import { UseRegistry } from "../../../libs/UseRegistry.sol";
-import { console } from "hardhat/console.sol";
 
 /**
  * @title Payback | AAVE V3 Action contract
@@ -19,7 +18,6 @@ import { console } from "hardhat/console.sol";
  */
 contract AaveV3Payback is Executable, UseStorageSlot, UseRegistry {
   using StorageSlot for bytes32;
-
 
   constructor(address _registry) UseRegistry(ServiceRegistry(_registry)) {}
 
@@ -31,7 +29,6 @@ contract AaveV3Payback is Executable, UseStorageSlot, UseRegistry {
    */
   function execute(bytes calldata data, uint8[] memory paramsMap) external payable override {
     PaybackData memory payback = parseInputs(data);
-    console.log("paramsMap[1]", paramsMap[1]);
     payback.amount = storeInSlot("transaction").readUint(bytes32(payback.amount), paramsMap[1]);
 
     if (payback.onBehalf == address(0)) {
