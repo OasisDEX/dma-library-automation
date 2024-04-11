@@ -10,10 +10,15 @@ import { Call } from "../core/types/Common.sol";
 import { Address } from "../libs/Address.sol";
 
 import "hardhat/console.sol";
+
 contract OpExecTester {
   using Address for address;
 
-  function execute(address opExecutorAddress, bytes calldata executionData, bytes32 expectedOpName) public {    
+  function execute(
+    address opExecutorAddress,
+    bytes calldata executionData,
+    bytes32 expectedOpName
+  ) public {
     bytes memory result = opExecutorAddress.functionCallWithValue(
       executionData,
       0,

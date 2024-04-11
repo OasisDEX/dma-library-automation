@@ -17,15 +17,10 @@ contract DummySwap is Executable, UseStorageSlot {
   using SafeMath for uint256;
   using StorageSlot for bytes32;
 
-
   IWETH private immutable WETH;
   address private immutable exchange;
 
-  constructor(
-    ServiceRegistry _registry,
-    IWETH _weth,
-    address _exchange
-  ) UseStorageSlot() {
+  constructor(ServiceRegistry _registry, IWETH _weth, address _exchange) UseStorageSlot() {
     WETH = _weth;
     exchange = _exchange;
   }

@@ -11,7 +11,6 @@ contract DummyOptionalAction is Executable, UseStorageSlot {
   using SafeERC20 for IERC20;
   using StorageSlot for bytes32;
 
-
   event DummyOptionalActionEvent(address sender);
 
   constructor(address _registry) UseStorageSlot() {}

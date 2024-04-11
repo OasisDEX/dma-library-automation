@@ -64,7 +64,6 @@ contract OperationStorage {
     optionals = _optionals;
   }
 
-
   /**
    * @param value Pushes a bytes32 to end of the returnValues array
    */

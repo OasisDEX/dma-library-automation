@@ -38,7 +38,6 @@ import {
   getSparkAdjustUpOperationDefinition,
   getSparkBorrowOperationDefinition,
   getSparkCloseAndExitOperationDefinition,
-  getSparkCloseAndRemainOperationDefinition,
   getSparkDepositBorrowOperationDefinition,
   getSparkDepositOperationDefinition,
   getSparkOpenDepositBorrowOperationDefinition,
