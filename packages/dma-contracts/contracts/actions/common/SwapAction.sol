@@ -8,7 +8,7 @@ import { IWETH } from "../../interfaces/tokens/IWETH.sol";
 import { SwapData } from "../../core/types/Common.sol";
 import { Swap } from "../../swap/Swap.sol";
 import { WETH, SWAP } from "../../core/constants/Common.sol";
-import { UseStorageSlot, StorageSlot, Write, Read } from "../../libs/UseStorageSlot.sol";
+import { UseStorageSlot, StorageSlot, StorageSlot } from "../../libs/UseStorageSlot.sol";
 import { ServiceRegistry } from "../../core/ServiceRegistry.sol";
 import { UseRegistry } from "../../libs/UseRegistry.sol";
 
@@ -18,7 +18,7 @@ import { UseRegistry } from "../../libs/UseRegistry.sol";
  */
 contract SwapAction is Executable, UseStorageSlot, UseRegistry {
   using SafeERC20 for IERC20;
-  using Write for StorageSlot.TransactionStorage;
+  using StorageSlot for bytes32;
 
   constructor(address _registry) UseRegistry(ServiceRegistry(_registry)) {}
 
@@ -35,7 +35,7 @@ contract SwapAction is Executable, UseStorageSlot, UseRegistry {
 
     uint256 received = Swap(swapAddress).swapTokens(swap);
 
-    store().write(bytes32(received));
+    storeInSlot("transaction").write(bytes32(received));
   }
 
   function parseInputs(bytes memory _callData) public pure returns (SwapData memory params) {

@@ -18,7 +18,7 @@ abstract contract UseStore {
     registry = ServiceRegistry(_registry);
   }
 
-  function store() internal view returns (OperationStorage) {
+  function storeInSlot() internal view returns (OperationStorage) {
     return OperationStorage(registry.getRegisteredService(OPERATION_STORAGE));
   }
 }

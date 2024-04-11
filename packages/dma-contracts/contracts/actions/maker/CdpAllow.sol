@@ -2,7 +2,7 @@
 pragma solidity >=0.8.5;
 
 import { Executable } from "../common/Executable.sol";
-import { UseStore, Read, Write } from "../common/UseStore.sol";
+import { UseStorageSlot, StorageSlot } from "../../libs/UseStorageSlot.sol";
 import { OperationStorage } from "../../core/OperationStorage.sol";
 import { IVat } from "../../interfaces/maker/IVat.sol";
 import { IManager } from "../../interfaces/maker/IManager.sol";
@@ -12,19 +12,22 @@ import { SafeERC20, IERC20 } from "../../libs/SafeERC20.sol";
 import { IWETH } from "../../interfaces/tokens/IWETH.sol";
 import { WETH } from "../../core/constants/Common.sol";
 import { MCD_MANAGER } from "../../core/constants/Maker.sol";
+import { IServiceRegistry } from "../../interfaces/IServiceRegistry.sol";
 
-contract CdpAllow is Executable, UseStore {
+contract CdpAllow is Executable, UseStorageSlot {
   using SafeERC20 for IERC20;
-  using Read for OperationStorage;
+  using StorageSlot for bytes32;
+  IServiceRegistry public registry;
 
-  constructor(address _registry) UseStore(_registry) {}
+  constructor(address _registry) UseStorageSlot() {
+    registry = IServiceRegistry(_registry);
+  }
 
   function execute(bytes calldata data, uint8[] memory paramsMap) external payable override {
     CdpAllowData memory cdpAllowData = parseInputs(data);
-    cdpAllowData.vaultId = store().readUint(
+    cdpAllowData.vaultId = storeInSlot("transaction").readUint(
       bytes32(cdpAllowData.vaultId),
-      paramsMap[0],
-      address(this)
+      paramsMap[0]
     );
 
     IManager manager = IManager(registry.getRegisteredService(MCD_MANAGER));

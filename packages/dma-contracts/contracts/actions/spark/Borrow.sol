@@ -2,7 +2,7 @@
 pragma solidity ^0.8.15;
 
 import { Executable } from "../common/Executable.sol";
-import { UseStorageSlot, StorageSlot, Write, Read } from "../../libs/UseStorageSlot.sol";
+import { UseStorageSlot, StorageSlot, StorageSlot } from "../../libs/UseStorageSlot.sol";
 import { BorrowData } from "../../core/types/Spark.sol";
 import { SPARK_LENDING_POOL } from "../../core/constants/Spark.sol";
 import { IPool } from "../../interfaces/spark/IPool.sol";
@@ -14,7 +14,7 @@ import { UseRegistry } from "../../libs/UseRegistry.sol";
  * @notice Borrows tokens from Spark's lending pool
  */
 contract SparkBorrow is Executable, UseStorageSlot, UseRegistry {
-  using Write for StorageSlot.TransactionStorage;
+  using StorageSlot for bytes32;
 
   constructor(address _registry) UseRegistry(ServiceRegistry(_registry)) {}
 
@@ -32,7 +32,7 @@ contract SparkBorrow is Executable, UseStorageSlot, UseRegistry {
       address(this)
     );
 
-    store().write(bytes32(borrow.amount));
+    storeInSlot("transaction").write(bytes32(borrow.amount));
   }
 
   function parseInputs(bytes memory _callData) public pure returns (BorrowData memory params) {

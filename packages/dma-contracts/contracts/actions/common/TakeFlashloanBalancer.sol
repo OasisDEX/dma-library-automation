@@ -15,7 +15,7 @@ import { ProxyPermission } from "../../libs/DS/ProxyPermission.sol";
 import { IERC20 } from "../../libs/SafeERC20.sol";
 import { OperationStorage } from "../../core/OperationStorage.sol";
 import "../../libs/FixedPoint.sol";
-import { UseStorageSlot, StorageSlot, Write, Read } from "../../libs/UseStorageSlot.sol";
+import { UseStorageSlot, StorageSlot, StorageSlot } from "../../libs/UseStorageSlot.sol";
 import { UseRegistry } from "../../libs/UseRegistry.sol";
 import "hardhat/console.sol";
 
@@ -25,7 +25,7 @@ import "hardhat/console.sol";
  */
 contract TakeFlashloanBalancer is Executable, ProxyPermission, UseStorageSlot, UseRegistry {
   address internal immutable dai;
-  using Write for StorageSlot.TransactionStorage;
+  using StorageSlot for bytes32;
 
   constructor(
     address _registry,
@@ -58,9 +58,9 @@ contract TakeFlashloanBalancer is Executable, ProxyPermission, UseStorageSlot, U
     ).getFlashLoanFeePercentage();
     if (feePercentage > 0) {
       uint256 fullFlashloanAmount = amounts[0] + FixedPoint.mulUp(amounts[0], feePercentage);
-      store().write(bytes32(fullFlashloanAmount));
+      storeInSlot("transaction").write(bytes32(fullFlashloanAmount));
     } else {
-      store().write(bytes32(amounts[0]));
+      storeInSlot("transaction").write(bytes32(amounts[0]));
     }
 
     IVault(getRegisteredService(BALANCER_VAULT)).flashLoan(

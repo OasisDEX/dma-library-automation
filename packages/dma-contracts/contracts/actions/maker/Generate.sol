@@ -2,7 +2,7 @@
 pragma solidity >=0.8.5;
 
 import { Executable } from "../common/Executable.sol";
-import { UseStore, Read, Write } from "../common/UseStore.sol";
+import { UseStorageSlot, StorageSlot } from "../../libs/UseStorageSlot.sol";
 import { OperationStorage } from "../../core/OperationStorage.sol";
 import { IVat } from "../../interfaces/maker/IVat.sol";
 import { IManager } from "../../interfaces/maker/IManager.sol";
@@ -13,24 +13,27 @@ import { SafeMath } from "../../libs/SafeMath.sol";
 import { MathUtils } from "../../libs/MathUtils.sol";
 import { GenerateData } from "../../core/types/Maker.sol";
 import { MCD_MANAGER, MCD_JUG, MCD_JOIN_DAI } from "../../core/constants/Maker.sol";
+import { IServiceRegistry } from "../../interfaces/IServiceRegistry.sol";
 
-contract MakerGenerate is Executable, UseStore {
+contract MakerGenerate is Executable, UseStorageSlot {
   using SafeMath for uint256;
-  using Read for OperationStorage;
-  using Write for OperationStorage;
+  using StorageSlot for bytes32;
 
-  constructor(address _registry) UseStore(_registry) {}
+  IServiceRegistry public registry;
+
+  constructor(address _registry) UseStorageSlot() {
+    registry = IServiceRegistry(_registry);
+  }
 
   function execute(bytes calldata data, uint8[] memory paramsMap) external payable override {
     GenerateData memory generateData = parseInputs(data);
-    generateData.vaultId = store().readUint(
+    generateData.vaultId = storeInSlot("transaction").readUint(
       bytes32(generateData.vaultId),
-      paramsMap[1],
-      address(this)
+      paramsMap[1]
     );
 
     uint256 amountGenerated = _generate(generateData);
-    store().write(bytes32(amountGenerated));
+    storeInSlot("transaction").write(bytes32(amountGenerated));
   }
 
   function _generate(GenerateData memory data) internal returns (uint256) {

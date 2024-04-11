@@ -40,7 +40,6 @@ export class OperationsDatabase {
     if (!op) {
       return undefined
     }
-
     return JSON.stringify([this.calculateActionsHash(op.actions), op.name])
   }
 
@@ -55,6 +54,8 @@ export class OperationsDatabase {
 
   public calculateActionsHash(actions: Action[]): string {
     const actionHashes = actions.map(a => a.hash)
+    console.log('actionHashes', actionHashes)
+
     const concatenatedHashes = utils.solidityPack(['bytes32[]'], [actionHashes])
     return utils.keccak256(concatenatedHashes)
   }

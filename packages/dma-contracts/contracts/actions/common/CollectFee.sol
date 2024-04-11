@@ -2,7 +2,7 @@
 pragma solidity ^0.8.15;
 
 import { Executable } from "../common/Executable.sol";
-import { UseStorageSlot, StorageSlot, Write, Read } from "../../libs/UseStorageSlot.sol";
+import { UseStorageSlot, StorageSlot, StorageSlot } from "../../libs/UseStorageSlot.sol";
 import { UseRegistry } from "../../libs/UseRegistry.sol";
 import { ServiceRegistry } from "../../core/ServiceRegistry.sol";
 import { SafeERC20, IERC20 } from "../../libs/SafeERC20.sol";
@@ -13,8 +13,8 @@ import { SafeERC20, IERC20 } from "../../libs/SafeERC20.sol";
  */
 contract CollectFee is Executable, UseStorageSlot, UseRegistry {
     using SafeERC20 for IERC20;
-    using Write for StorageSlot.TransactionStorage;
-    using Read for StorageSlot.TransactionStorage;
+    using StorageSlot for bytes32;
+
 
     // Fee percentage (e.g., 1% = 100, 0.5% = 50)
     uint256 public immutable feePercentage;
@@ -33,7 +33,7 @@ contract CollectFee is Executable, UseStorageSlot, UseRegistry {
      */
     function execute(bytes calldata data, uint8[] memory paramsMap) external payable override {
         address asset = parseInputs(data);
-        uint256 transactionAmount = store().readUint(bytes32(0), paramsMap[0]);
+        uint256 transactionAmount = storeInSlot("transaction").readUint(bytes32(0), paramsMap[0]);
         uint256 feeAmount = (transactionAmount * feePercentage) / DIVISOR;
 
         // Transfer fee from the user's proxy to the feeRecipient

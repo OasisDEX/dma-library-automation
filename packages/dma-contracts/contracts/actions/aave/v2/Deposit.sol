@@ -2,24 +2,28 @@
 pragma solidity ^0.8.15;
 
 import { Executable } from "../../common/Executable.sol";
-import { UseStore, Write, Read } from "../../common/UseStore.sol";
+import { UseStorageSlot, StorageSlot } from "../../../libs/UseStorageSlot.sol";
 import { OperationStorage } from "../../../core/OperationStorage.sol";
 import { ILendingPool } from "../../../interfaces/aave/ILendingPool.sol";
 import { DepositData } from "../../../core/types/Aave.sol";
 import { SafeMath } from "../../../libs/SafeMath.sol";
 import { SafeERC20, IERC20 } from "../../../libs/SafeERC20.sol";
 import { AAVE_LENDING_POOL } from "../../../core/constants/Aave.sol";
+import { IServiceRegistry } from "../../../interfaces/IServiceRegistry.sol";
 
 /**
  * @title Deposit | AAVE Action contract
  * @notice Deposits the specified asset as collateral on AAVE's lending pool
  */
-contract AaveDeposit is Executable, UseStore {
-  using Write for OperationStorage;
-  using Read for OperationStorage;
-  using SafeMath for uint256;
+contract AaveDeposit is Executable, UseStorageSlot {
+  using StorageSlot for bytes32;
 
-  constructor(address _registry) UseStore(_registry) {}
+  using SafeMath for uint256;
+  IServiceRegistry public registry;
+
+  constructor(address _registry) UseStorageSlot() {
+    registry = IServiceRegistry(_registry);
+  }
 
   /**
    * @dev Look at UseStore.sol to get additional info on paramsMapping
@@ -29,10 +33,9 @@ contract AaveDeposit is Executable, UseStore {
   function execute(bytes calldata data, uint8[] memory paramsMap) external payable override {
     DepositData memory deposit = parseInputs(data);
 
-    uint256 mappedDepositAmount = store().readUint(
+    uint256 mappedDepositAmount = storeInSlot("transaction").readUint(
       bytes32(deposit.amount),
-      paramsMap[1],
-      address(this)
+      paramsMap[1]
     );
 
     uint256 actualDepositAmount = deposit.sumAmounts
@@ -53,7 +56,7 @@ contract AaveDeposit is Executable, UseStore {
       );
     }
 
-    store().write(bytes32(actualDepositAmount));
+    storeInSlot("transaction").write(bytes32(actualDepositAmount));
   }
 
   function parseInputs(bytes memory _callData) public pure returns (DepositData memory params) {

@@ -2,7 +2,7 @@
 pragma solidity ^0.8.15;
 
 import { Executable } from "../../common/Executable.sol";
-import { UseStore, Write, Read } from "../../common/UseStore.sol";
+import { UseStorageSlot, StorageSlot } from "../../../libs/UseStorageSlot.sol";
 import { OperationStorage } from "../../../core/OperationStorage.sol";
 import { IVariableDebtToken } from "../../../interfaces/aave/IVariableDebtToken.sol";
 import { IWETHGateway } from "../../../interfaces/aave/IWETHGateway.sol";
@@ -10,16 +10,20 @@ import { PaybackData } from "../../../core/types/Aave.sol";
 import { ILendingPool } from "../../../interfaces/aave/ILendingPool.sol";
 
 import { AAVE_WETH_GATEWAY, AAVE_LENDING_POOL } from "../../../core/constants/Aave.sol";
+import { IServiceRegistry } from "../../../interfaces/IServiceRegistry.sol";
 
 /**
  * @title Payback | AAVE Action contract
  * @notice Pays back a specified amount to AAVE's lending pool
  */
-contract AavePayback is Executable, UseStore {
-  using Write for OperationStorage;
-  using Read for OperationStorage;
+contract AavePayback is Executable, UseStorageSlot {
+  using StorageSlot for bytes32;
 
-  constructor(address _registry) UseStore(_registry) {}
+  IServiceRegistry public registry;
+
+  constructor(address _registry) UseStorageSlot() {
+    registry = IServiceRegistry(_registry);
+  }
 
   /**
    * @dev Look at UseStore.sol to get additional info on paramsMapping.
@@ -30,7 +34,7 @@ contract AavePayback is Executable, UseStore {
   function execute(bytes calldata data, uint8[] memory paramsMap) external payable override {
     PaybackData memory payback = parseInputs(data);
 
-    payback.amount = store().readUint(bytes32(payback.amount), paramsMap[1], address(this));
+    payback.amount = storeInSlot("transaction").readUint(bytes32(payback.amount), paramsMap[1]);
 
     ILendingPool(registry.getRegisteredService(AAVE_LENDING_POOL)).repay(
       payback.asset,
@@ -39,7 +43,7 @@ contract AavePayback is Executable, UseStore {
       address(this)
     );
 
-    store().write(bytes32(payback.amount));
+    storeInSlot("transaction").write(bytes32(payback.amount));
   }
 
   function parseInputs(bytes memory _callData) public pure returns (PaybackData memory params) {

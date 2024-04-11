@@ -37,39 +37,54 @@ import {
   getSparkAdjustDownOperationDefinition,
   getSparkAdjustUpOperationDefinition,
   getSparkBorrowOperationDefinition,
-  getSparkCloseOperationDefinition,
+  getSparkCloseAndExitOperationDefinition,
+  getSparkCloseAndRemainOperationDefinition,
   getSparkDepositBorrowOperationDefinition,
   getSparkDepositOperationDefinition,
   getSparkOpenDepositBorrowOperationDefinition,
   getSparkOpenOperationDefinition,
-  getSparkPaybackWithdrawOperationDefinition
-} from "@deploy-configurations/operation-definitions";
-import { ContractProps, DeployedSystem, System, SystemTemplate } from "@deploy-configurations/types/deployed-system";
+  getSparkPaybackWithdrawOperationDefinition,
+} from '@deploy-configurations/operation-definitions'
+import {
+  ContractProps,
+  DeployedSystem,
+  System,
+  SystemTemplate,
+} from '@deploy-configurations/types/deployed-system'
 import {
   ConfigEntry,
   SystemConfig,
   SystemConfigEntry,
-  SystemContracts
-} from "@deploy-configurations/types/deployment-config";
-import { EtherscanGasPrice } from "@deploy-configurations/types/etherscan";
-import { Network } from "@deploy-configurations/types/network";
-import { NetworkByChainId } from "@deploy-configurations/utils/network/index";
-import { OperationsRegistry, ServiceRegistry } from "@deploy-configurations/utils/wrappers/index";
-import { loadContractNames } from "@dma-contracts/../deploy-configurations/constants";
-import { RecursivePartial } from "@dma-contracts/utils/recursive-partial";
-import Safe from "@safe-global/safe-core-sdk";
-import { SafeTransactionDataPartial } from "@safe-global/safe-core-sdk-types";
-import EthersAdapter from "@safe-global/safe-ethers-lib";
-import SafeServiceClient from "@safe-global/safe-service-client";
-import axios from "axios";
-import BigNumber from "bignumber.js";
-import { BigNumber as EthersBN, constants, Contract, ContractFactory, ethers, providers, Signer, utils } from "ethers";
-import { HardhatRuntimeEnvironment } from "hardhat/types";
-import _ from "lodash";
-import NodeCache from "node-cache";
-import * as path from "path";
-import prompts from "prompts";
-import { inspect } from "util";
+  SystemContracts,
+} from '@deploy-configurations/types/deployment-config'
+import { EtherscanGasPrice } from '@deploy-configurations/types/etherscan'
+import { Network } from '@deploy-configurations/types/network'
+import { NetworkByChainId } from '@deploy-configurations/utils/network/index'
+import { OperationsRegistry, ServiceRegistry } from '@deploy-configurations/utils/wrappers/index'
+import { loadContractNames } from '@dma-contracts/../deploy-configurations/constants'
+import { RecursivePartial } from '@dma-contracts/utils/recursive-partial'
+import Safe from '@safe-global/safe-core-sdk'
+import { SafeTransactionDataPartial } from '@safe-global/safe-core-sdk-types'
+import EthersAdapter from '@safe-global/safe-ethers-lib'
+import SafeServiceClient from '@safe-global/safe-service-client'
+import axios from 'axios'
+import BigNumber from 'bignumber.js'
+import {
+  BigNumber as EthersBN,
+  constants,
+  Contract,
+  ContractFactory,
+  ethers,
+  providers,
+  Signer,
+  utils,
+} from 'ethers'
+import { HardhatRuntimeEnvironment } from 'hardhat/types'
+import _ from 'lodash'
+import NodeCache from 'node-cache'
+import * as path from 'path'
+import prompts from 'prompts'
+import { inspect } from 'util'
 
 const restrictedNetworks = [Network.MAINNET, Network.OPTIMISM, Network.BASE, Network.GOERLI]
 
@@ -863,6 +878,7 @@ export class DeploymentSystem extends DeployedSystemHelpers {
     await operationsRegistry.addOp(
       getAaveOpenV2OperationDefinition(network).name,
       getAaveOpenV2OperationDefinition(network).actions,
+      true,
     )
     await operationsRegistry.addOp(
       getAaveCloseV2OperationDefinition(network).name,
@@ -998,7 +1014,7 @@ export class DeploymentSystem extends DeployedSystemHelpers {
     )
     this.logOp(sparkOpenOperationDefinition)
 
-    const sparkCloseOperationDefinition = getSparkCloseOperationDefinition(network)
+    const sparkCloseOperationDefinition = getSparkCloseAndExitOperationDefinition(network)
     await operationsRegistry.addOp(
       sparkCloseOperationDefinition.name,
       sparkCloseOperationDefinition.actions,

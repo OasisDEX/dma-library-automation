@@ -7,7 +7,7 @@ import { ILendingPool } from "../../../interfaces/aave/ILendingPool.sol";
 import { WithdrawData } from "../../../core/types/Aave.sol";
 import { AAVE_POOL } from "../../../core/constants/Aave.sol";
 import { IPoolV3 } from "../../../interfaces/aaveV3/IPoolV3.sol";
-import { UseStorageSlot, StorageSlot, Write, Read } from "../../../libs/UseStorageSlot.sol";
+import { UseStorageSlot, StorageSlot, StorageSlot } from "../../../libs/UseStorageSlot.sol";
 import { UseRegistry } from "../../../libs/UseRegistry.sol";
 import { ServiceRegistry } from "../../../core/ServiceRegistry.sol";
 
@@ -17,8 +17,8 @@ import { ServiceRegistry } from "../../../core/ServiceRegistry.sol";
  * with the amount to withdraw being read from an OperationStorage slot
  */
 contract AaveV3WithdrawAuto is Executable, UseStorageSlot, UseRegistry {
-  using Write for StorageSlot.TransactionStorage;
-  using Read for StorageSlot.TransactionStorage;
+  using StorageSlot for bytes32;
+
 
   constructor(address _registry) UseRegistry(ServiceRegistry(_registry)) {}
 
@@ -28,7 +28,7 @@ contract AaveV3WithdrawAuto is Executable, UseStorageSlot, UseRegistry {
   function execute(bytes calldata data, uint8[] memory paramsMap) external payable override {
     WithdrawData memory withdraw = parseInputs(data);
     
-    uint256 mappedWithdrawAmount = store().readUint(
+    uint256 mappedWithdrawAmount = storeInSlot("transaction").readUint(
       bytes32(0),
       paramsMap[0]
     );    
@@ -39,7 +39,7 @@ contract AaveV3WithdrawAuto is Executable, UseStorageSlot, UseRegistry {
       withdraw.to
     );
 
-    store().write(bytes32(amountWithdrawn));
+    storeInSlot("transaction").write(bytes32(amountWithdrawn));
   }
 
   function parseInputs(bytes memory _callData) public pure returns (WithdrawData memory params) {

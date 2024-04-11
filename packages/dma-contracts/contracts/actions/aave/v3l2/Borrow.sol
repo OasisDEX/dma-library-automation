@@ -2,7 +2,7 @@
 pragma solidity ^0.8.15;
 
 import { Executable } from "../../common/Executable.sol";
-import { Write, UseStore } from "../../common/UseStore.sol";
+import { UseStorageSlot, StorageSlot } from "../../../libs/UseStorageSlot.sol";
 import { OperationStorage } from "../../../core/OperationStorage.sol";
 import { IVariableDebtToken } from "../../../interfaces/aave/IVariableDebtToken.sol";
 import { IWETHGateway } from "../../../interfaces/aave/IWETHGateway.sol";
@@ -10,6 +10,7 @@ import { ILendingPool } from "../../../interfaces/aave/ILendingPool.sol";
 import { BorrowData } from "../../../core/types/Aave.sol";
 import { AAVE_POOL, AAVE_L2_ENCODER } from "../../../core/constants/Aave.sol";
 import { IPoolV3 } from "../../../interfaces/aaveV3/IPoolV3.sol";
+import { IServiceRegistry } from "../../../interfaces/IServiceRegistry.sol";
 
 /**
  * @title Borrow | AAVE V3 Action contract
@@ -23,10 +24,13 @@ interface IL2Encoder {
   function encodeBorrowParams(address, uint256, uint256, uint16) external view returns (bytes32);
 }
 
-contract AaveV3L2Borrow is Executable, UseStore {
-  using Write for OperationStorage;
+contract AaveV3L2Borrow is Executable, UseStorageSlot {
+  using StorageSlot for bytes32;
+  IServiceRegistry public registry;
 
-  constructor(address _registry) UseStore(_registry) {}
+  constructor(address _registry) UseStorageSlot() {
+    registry = IServiceRegistry(_registry);
+  }
 
   /**
    * @param data Encoded calldata that conforms to the BorrowData struct
@@ -43,7 +47,7 @@ contract AaveV3L2Borrow is Executable, UseStore {
       )
     );
 
-    store().write(bytes32(borrow.amount));
+    storeInSlot("transaction").write(bytes32(borrow.amount));
   }
 
   function parseInputs(bytes memory _callData) public pure returns (BorrowData memory params) {

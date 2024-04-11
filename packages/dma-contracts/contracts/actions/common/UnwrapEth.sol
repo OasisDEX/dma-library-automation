@@ -6,7 +6,7 @@ import { SafeERC20, IERC20 } from "../../libs/SafeERC20.sol";
 import { IWETH } from "../../interfaces/tokens/IWETH.sol";
 import { UnwrapEthData } from "../../core/types/Common.sol";
 import { WETH } from "../../core/constants/Common.sol";
-import { UseStorageSlot, StorageSlot, Write, Read } from "../../libs/UseStorageSlot.sol";
+import { UseStorageSlot, StorageSlot, StorageSlot } from "../../libs/UseStorageSlot.sol";
 import { ServiceRegistry } from "../../core/ServiceRegistry.sol";
 import { UseRegistry } from "../../libs/UseRegistry.sol";
 
@@ -16,7 +16,7 @@ import { UseRegistry } from "../../libs/UseRegistry.sol";
  */
 contract UnwrapEth is Executable, UseStorageSlot, UseRegistry {
   using SafeERC20 for IERC20;
-  using Read for StorageSlot.TransactionStorage;
+  using StorageSlot for bytes32;
 
   constructor(address _registry) UseRegistry(ServiceRegistry(_registry)) {}
 
@@ -30,7 +30,7 @@ contract UnwrapEth is Executable, UseStorageSlot, UseRegistry {
 
     UnwrapEthData memory unwrapData = parseInputs(data);
 
-    unwrapData.amount = store().readUint(bytes32(unwrapData.amount), paramsMap[0]);
+    unwrapData.amount = storeInSlot("transaction").readUint(bytes32(unwrapData.amount), paramsMap[0]);
 
     if (unwrapData.amount == type(uint256).max) {
       unwrapData.amount = weth.balanceOf(address(this));

@@ -2,7 +2,7 @@
 pragma solidity ^0.8.15;
 
 import { Executable } from "../common/Executable.sol";
-import { UseStorageSlot, StorageSlot, Write, Read } from "../../libs/UseStorageSlot.sol";
+import { UseStorageSlot, StorageSlot, StorageSlot } from "../../libs/UseStorageSlot.sol";
 import { PaybackData } from "../../core/types/Spark.sol";
 import { SPARK_LENDING_POOL } from "../../core/constants/Spark.sol";
 import { ServiceRegistry } from "../../core/ServiceRegistry.sol";
@@ -14,8 +14,8 @@ import { IPool } from "../../interfaces/spark/IPool.sol";
  * @notice Pays back a specified amount to Spark's lending pool
  */
 contract SparkPayback is Executable, UseStorageSlot, UseRegistry {
-  using Read for StorageSlot.TransactionStorage;
-  using Write for StorageSlot.TransactionStorage;
+  using StorageSlot for bytes32;
+
 
   constructor(address _registry) UseRegistry(ServiceRegistry(_registry)) {}
 
@@ -28,7 +28,7 @@ contract SparkPayback is Executable, UseStorageSlot, UseRegistry {
   function execute(bytes calldata data, uint8[] memory paramsMap) external payable override {
     PaybackData memory payback = parseInputs(data);
 
-    payback.amount = store().readUint(bytes32(payback.amount), paramsMap[1]);
+    payback.amount = storeInSlot("transaction").readUint(bytes32(payback.amount), paramsMap[1]);
 
     IPool(getRegisteredService(SPARK_LENDING_POOL)).repay(
       payback.asset,
@@ -37,7 +37,7 @@ contract SparkPayback is Executable, UseStorageSlot, UseRegistry {
       address(this)
     );
 
-    store().write(bytes32(payback.amount));
+    storeInSlot("transaction").write(bytes32(payback.amount));
   }
 
   function parseInputs(bytes memory _callData) public pure returns (PaybackData memory params) {

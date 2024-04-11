@@ -2,7 +2,7 @@
 pragma solidity ^0.8.15;
 
 import { Executable } from "../../common/Executable.sol";
-import { UseStorageSlot, StorageSlot, Write, Read } from "../../../libs/UseStorageSlot.sol";
+import { UseStorageSlot, StorageSlot, StorageSlot } from "../../../libs/UseStorageSlot.sol";
 import { ServiceRegistry } from "../../../core/ServiceRegistry.sol";
 import { IVariableDebtToken } from "../../../interfaces/aave/IVariableDebtToken.sol";
 import { IWETHGateway } from "../../../interfaces/aave/IWETHGateway.sol";
@@ -17,8 +17,8 @@ import { UseRegistry } from "../../../libs/UseRegistry.sol";
  * @notice Borrows token from AAVE's lending pool
  */
 contract AaveV3Borrow is Executable, UseStorageSlot, UseRegistry {
-  using Read for StorageSlot.TransactionStorage;
-  using Write for StorageSlot.TransactionStorage;
+  using StorageSlot for bytes32;
+
 
   constructor(address _registry) UseRegistry(ServiceRegistry(_registry)) {}
   
@@ -28,7 +28,7 @@ contract AaveV3Borrow is Executable, UseStorageSlot, UseRegistry {
   function execute(bytes calldata data, uint8[] memory paramsMap) external payable override {
     BorrowData memory borrow = parseInputs(data);
 
-    uint256 mappedBorrowAmount = store().readUint(
+    uint256 mappedBorrowAmount = storeInSlot("transaction").readUint(
       bytes32(borrow.amount),
       paramsMap[1]
     );
@@ -41,7 +41,7 @@ contract AaveV3Borrow is Executable, UseStorageSlot, UseRegistry {
       address(this)
     );
 
-    store().write(bytes32(mappedBorrowAmount));
+    storeInSlot("transaction").write(bytes32(mappedBorrowAmount));
   }
 
   function parseInputs(bytes memory _callData) public pure returns (BorrowData memory params) {

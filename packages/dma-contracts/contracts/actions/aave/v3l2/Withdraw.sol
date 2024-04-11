@@ -2,12 +2,13 @@
 pragma solidity ^0.8.15;
 
 import { Executable } from "../../common/Executable.sol";
-import { UseStore, Write } from "../../common/UseStore.sol";
+import { UseStorageSlot, StorageSlot } from "../../../libs/UseStorageSlot.sol";
 import { OperationStorage } from "../../../core/OperationStorage.sol";
 import { ILendingPool } from "../../../interfaces/aave/ILendingPool.sol";
 import { WithdrawData } from "../../../core/types/Aave.sol";
 import { AAVE_POOL, AAVE_L2_ENCODER } from "../../../core/constants/Aave.sol";
 import { IPoolV3 } from "../../../interfaces/aaveV3/IPoolV3.sol";
+import { IServiceRegistry } from "../../../interfaces/IServiceRegistry.sol";
 
 /**
  * @title Withdraw | AAVE V3 Action contract
@@ -21,10 +22,13 @@ interface IL2Encoder {
   function encodeWithdrawParams(address, uint256) external view returns (bytes32);
 }
 
-contract AaveV3L2Withdraw is Executable, UseStore {
-  using Write for OperationStorage;
+contract AaveV3L2Withdraw is Executable, UseStorageSlot {
+  using StorageSlot for bytes32;
+  IServiceRegistry public registry;
 
-  constructor(address _registry) UseStore(_registry) {}
+  constructor(address _registry) UseStorageSlot() {
+    registry = IServiceRegistry(_registry);
+  }
 
   /**
    * @param data Encoded calldata that conforms to the WithdrawData struct
@@ -41,7 +45,7 @@ contract AaveV3L2Withdraw is Executable, UseStore {
 
     // TODO: This must beresolved before prod. L2Pool.withdraw doesn't return the final amount being withdrawn
     // The value stored in the storage and the one used in the event MUST be changed!
-    store().write(bytes32(withdraw.amount));
+    storeInSlot("transaction").write(bytes32(withdraw.amount));
   }
 
   function parseInputs(bytes memory _callData) public pure returns (WithdrawData memory params) {

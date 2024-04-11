@@ -2,7 +2,7 @@
 pragma solidity >=0.8.5;
 
 import { Executable } from "../common/Executable.sol";
-import { UseStore, Read, Write } from "../common/UseStore.sol";
+import { UseStorageSlot, StorageSlot } from "../../libs/UseStorageSlot.sol";
 import { OperationStorage } from "../../core/OperationStorage.sol";
 import { SafeERC20, IERC20 } from "../../libs/SafeERC20.sol";
 import { IVat } from "../../interfaces/maker/IVat.sol";
@@ -13,12 +13,14 @@ import { SafeMath } from "../../libs/SafeMath.sol";
 import { PaybackData } from "../../core/types/Maker.sol";
 import { MathUtils } from "../../libs/MathUtils.sol";
 import { MCD_MANAGER, MCD_JOIN_DAI } from "../../core/constants/Maker.sol";
+import { IServiceRegistry } from "../../interfaces/IServiceRegistry.sol";
 
-contract MakerPayback is Executable, UseStore {
+contract MakerPayback is Executable, UseStorageSlot {
   using SafeMath for uint256;
   using SafeERC20 for IERC20;
-  using Read for OperationStorage;
-  using Write for OperationStorage;
+  using StorageSlot for bytes32;
+
+  IServiceRegistry public registry;
 
   struct WipeData {
     IVat vat;
@@ -28,12 +30,14 @@ contract MakerPayback is Executable, UseStore {
     bytes32 ilk;
   }
 
-  constructor(address _registry) UseStore(_registry) {}
+  constructor(address _registry) UseStorageSlot() {
+    registry = IServiceRegistry(_registry);
+  }
 
   function execute(bytes calldata data, uint8[] memory paramsMap) external payable override {
     PaybackData memory paybackData = parseInputs(data);
     paybackData.vaultId = uint256(
-      store().read(bytes32(paybackData.vaultId), paramsMap[0], address(this))
+      storeInSlot("transaction").read(bytes32(paybackData.vaultId), paramsMap[0])
     );
     IManager manager = IManager(registry.getRegisteredService(MCD_MANAGER));
     IDaiJoin daiJoin = IDaiJoin(registry.getRegisteredService(MCD_JOIN_DAI));
@@ -41,7 +45,7 @@ contract MakerPayback is Executable, UseStore {
       ? _paybackAll(manager, daiJoin, paybackData)
       : _payback(manager, daiJoin, paybackData);
 
-    store().write(bytes32(amountPaidBack));
+    storeInSlot("transaction").write(bytes32(amountPaidBack));
   }
 
   function _payback(
