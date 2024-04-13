@@ -34,7 +34,6 @@ export async function getSwapDataForCloseToCollateral({
   debtPrice,
   outstandingDebt,
   slippage,
-  ETHAddress,
   getSwapData,
   __feeOverride,
 }: GetSwapDataToCloseToCollateralArgs) {
