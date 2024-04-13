@@ -11,7 +11,6 @@ import {
   getAaveBorrowV2OperationDefinition,
   getAaveBorrowV3OperationDefinition,
   getAaveCloseV2OperationDefinition,
-  getAaveCloseV3OperationDefinition,
   getAaveDepositBorrowV2OperationDefinition,
   getAaveDepositBorrowV3OperationDefinition,
   getAaveDepositV2OperationDefinition,
@@ -43,57 +42,42 @@ import {
   getSparkDepositOperationDefinition,
   getSparkOpenDepositBorrowOperationDefinition,
   getSparkOpenOperationDefinition,
-  getSparkPaybackWithdrawOperationDefinition,
-} from '@deploy-configurations/operation-definitions'
-import {
-  ContractProps,
-  DeployedSystem,
-  System,
-  SystemTemplate,
-} from '@deploy-configurations/types/deployed-system'
+  getSparkPaybackWithdrawOperationDefinition
+} from "@deploy-configurations/operation-definitions";
+import { ContractProps, DeployedSystem, System, SystemTemplate } from "@deploy-configurations/types/deployed-system";
 import {
   ConfigEntry,
   SystemConfig,
   SystemConfigEntry,
-  SystemContracts,
-} from '@deploy-configurations/types/deployment-config'
-import { EtherscanGasPrice } from '@deploy-configurations/types/etherscan'
-import { Network } from '@deploy-configurations/types/network'
-import { NetworkByChainId } from '@deploy-configurations/utils/network/index'
-import { OperationsRegistry, ServiceRegistry } from '@deploy-configurations/utils/wrappers/index'
-import { loadContractNames } from '@dma-contracts/../deploy-configurations/constants'
-import { RecursivePartial } from '@dma-contracts/utils/recursive-partial'
-import Safe from '@safe-global/safe-core-sdk'
-import { SafeTransactionDataPartial } from '@safe-global/safe-core-sdk-types'
-import EthersAdapter from '@safe-global/safe-ethers-lib'
-import SafeServiceClient from '@safe-global/safe-service-client'
-import axios from 'axios'
-import BigNumber from 'bignumber.js'
-import {
-  BigNumber as EthersBN,
-  constants,
-  Contract,
-  ContractFactory,
-  ethers,
-  providers,
-  Signer,
-  utils,
-} from 'ethers'
-import { HardhatRuntimeEnvironment } from 'hardhat/types'
-import _ from 'lodash'
-import NodeCache from 'node-cache'
-import * as path from 'path'
-import prompts from 'prompts'
-import { inspect } from 'util'
+  SystemContracts
+} from "@deploy-configurations/types/deployment-config";
+import { EtherscanGasPrice } from "@deploy-configurations/types/etherscan";
+import { Network } from "@deploy-configurations/types/network";
+import { NetworkByChainId } from "@deploy-configurations/utils/network/index";
+import { OperationsRegistry, ServiceRegistry } from "@deploy-configurations/utils/wrappers/index";
+import { loadContractNames } from "@dma-contracts/../deploy-configurations/constants";
+import { RecursivePartial } from "@dma-contracts/utils/recursive-partial";
+import Safe from "@safe-global/safe-core-sdk";
+import { SafeTransactionDataPartial } from "@safe-global/safe-core-sdk-types";
+import EthersAdapter from "@safe-global/safe-ethers-lib";
+import SafeServiceClient from "@safe-global/safe-service-client";
+import axios from "axios";
+import BigNumber from "bignumber.js";
+import { BigNumber as EthersBN, constants, Contract, ContractFactory, ethers, providers, Signer, utils } from "ethers";
+import { HardhatRuntimeEnvironment } from "hardhat/types";
+import _ from "lodash";
+import NodeCache from "node-cache";
+import * as path from "path";
+import prompts from "prompts";
+import { inspect } from "util";
 
-const restrictedNetworks = [Network.MAINNET, Network.OPTIMISM, Network.GOERLI]
+const restrictedNetworks = [Network.MAINNET, Network.OPTIMISM, Network.BASE, Network.GOERLI]
 
 const rpcUrls: any = {
   [Network.MAINNET]: 'https://eth-mainnet.alchemyapi.io/v2/TPEGdU79CfRDkqQ4RoOCTRzUX4GUAO44',
   [Network.OPTIMISM]: 'https://opt-mainnet.g.alchemy.com/v2/d2-w3caSVd_wPT05UkXyA3kr3un3Wx_g',
   [Network.ARBITRUM]: 'https://arb-mainnet.g.alchemy.com/v2/d2-w3caSVd_wPT05UkXyA3kr3un3Wx_g',
-  // [Network.ARBITRUM]: 'https://rpc.tenderly.co/fork/6c093119-48df-4c2b-ab74-c51da8885ce5',
-  [Network.BASE]: 'https://base-mainnet.g.alchemy.com/v2/d2-w3caSVd_wPT05UkXyA3kr3un3Wx_g',
+  [Network.BASE]: 'https://base-mainnet.g.alchemy.com/v2/u1r6F2lU2lAtudnuMLzXheVwFiLAM9X5',
   [Network.GOERLI]: 'https://eth-goerli.alchemyapi.io/v2/TPEGdU79CfRDkqQ4RoOCTRzUX4GUAO44',
 }
 
@@ -129,8 +113,8 @@ abstract class DeployedSystemHelpers {
   async getForkedNetworkChainId(provider: providers.JsonRpcProvider) {
     try {
       return (await provider.getNetwork()).chainId
-      const metadata = await provider.send('hardhat_metadata', [])
-      return metadata.forkedNetwork.chainId
+      // const metadata = await provider.send('hardhat_metadata', [])
+      // return metadata.forkedNetwork.chainId
     } catch (e) {
       console.log('\x1b[33m[ WARN ] Current network is not a fork! \x1b[0m')
     }
@@ -174,9 +158,13 @@ abstract class DeployedSystemHelpers {
     this.signer = this.provider.getSigner()
 
     this.signerAddress = await this.signer.getAddress()
+    console.log('signerAddress', this.signerAddress)
     this.isRestrictedNetwork = restrictedNetworks.includes(this.network)
+
     this.chainId = await this.getForkedNetworkChainId(this.provider)
+    console.log('this.chainId', this.chainId)
     this.forkedNetwork = this.getNetworkFromChainId(this.chainId)
+    console.log('this.forkedNetwork', this.forkedNetwork)
 
     this.rpcUrl = this.getRpcUrl(this.forkedNetwork)
     this.log('RPC URL', this.rpcUrl)
@@ -498,6 +486,7 @@ export class DeploymentSystem extends DeployedSystemHelpers {
       this.network === Network.MAINNET ||
       this.network === Network.ARBITRUM ||
       this.network === Network.GOERLI ||
+      this.network === Network.BASE ||
       this.network === Network.OPTIMISM
     ) {
       await this.verifyContract(contract.address, constructorArguments)
@@ -674,7 +663,7 @@ export class DeploymentSystem extends DeployedSystemHelpers {
         this.ethers.getContractFactory(configItem.name as string, this.signer),
         constructorParams,
       )
-      //
+
       // // Note: Useful for verifying contracts retrospectively. Comment out the lines above
       // const contractInstance = await this.ethers.getContractAt(configItem.name, configItem.address)
 
@@ -909,10 +898,10 @@ export class DeploymentSystem extends DeployedSystemHelpers {
       getAaveOpenV3OperationDefinition(network).name,
       getAaveOpenV3OperationDefinition(network).actions,
     )
-    await operationsRegistry.addOp(
-      getAaveCloseV3OperationDefinition(network).name,
-      getAaveCloseV3OperationDefinition(network).actions,
-    )
+    // await operationsRegistry.addOp(
+    //   getAaveCloseV3OperationDefinition(network).name,
+    //   getAaveCloseV3OperationDefinition(network).actions,
+    // )
     await operationsRegistry.addOp(
       getAaveAdjustDownV3OperationDefinition(network).name,
       getAaveAdjustDownV3OperationDefinition(network).actions,
