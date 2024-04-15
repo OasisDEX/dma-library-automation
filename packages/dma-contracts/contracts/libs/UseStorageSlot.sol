@@ -31,7 +31,9 @@ library StorageSlot {
     assembly {
       length := tload(lengthKey)
     }
+
     bytes32[] memory values = new bytes32[](length);
+
     for (uint256 i = 0; i < length; i++) {
       bytes32 key = _getKey(slotPosition, i);
       assembly {
@@ -40,11 +42,12 @@ library StorageSlot {
         mstore(add(values, add(0x20, mul(i, 0x20))), loadedValue)
       }
     }
+
     return values;
   }
 
   /**
-   * @dev Pusdhes the value to the array stored in slotPosition.
+   * @dev Pushes the value to the array stored in slotPosition.
    * @param slotPosition The position of the storage slot, where the array is stored.
    * @param value The value to be pushed to the array.
    * @notice This function updates the length of the storage slot by incrementing it by 1.

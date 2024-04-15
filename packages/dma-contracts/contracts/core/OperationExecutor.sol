@@ -14,7 +14,6 @@ import { IFlashLoanRecipient } from "../interfaces/flashloan/balancer/IFlashLoan
 import { SafeERC20, IERC20 } from "../libs/SafeERC20.sol";
 import { FlashloanData, Call } from "./types/Common.sol";
 import { MCD_FLASH } from "../core/constants/Maker.sol";
-import { console } from "hardhat/console.sol";
 
 error UntrustedLender(address lender);
 error InconsistentAsset(address flashloaned, address required);

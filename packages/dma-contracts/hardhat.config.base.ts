@@ -6,6 +6,7 @@ import 'hardhat-gas-reporter'
 import '@typechain/hardhat'
 import 'solidity-coverage'
 import 'solidity-docgen'
+// TODO: Uncomment when hardhat-tracer is fixed -> version conflict between hh packages (uninitilized provider error)
 // import 'hardhat-tracer'
 import 'hardhat-abi-exporter'
 
@@ -56,6 +57,15 @@ const config = {
       },
       {
         version: '0.5.17',
+        settings: {
+          optimizer: {
+            enabled: true,
+            runs: 0,
+          },
+        },
+      },
+      {
+        version: '0.8.15',
         settings: {
           optimizer: {
             enabled: true,
