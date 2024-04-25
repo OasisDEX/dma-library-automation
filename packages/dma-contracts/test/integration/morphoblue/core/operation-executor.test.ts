@@ -219,9 +219,11 @@ describe('OperationExecutorFL', async function () {
 
     const operationNameBytes32 = ethers.utils.formatBytes32String('CUSTOM_OPERATION2')
 
-    const tx = await system.opExecTester.execute(system.operationExecutor.address, system.operationExecutor.interface.encodeFunctionData('executeOp', [
-      dummyOperation,
-    ]), operationNameBytes32)
+    const tx = await system.opExecTester.execute(
+      system.operationExecutor.address,
+      system.operationExecutor.interface.encodeFunctionData('executeOp', [dummyOperation]),
+      operationNameBytes32,
+    )
     const res = await tx.wait()
 
     expect(res.status).to.be.eq(1)
@@ -236,14 +238,14 @@ describe('OperationExecutorFL', async function () {
     const operationNameBytes32 = ethers.utils.formatBytes32String('CUSTOM_OPERATION3')
 
     try {
-      await system.opExecTester.execute(system.operationExecutor.address, system.operationExecutor.interface.encodeFunctionData('executeOp', [
-        dummyOperation,
-      ]), operationNameBytes32)
-
+      await system.opExecTester.execute(
+        system.operationExecutor.address,
+        system.operationExecutor.interface.encodeFunctionData('executeOp', [dummyOperation]),
+        operationNameBytes32,
+      )
     } catch (e: any) {
       expect(e.reason.includes('OpExecTester: opName mismatch')).to.be.true
     }
-
   })
 
   it('should fail because of non-existent operation', async () => {

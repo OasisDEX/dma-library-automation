@@ -1,4 +1,10 @@
 // Borrow
+// Auto
+import { type AaveV3WithdrawOperation, withdraw as aaveV3Withdraw } from './auto/withdraw'
+import {
+  type AaveV3WithdrawToDebtOperation,
+  withdrawToDebt as aaveV3WithdrawToDebt,
+} from './auto/withdraw-to-debt'
 import { AaveV2BorrowOperation, borrow as aaveV2Borrow } from './borrow/v2/borrow'
 import { AaveV2DepositOperation, deposit as aaveV2Deposit } from './borrow/v2/deposit'
 import {
@@ -48,12 +54,6 @@ import {
 } from './multiply/v3/adjust-risk-up'
 import { AaveV3CloseOperation, close as aaveV3Close } from './multiply/v3/close'
 import { AaveV3OpenOperation, open as aaveV3Open } from './multiply/v3/open'
-// Auto
-import { type AaveV3WithdrawOperation, withdraw as aaveV3Withdraw } from './auto/withdraw'
-import {
-  type AaveV3WithdrawToDebtOperation,
-  withdrawToDebt as aaveV3WithdrawToDebt,
-} from './auto/withdraw-to-debt'
 
 const borrow = {
   v2: {
