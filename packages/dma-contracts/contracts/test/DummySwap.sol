@@ -3,7 +3,7 @@ pragma solidity ^0.8.15;
 // TODO: Remove this for prod deploy
 
 import "../actions/common/Executable.sol";
-import { UseStore, Read, Write } from "../actions/common/UseStore.sol";
+import { UseStorageSlot, StorageSlot } from "../libs/UseStorageSlot.sol";
 import { OperationStorage } from "../core/OperationStorage.sol";
 import "../interfaces/tokens/IERC20.sol";
 import "../core/ServiceRegistry.sol";
@@ -13,19 +13,14 @@ import "../core/OperationStorage.sol";
 import { SafeMath } from "../libs/SafeMath.sol";
 import { SwapData } from "../core/types/Common.sol";
 
-contract DummySwap is Executable, UseStore {
+contract DummySwap is Executable, UseStorageSlot {
   using SafeMath for uint256;
-  using Write for OperationStorage;
-  using Read for OperationStorage;
+  using StorageSlot for bytes32;
 
   IWETH private immutable WETH;
   address private immutable exchange;
 
-  constructor(
-    ServiceRegistry _registry,
-    IWETH _weth,
-    address _exchange
-  ) UseStore(address(_registry)) {
+  constructor(ServiceRegistry _registry, IWETH _weth, address _exchange) UseStorageSlot() {
     WETH = _weth;
     exchange = _exchange;
   }
@@ -52,6 +47,6 @@ contract DummySwap is Executable, UseStore {
 
     require(amountBought >= swap.receiveAtLeast, "Exchange / Received less");
 
-    store().write(bytes32(amountBought));
+    storeInSlot("transaction").write(bytes32(amountBought));
   }
 }

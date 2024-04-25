@@ -6,7 +6,8 @@ import 'hardhat-gas-reporter'
 import '@typechain/hardhat'
 import 'solidity-coverage'
 import 'solidity-docgen'
-import 'hardhat-tracer'
+// TODO: Uncomment when hardhat-tracer is fixed -> version conflict between hh packages (uninitilized provider error)
+// import 'hardhat-tracer'
 import 'hardhat-abi-exporter'
 
 import { Network } from '@deploy-configurations/types/network'
@@ -64,6 +65,15 @@ const config = {
         },
       },
       {
+        version: '0.8.15',
+        settings: {
+          optimizer: {
+            enabled: true,
+            runs: 0,
+          },
+        },
+      },
+      {
         version: '0.8.18',
         settings: {
           optimizer: {
@@ -82,8 +92,9 @@ const config = {
         },
       },
       {
-        version: '0.8.15',
+        version: '0.8.24',
         settings: {
+          evmVersion: 'cancun',
           optimizer: {
             enabled: true,
             runs: 0,
@@ -187,7 +198,7 @@ const config = {
         auto: true,
         interval: 2000,
       },
-      hardfork: 'london',
+      hardfork: 'cancun',
       gas: 'auto',
       initialBaseFeePerGas: 1000000000,
       allowUnlimitedContractSize: true,

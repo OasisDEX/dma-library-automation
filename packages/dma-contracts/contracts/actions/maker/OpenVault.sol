@@ -2,22 +2,26 @@
 pragma solidity >=0.8.5;
 
 import { Executable } from "../common/Executable.sol";
-import { UseStore, Write } from "../common/UseStore.sol";
+import { UseStorageSlot, StorageSlot } from "../../libs/UseStorageSlot.sol";
 import { IManager } from "../../interfaces/maker/IManager.sol";
 import { OperationStorage } from "../../core/OperationStorage.sol";
 import { OpenVaultData } from "../../core/types/Maker.sol";
 import { MCD_MANAGER } from "../../core/constants/Maker.sol";
+import { IServiceRegistry } from "../../interfaces/IServiceRegistry.sol";
 
-contract MakerOpenVault is Executable, UseStore {
-  using Write for OperationStorage;
+contract MakerOpenVault is Executable, UseStorageSlot {
+  using StorageSlot for bytes32;
+  IServiceRegistry public registry;
 
-  constructor(address _registry) UseStore(_registry) {}
+  constructor(address _registry) UseStorageSlot() {
+    registry = IServiceRegistry(_registry);
+  }
 
   function execute(bytes calldata data, uint8[] memory) external payable override {
     OpenVaultData memory openVaultData = parseInputs(data);
 
     uint256 vaultId = _openVault(openVaultData);
-    store().write(bytes32(vaultId));
+    storeInSlot("transaction").write(bytes32(vaultId));
   }
 
   function _openVault(OpenVaultData memory data) internal returns (uint256) {

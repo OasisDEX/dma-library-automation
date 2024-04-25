@@ -2,7 +2,7 @@
 pragma solidity ^0.8.15;
 
 import { Executable } from "../common/Executable.sol";
-import { UseStorageSlot, StorageSlot, Write, Read } from "../../libs/UseStorageSlot.sol";
+import { UseStorageSlot, StorageSlot, StorageSlot } from "../../libs/UseStorageSlot.sol";
 import { WithdrawData } from "../../core/types/Spark.sol";
 import { SPARK_LENDING_POOL } from "../../core/constants/Spark.sol";
 import { IPool } from "../../interfaces/spark/IPool.sol";
@@ -14,7 +14,7 @@ import { UseRegistry } from "../../libs/UseRegistry.sol";
  * @notice Withdraw collateral from Spark's lending pool
  */
 contract SparkWithdraw is Executable, UseStorageSlot, UseRegistry {
-  using Write for StorageSlot.TransactionStorage;
+  using StorageSlot for bytes32;
 
   constructor(address _registry) UseRegistry(ServiceRegistry(_registry)) {}
 
@@ -30,7 +30,7 @@ contract SparkWithdraw is Executable, UseStorageSlot, UseRegistry {
       withdraw.to
     );
 
-    store().write(bytes32(amountWithdrawn));
+    storeInSlot("transaction").write(bytes32(amountWithdrawn));
   }
 
   function parseInputs(bytes memory _callData) public pure returns (WithdrawData memory params) {

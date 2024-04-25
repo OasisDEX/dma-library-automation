@@ -4,7 +4,7 @@ pragma solidity ^0.8.15;
 import { Executable } from "../common/Executable.sol";
 import { SafeERC20, IERC20 } from "../../libs/SafeERC20.sol";
 import { SendTokenData } from "../../core/types/Common.sol";
-import { UseStorageSlot, StorageSlot, Write, Read } from "../../libs/UseStorageSlot.sol";
+import { UseStorageSlot, StorageSlot, StorageSlot } from "../../libs/UseStorageSlot.sol";
 import { ServiceRegistry } from "../../core/ServiceRegistry.sol";
 import { ETH } from "../../core/constants/Common.sol";
 import { UseRegistry } from "../../libs/UseRegistry.sol";
@@ -16,7 +16,7 @@ import { UseRegistry } from "../../libs/UseRegistry.sol";
  */
 contract SendTokenAuto is Executable, UseStorageSlot, UseRegistry {
   using SafeERC20 for IERC20;
-  using Read for StorageSlot.TransactionStorage;
+  using StorageSlot for bytes32;
 
   constructor(address _registry) UseRegistry(ServiceRegistry(_registry)) {}
   
@@ -26,7 +26,7 @@ contract SendTokenAuto is Executable, UseStorageSlot, UseRegistry {
   function execute(bytes calldata data, uint8[] memory paramsMap) external payable override {
     SendTokenData memory send = parseInputs(data);
     // Note: bytes32(0) indicates no amount passed as an arg in calldata can be used
-    send.amount = store().readUint(bytes32(0), paramsMap[2]);
+    send.amount = storeInSlot("transaction").readUint(bytes32(0), paramsMap[2]);
 
     if (send.asset != ETH) {
       if (send.amount == type(uint256).max) {

@@ -65,26 +65,6 @@ contract OperationStorage {
   }
 
   /**
-   * @param actionHash Checks the current action has against the expected action hash
-   */
-  function verifyAction(bytes32 actionHash, bool skipped) external {
-    if (skipped) {
-      require(optionals[action], "Action cannot be skipped");
-    }
-    require(actions[action] == actionHash, "incorrect-action");
-    registry.getServiceAddress(actionHash);
-    action++;
-  }
-
-  /**
-   * @dev Custom operations have no Actions stored in Operation Registry
-   * @return Returns true / false depending on whether the Operation has any actions to verify the Operation against
-   */
-  function hasActionsToVerify() external view returns (bool) {
-    return actions.length > 0;
-  }
-
-  /**
    * @param value Pushes a bytes32 to end of the returnValues array
    */
   function push(bytes32 value) external {

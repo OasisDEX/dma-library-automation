@@ -4,17 +4,16 @@ pragma solidity ^0.8.15;
 import { Executable } from "../actions/common/Executable.sol";
 import { SafeERC20, IERC20 } from "../libs/SafeERC20.sol";
 import { SetApprovalData } from "../core/types/Common.sol";
-import { UseStore, Read, Write } from "../actions/common/UseStore.sol";
+import { UseStorageSlot, StorageSlot } from "../libs/UseStorageSlot.sol";
 import { OperationStorage } from "../core/OperationStorage.sol";
 
-contract DummyOptionalAction is Executable, UseStore {
+contract DummyOptionalAction is Executable, UseStorageSlot {
   using SafeERC20 for IERC20;
-  using Read for OperationStorage;
-  using Write for OperationStorage;
+  using StorageSlot for bytes32;
 
   event DummyOptionalActionEvent(address sender);
 
-  constructor(address _registry) UseStore(_registry) {}
+  constructor(address _registry) UseStorageSlot() {}
 
   function execute(bytes calldata, uint8[] memory) external payable override {
     emit DummyOptionalActionEvent(msg.sender);

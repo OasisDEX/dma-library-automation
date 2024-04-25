@@ -2,7 +2,7 @@
 pragma solidity ^0.8.15;
 
 import { Executable } from "../../common/Executable.sol";
-import { UseStorageSlot, StorageSlot, Write } from "../../../libs/UseStorageSlot.sol";
+import { UseStorageSlot, StorageSlot, StorageSlot } from "../../../libs/UseStorageSlot.sol";
 import { ServiceRegistry } from "../../../core/ServiceRegistry.sol";
 import { IVariableDebtToken } from "../../../interfaces/aave/IVariableDebtToken.sol";
 import { IWETHGateway } from "../../../interfaces/aave/IWETHGateway.sol";
@@ -18,7 +18,7 @@ import { UseRegistry } from "../../../libs/UseRegistry.sol";
  * @notice Sets the user's eMode on AAVE's lending pool
  */
 contract AaveV3SetEMode is Executable, UseStorageSlot, UseRegistry {
-  using Write for StorageSlot.TransactionStorage;
+  using StorageSlot for bytes32;
 
 
   constructor(address _registry) UseRegistry(ServiceRegistry(_registry)) {}
@@ -31,7 +31,7 @@ contract AaveV3SetEMode is Executable, UseStorageSlot, UseRegistry {
 
     IPoolV3(getRegisteredService(AAVE_POOL)).setUserEMode(emode.categoryId);
 
-    store().write(bytes32(uint256(emode.categoryId)));
+    storeInSlot("transaction").write(bytes32(uint256(emode.categoryId)));
   }
 
   function parseInputs(bytes memory _callData) public pure returns (SetEModeData memory params) {

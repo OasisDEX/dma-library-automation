@@ -2,20 +2,24 @@
 pragma solidity ^0.8.15;
 
 import { Executable } from "../common/Executable.sol";
-import { UseStore, Write } from "../common/UseStore.sol";
+import { UseStorageSlot, StorageSlot } from "../../libs/UseStorageSlot.sol";
 import { OperationStorage } from "../../core/OperationStorage.sol";
 import { WithdrawData } from "../../core/types/MorphoBlue.sol";
 import { MORPHO_BLUE } from "../../core/constants/MorphoBlue.sol";
 import { IMorpho } from "../../interfaces/morpho-blue/IMorpho.sol";
+import { IServiceRegistry } from "../../interfaces/IServiceRegistry.sol";
 
 /**
  * @title Withdraw | MorphoBlue Action contract
  * @notice Withdraw collateral from Morpho Blue's lending pool
  */
-contract MorphoBlueWithdraw is Executable, UseStore {
-  using Write for OperationStorage;
+contract MorphoBlueWithdraw is Executable, UseStorageSlot {
+  using StorageSlot for bytes32;
+  IServiceRegistry public registry;
 
-  constructor(address _registry) UseStore(_registry) {}
+  constructor(address _registry) UseStorageSlot() {
+    registry = IServiceRegistry(_registry);
+  }
 
   /**
    * @param data Encoded calldata that conforms to the WithdrawData struct
@@ -31,7 +35,7 @@ contract MorphoBlueWithdraw is Executable, UseStore {
       withdrawData.to
     );
 
-    store().write(bytes32(withdrawData.amount));
+    storeInSlot("transaction").write(bytes32(withdrawData.amount));
   }
 
   function parseInputs(bytes memory _callData) public pure returns (WithdrawData memory params) {

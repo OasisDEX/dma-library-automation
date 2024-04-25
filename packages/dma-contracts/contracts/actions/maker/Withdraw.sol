@@ -2,7 +2,7 @@
 pragma solidity >=0.8.5;
 
 import { Executable } from "../common/Executable.sol";
-import { UseStore, Read, Write } from "../common/UseStore.sol";
+import { UseStorageSlot, StorageSlot } from "../../libs/UseStorageSlot.sol";
 import { OperationStorage } from "../../core/OperationStorage.sol";
 import { MathUtils } from "../../libs/MathUtils.sol";
 import { WithdrawData } from "../../core/types/Maker.sol";
@@ -10,23 +10,26 @@ import { IManager } from "../../interfaces/maker/IManager.sol";
 import { IWETH } from "../../interfaces/tokens/IWETH.sol";
 import { MCD_MANAGER } from "../../core/constants/Maker.sol";
 import { WETH } from "../../core/constants/Common.sol";
+import { IServiceRegistry } from "../../interfaces/IServiceRegistry.sol";
 
-contract MakerWithdraw is Executable, UseStore {
-  using Read for OperationStorage;
-  using Write for OperationStorage;
+contract MakerWithdraw is Executable, UseStorageSlot {
+  using StorageSlot for bytes32;
 
-  constructor(address _registry) UseStore(_registry) {}
+  IServiceRegistry public registry;
+
+  constructor(address _registry) UseStorageSlot() {
+    registry = IServiceRegistry(_registry);
+  }
 
   function execute(bytes calldata data, uint8[] memory paramsMap) external payable override {
     WithdrawData memory withdrawData = parseInputs(data);
-    withdrawData.vaultId = store().readUint(
+    withdrawData.vaultId = storeInSlot("transaction").readUint(
       bytes32(withdrawData.vaultId),
-      paramsMap[0],
-      address(this)
+      paramsMap[0]
     );
 
     uint256 amountWithdrawn = _withdraw(withdrawData);
-    store().write(bytes32(amountWithdrawn));
+    storeInSlot("transaction").write(bytes32(amountWithdrawn));
   }
 
   function _withdraw(WithdrawData memory data) internal returns (uint256) {

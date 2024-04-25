@@ -4,7 +4,7 @@ pragma solidity ^0.8.15;
 import { Executable } from "../common/Executable.sol";
 import { IERC20 } from "../../libs/SafeERC20.sol";
 import { TokenBalanceData } from "../../core/types/Common.sol";
-import { UseStorageSlot, StorageSlot, Write, Read } from "../../libs/UseStorageSlot.sol";
+import { UseStorageSlot, StorageSlot, StorageSlot } from "../../libs/UseStorageSlot.sol";
 import { ServiceRegistry } from "../../core/ServiceRegistry.sol";
 import { UseRegistry } from "../../libs/UseRegistry.sol";
 
@@ -13,7 +13,7 @@ import { UseRegistry } from "../../libs/UseRegistry.sol";
  * @notice Reads balance of a token for a given address
  */
 contract TokenBalance is Executable, UseStorageSlot, UseRegistry {
-  using Write for StorageSlot.TransactionStorage;
+  using StorageSlot for bytes32;
 
   constructor(address _registry) UseRegistry(ServiceRegistry(_registry)) {}
 
@@ -27,7 +27,7 @@ contract TokenBalance is Executable, UseStorageSlot, UseRegistry {
 
     uint256 balance = IERC20(read.asset).balanceOf(read.owner);
 
-    store().write(bytes32(balance));
+    storeInSlot("transaction").write(bytes32(balance));
   }
 
   function parseInputs(

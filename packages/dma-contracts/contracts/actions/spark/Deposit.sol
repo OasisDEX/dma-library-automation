@@ -2,7 +2,7 @@
 pragma solidity ^0.8.15;
 
 import { Executable } from "../common/Executable.sol";
-import { UseStorageSlot, StorageSlot, Write, Read } from "../../libs/UseStorageSlot.sol";
+import { UseStorageSlot, StorageSlot, StorageSlot } from "../../libs/UseStorageSlot.sol";
 import { DepositData } from "../../core/types/Spark.sol";
 import { SPARK_LENDING_POOL } from "../../core/constants/Spark.sol";
 import { IPool } from "../../interfaces/spark/IPool.sol";
@@ -15,8 +15,8 @@ import { SafeMath } from "../../libs/SafeMath.sol";
  * @notice Deposits the specified asset as collateral to Spark's lending pool
  */
 contract SparkDeposit is Executable, UseStorageSlot, UseRegistry {
-  using Read for StorageSlot.TransactionStorage;
-  using Write for StorageSlot.TransactionStorage;
+  using StorageSlot for bytes32;
+
   using SafeMath for uint256;
 
   constructor(address _registry) UseRegistry(ServiceRegistry(_registry)) {}
@@ -29,7 +29,7 @@ contract SparkDeposit is Executable, UseStorageSlot, UseRegistry {
   function execute(bytes calldata data, uint8[] memory paramsMap) external payable override {
     DepositData memory deposit = parseInputs(data);
 
-    uint256 mappedDepositAmount = store().readUint(
+    uint256 mappedDepositAmount = storeInSlot("transaction").readUint(
       bytes32(deposit.amount),
       paramsMap[1]
     );
@@ -52,7 +52,7 @@ contract SparkDeposit is Executable, UseStorageSlot, UseRegistry {
       );
     }
 
-    store().write(bytes32(actualDepositAmount));
+    storeInSlot("transaction").write(bytes32(actualDepositAmount));
   }
 
   function parseInputs(bytes memory _callData) public pure returns (DepositData memory params) {

@@ -5,7 +5,7 @@ import { Executable } from "../common/Executable.sol";
 import { WithdrawData } from "../../core/types/Spark.sol";
 import { SPARK_LENDING_POOL } from "../../core/constants/Spark.sol";
 import { IPool } from "../../interfaces/spark/IPool.sol";
-import { UseStorageSlot, StorageSlot, Write, Read } from "../../libs/UseStorageSlot.sol";
+import { UseStorageSlot, StorageSlot, StorageSlot } from "../../libs/UseStorageSlot.sol";
 import { UseRegistry } from "../../libs/UseRegistry.sol";
 import { ServiceRegistry } from "../../core/ServiceRegistry.sol";
 
@@ -15,8 +15,8 @@ import { ServiceRegistry } from "../../core/ServiceRegistry.sol";
  * with the amount to withdraw being read from an OperationStorage slot
  */
 contract SparkWithdrawAuto is Executable, UseStorageSlot, UseRegistry {
-  using Write for StorageSlot.TransactionStorage;
-  using Read for StorageSlot.TransactionStorage;
+  using StorageSlot for bytes32;
+
 
   constructor(address _registry) UseRegistry(ServiceRegistry(_registry)) {}
 
@@ -26,7 +26,7 @@ contract SparkWithdrawAuto is Executable, UseStorageSlot, UseRegistry {
   function execute(bytes calldata data, uint8[] memory paramsMap) external payable override {
     WithdrawData memory withdraw = parseInputs(data);
     
-    uint256 mappedWithdrawAmount = store().readUint(
+    uint256 mappedWithdrawAmount = storeInSlot("transaction").readUint(
       bytes32(0),
       paramsMap[0]
     );    
@@ -37,7 +37,7 @@ contract SparkWithdrawAuto is Executable, UseStorageSlot, UseRegistry {
       withdraw.to
     );
 
-    store().write(bytes32(amountWithdrawn));
+    storeInSlot("transaction").write(bytes32(amountWithdrawn));
   }
 
   function parseInputs(bytes memory _callData) public pure returns (WithdrawData memory params) {

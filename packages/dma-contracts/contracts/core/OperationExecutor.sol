@@ -4,7 +4,7 @@ pragma solidity ^0.8.15;
 import { OperationsRegistry } from "./OperationsRegistry.sol";
 import { ServiceRegistry } from "../core/ServiceRegistry.sol";
 import { ChainLogView } from "../core/views/ChainLogView.sol";
-import { StorageSlot } from "../libs/UseStorageSlot.sol";
+import { StorageSlot, UseStorageSlot } from "../libs/UseStorageSlot.sol";
 import { ActionAddress } from "../libs/ActionAddress.sol";
 import { TakeFlashloan } from "../actions/common/TakeFlashloan.sol";
 import { Executable } from "../actions/common/Executable.sol";
@@ -32,9 +32,10 @@ interface IProxy {
  * Also it acts as a flashloan recipient
  */
 
-contract OperationExecutor is IERC3156FlashBorrower, IFlashLoanRecipient {
+contract OperationExecutor is IERC3156FlashBorrower, IFlashLoanRecipient, UseStorageSlot {
   using ActionAddress for address;
   using SafeERC20 for IERC20;
+  using StorageSlot for bytes32;
 
   ServiceRegistry immutable REGISTRY;
   OperationsRegistry immutable OPERATIONS_REGISTRY;
@@ -84,31 +85,21 @@ contract OperationExecutor is IERC3156FlashBorrower, IFlashLoanRecipient {
    * @param calls List of action calls to be executed.
    */
   function executeOp(Call[] memory calls) public payable returns (bytes32) {
-    
-    StorageSlot.TransactionStorage storage txStorage = StorageSlot.getTransactionStorage();
-    
-    delete txStorage.actions;
-    delete txStorage.returnedValues;
-
     aggregate(calls);
 
-    bytes32 operationName = getOperation(keccak256(abi.encodePacked(txStorage.actions)));
-    
-    emit Operation(operationName, calls);
+    bytes32[] memory actions = storeInSlot("actions").returnStoredArray();
+    bytes32 operationName = getOperation(keccak256(abi.encodePacked(actions)));
 
-    delete txStorage.actions;
-    delete txStorage.returnedValues;
+    emit Operation(operationName, calls);
 
     return operationName;
   }
 
   function aggregate(Call[] memory calls) internal {
-    StorageSlot.TransactionStorage storage txStorage = StorageSlot.getTransactionStorage();
-
     for (uint256 current = 0; current < calls.length; current++) {
       bytes32 targetHash = calls[current].targetHash;
       address target = REGISTRY.getServiceAddress(targetHash);
-      txStorage.actions.push(targetHash);
+      storeInSlot("actions").write(targetHash);
       target.execute(calls[current].callData);
     }
   }
@@ -182,13 +173,9 @@ contract OperationExecutor is IERC3156FlashBorrower, IFlashLoanRecipient {
     uint256[] memory feeAmounts,
     bytes memory data
   ) external override {
-
     checkIfFlashloanIsInProgress();
     address asset = address(tokens[0]);
-    (FlashloanData memory flData, address initiator) = abi.decode(
-      data,
-      (FlashloanData, address)
-    );
+    (FlashloanData memory flData, address initiator) = abi.decode(data, (FlashloanData, address));
 
     checkIfLenderIsTrusted(BALANCER_VAULT);
     checkIfFlashloanedAssetIsTheRequiredOne(asset, flData.asset);
@@ -249,6 +236,6 @@ contract OperationExecutor is IERC3156FlashBorrower, IFlashLoanRecipient {
       abi.encodeWithSelector(this.callbackAggregate.selector, flData.calls)
     );
 
-    isFlashloanInProgress = 1;    
+    isFlashloanInProgress = 1;
   }
 }

@@ -5,7 +5,7 @@ import { Executable } from "../common/Executable.sol";
 import { SafeERC20, IERC20 } from "../../libs/SafeERC20.sol";
 import { SetApprovalData } from "../../core/types/Common.sol";
 import { SafeMath } from "../../libs/SafeMath.sol";
-import { UseStorageSlot, StorageSlot, Write, Read } from "../../libs/UseStorageSlot.sol";
+import { UseStorageSlot, StorageSlot, StorageSlot } from "../../libs/UseStorageSlot.sol";
 import { ServiceRegistry } from "../../core/ServiceRegistry.sol";
 import { UseRegistry } from "../../libs/UseRegistry.sol";
 
@@ -16,7 +16,7 @@ import { UseRegistry } from "../../libs/UseRegistry.sol";
 contract SetApproval is Executable, UseStorageSlot, UseRegistry {
   using SafeERC20 for IERC20;
   using SafeMath for uint256;
-  using Read for StorageSlot.TransactionStorage;
+  using StorageSlot for bytes32;
 
   constructor(address _registry) UseRegistry(ServiceRegistry(_registry)) {}
 
@@ -28,7 +28,7 @@ contract SetApproval is Executable, UseStorageSlot, UseRegistry {
   function execute(bytes calldata data, uint8[] memory paramsMap) external payable override {
     SetApprovalData memory approval = parseInputs(data);
 
-    uint256 mappedApprovalAmount = store().readUint(
+    uint256 mappedApprovalAmount = storeInSlot("transaction").readUint(
       bytes32(approval.amount),
       paramsMap[2]
     );

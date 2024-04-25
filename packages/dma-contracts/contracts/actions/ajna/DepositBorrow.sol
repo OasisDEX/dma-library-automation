@@ -2,7 +2,7 @@
 pragma solidity ^0.8.15;
 
 import { Executable } from "../common/Executable.sol";
-import { Write, UseStore, Read } from "../common/UseStore.sol";
+import { UseStorageSlot, StorageSlot } from "../../libs/UseStorageSlot.sol";
 import { OperationStorage } from "../../core/OperationStorage.sol";
 import { DepositBorrowData } from "../../core/types/Ajna.sol";
 import {
@@ -13,18 +13,21 @@ import {
 import { IAjnaPool } from "../../interfaces/ajna/IERC20Pool.sol";
 import { IAjnaPoolUtilsInfo } from "../../interfaces/ajna/IAjnaPoolUtilsInfo.sol";
 import { IERC20PoolFactory } from "../../interfaces/ajna/IERC20PoolFactory.sol";
+import { IServiceRegistry } from "../../interfaces/IServiceRegistry.sol";
 
 /**
  * @title DepositBorrow | Ajna Action contract
  * @notice Deposits collateral and borrows quoite token from Ajna pool
  */
-contract AjnaDepositBorrow is Executable, UseStore {
-  using Write for OperationStorage;
-  using Read for OperationStorage;
+contract AjnaDepositBorrow is Executable, UseStorageSlot {
+  using StorageSlot for bytes32;
+
   IAjnaPoolUtilsInfo public immutable poolUtilsInfo;
   IERC20PoolFactory public immutable erc20PoolFactory;
+  IServiceRegistry public registry;
 
-  constructor(address _registry) UseStore(_registry) {
+  constructor(address _registry) UseStorageSlot() {
+    registry = IServiceRegistry(_registry);
     poolUtilsInfo = IAjnaPoolUtilsInfo(registry.getRegisteredService(AJNA_POOL_UTILS_INFO));
     erc20PoolFactory = IERC20PoolFactory(registry.getRegisteredService(ERC20_POOL_FACTORY));
   }
@@ -39,16 +42,14 @@ contract AjnaDepositBorrow is Executable, UseStore {
     );
     require(address(pool) != address(0), "AjnaDepositBorrow: Pool not found");
 
-    uint256 mappedDepositAmount = store().readUint(
+    uint256 mappedDepositAmount = storeInSlot("transaction").readUint(
       bytes32(args.depositAmount),
-      paramsMap[2],
-      address(this)
+      paramsMap[2]
     );
 
-    uint256 mappedBorrowAmount = store().readUint(
+    uint256 mappedBorrowAmount = storeInSlot("transaction").readUint(
       bytes32(args.borrowAmount),
-      paramsMap[3],
-      address(this)
+      paramsMap[3]
     );
 
     uint256 actualDepositAmount = args.sumDepositAmounts
@@ -63,8 +64,8 @@ contract AjnaDepositBorrow is Executable, UseStore {
       index,
       actualDepositAmount * pool.collateralScale()
     );
-    store().write(bytes32(args.depositAmount));
-    store().write(bytes32(args.borrowAmount));
+    storeInSlot("transaction").write(bytes32(args.depositAmount));
+    storeInSlot("transaction").write(bytes32(args.borrowAmount));
   }
 
   function parseInputs(

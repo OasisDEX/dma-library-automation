@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
-pragma solidity >=0.8.15;
+pragma solidity >=0.8.24;
 
 import { Executable } from "../common/Executable.sol";
-import { UseStore, Read, Write } from "../common/UseStore.sol";
+import { UseStorageSlot, StorageSlot } from "../../libs/UseStorageSlot.sol";
 import { OperationStorage } from "../../core/OperationStorage.sol";
 import { IVat } from "../../interfaces/maker/IVat.sol";
 import { IManager } from "../../interfaces/maker/IManager.sol";
@@ -12,26 +12,26 @@ import { SafeERC20, IERC20 } from "../../libs/SafeERC20.sol";
 import { IWETH } from "../../interfaces/tokens/IWETH.sol";
 import { WETH } from "../../core/constants/Common.sol";
 import { MCD_MANAGER } from "../../core/constants/Maker.sol";
+import { IServiceRegistry } from "../../interfaces/IServiceRegistry.sol";
 
-contract MakerDeposit is Executable, UseStore {
+contract MakerDeposit is Executable, UseStorageSlot {
   using SafeERC20 for IERC20;
-  using Write for OperationStorage;
-  using Read for OperationStorage;
+  using StorageSlot for bytes32;
 
-  constructor(address _registry) UseStore(_registry) {}
+  IServiceRegistry public registry;
+
+  constructor(address _registry) UseStorageSlot() {
+    registry = IServiceRegistry(_registry);
+  }
 
   function execute(bytes calldata data, uint8[] memory paramsMap) external payable override {
     DepositData memory depositData = parseInputs(data);
 
-    depositData.vaultId = store().readUint(
-      bytes32(depositData.vaultId),
-      paramsMap[1],
-      address(this)
-    );
-    depositData.amount = store().readUint(bytes32(depositData.amount), paramsMap[2], address(this));
+    depositData.vaultId = storeInSlot("transaction").readUint(bytes32(depositData.vaultId), paramsMap[1]);
+    depositData.amount = storeInSlot("transaction").readUint(bytes32(depositData.amount), paramsMap[2]);
 
     uint256 amountDeposited = _deposit(depositData);
-    store().write(bytes32(amountDeposited));
+    storeInSlot("transaction").write(bytes32(amountDeposited));
   }
 
   function _deposit(DepositData memory data) internal returns (uint256) {

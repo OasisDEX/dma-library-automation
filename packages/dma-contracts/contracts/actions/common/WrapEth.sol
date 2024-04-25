@@ -7,7 +7,7 @@ import { SafeERC20, IERC20 } from "../../libs/SafeERC20.sol";
 import { IWETH } from "../../interfaces/tokens/IWETH.sol";
 import { WrapEthData } from "../../core/types/Common.sol";
 import { WETH } from "../../core/constants/Common.sol";
-import { UseStorageSlot, StorageSlot, Write, Read } from "../../libs/UseStorageSlot.sol";
+import { UseStorageSlot, StorageSlot, StorageSlot } from "../../libs/UseStorageSlot.sol";
 import { ServiceRegistry } from "../../core/ServiceRegistry.sol";
 import { UseRegistry } from "../../libs/UseRegistry.sol";
 
@@ -17,7 +17,7 @@ import { UseRegistry } from "../../libs/UseRegistry.sol";
  */
 contract WrapEth is Executable, UseStorageSlot, UseRegistry {
   using SafeERC20 for IERC20;
-  using Read for StorageSlot.TransactionStorage;
+  using StorageSlot for bytes32;
 
   constructor(address _registry) UseRegistry(ServiceRegistry(_registry)) {}
 
@@ -28,7 +28,7 @@ contract WrapEth is Executable, UseStorageSlot, UseRegistry {
    */
   function execute(bytes calldata data, uint8[] memory paramsMap) external payable override {
     WrapEthData memory wrapData = parseInputs(data);
-    wrapData.amount = store().readUint(bytes32(wrapData.amount), paramsMap[0]);
+    wrapData.amount = storeInSlot("transaction").readUint(bytes32(wrapData.amount), paramsMap[0]);
 
     if (wrapData.amount == type(uint256).max) {
       wrapData.amount = address(this).balance;

@@ -37,7 +37,7 @@ import {
   getSparkAdjustDownOperationDefinition,
   getSparkAdjustUpOperationDefinition,
   getSparkBorrowOperationDefinition,
-  getSparkCloseOperationDefinition,
+  getSparkCloseAndExitOperationDefinition,
   getSparkDepositBorrowOperationDefinition,
   getSparkDepositOperationDefinition,
   getSparkOpenDepositBorrowOperationDefinition,
@@ -877,6 +877,7 @@ export class DeploymentSystem extends DeployedSystemHelpers {
     await operationsRegistry.addOp(
       getAaveOpenV2OperationDefinition(network).name,
       getAaveOpenV2OperationDefinition(network).actions,
+      true,
     )
     await operationsRegistry.addOp(
       getAaveCloseV2OperationDefinition(network).name,
@@ -1012,7 +1013,7 @@ export class DeploymentSystem extends DeployedSystemHelpers {
     )
     this.logOp(sparkOpenOperationDefinition)
 
-    const sparkCloseOperationDefinition = getSparkCloseOperationDefinition(network)
+    const sparkCloseOperationDefinition = getSparkCloseAndExitOperationDefinition(network)
     await operationsRegistry.addOp(
       sparkCloseOperationDefinition.name,
       sparkCloseOperationDefinition.actions,

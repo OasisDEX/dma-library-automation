@@ -2,7 +2,7 @@
 pragma solidity ^0.8.15;
 
 import { Executable } from "../common/Executable.sol";
-import { Write, UseStore, Read } from "../common/UseStore.sol";
+import { UseStorageSlot, StorageSlot } from "../../libs/UseStorageSlot.sol";
 import { OperationStorage } from "../../core/OperationStorage.sol";
 import { RepayWithdrawData } from "../../core/types/Ajna.sol";
 import {
@@ -13,18 +13,21 @@ import {
 import { IAjnaPool } from "../../interfaces/ajna/IERC20Pool.sol";
 import { IAjnaPoolUtilsInfo } from "../../interfaces/ajna/IAjnaPoolUtilsInfo.sol";
 import { IERC20PoolFactory } from "../../interfaces/ajna/IERC20PoolFactory.sol";
+import { IServiceRegistry } from "../../interfaces/IServiceRegistry.sol";
 
 /**
  * @title AjnaRepayWithdraw | Ajna Action contract
  * @notice Repays quotetokens and withdraws collateral from Ajna pool
  */
-contract AjnaRepayWithdraw is Executable, UseStore {
-  using Write for OperationStorage;
-  using Read for OperationStorage;
+contract AjnaRepayWithdraw is Executable, UseStorageSlot {
+  using StorageSlot for bytes32;
+
   IAjnaPoolUtilsInfo public immutable poolUtilsInfo;
   IERC20PoolFactory public immutable erc20PoolFactory;
+  IServiceRegistry public registry;
 
-  constructor(address _registry) UseStore(_registry) {
+  constructor(address _registry) UseStorageSlot() {
+    registry = IServiceRegistry(_registry);
     poolUtilsInfo = IAjnaPoolUtilsInfo(registry.getRegisteredService(AJNA_POOL_UTILS_INFO));
     erc20PoolFactory = IERC20PoolFactory(registry.getRegisteredService(ERC20_POOL_FACTORY));
   }
@@ -39,12 +42,8 @@ contract AjnaRepayWithdraw is Executable, UseStore {
     );
     require(address(pool) != address(0), "AjnaDepositBorrow: Pool not found");
 
-    args.withdrawAmount = store().readUint(
-      bytes32(args.withdrawAmount),
-      paramsMap[1],
-      address(this)
-    );
-    args.repayAmount = store().readUint(bytes32(args.repayAmount), paramsMap[2], address(this));
+    args.withdrawAmount = storeInSlot("transaction").readUint(bytes32(args.withdrawAmount), paramsMap[1]);
+    args.repayAmount = storeInSlot("transaction").readUint(bytes32(args.repayAmount), paramsMap[2]);
 
     uint256 index = poolUtilsInfo.priceToIndex(args.price);
 
@@ -70,8 +69,8 @@ contract AjnaRepayWithdraw is Executable, UseStore {
       index
     );
 
-    store().write(bytes32(args.repayAmount));
-    store().write(bytes32(args.withdrawAmount));
+    storeInSlot("transaction").write(bytes32(args.repayAmount));
+    storeInSlot("transaction").write(bytes32(args.withdrawAmount));
   }
 
   function parseInputs(

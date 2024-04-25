@@ -2,7 +2,7 @@
 pragma solidity ^0.8.15;
 
 import { Executable } from "../../common/Executable.sol";
-import { UseStorageSlot, StorageSlot, Write, Read } from "../../../libs/UseStorageSlot.sol";
+import { UseStorageSlot, StorageSlot, StorageSlot } from "../../../libs/UseStorageSlot.sol";
 import { ServiceRegistry } from "../../../core/ServiceRegistry.sol";
 import { IPoolV3 } from "../../../interfaces/aaveV3/IPoolV3.sol";
 import { DepositData } from "../../../core/types/Aave.sol";
@@ -15,8 +15,8 @@ import { UseRegistry } from "../../../libs/UseRegistry.sol";
  * @notice Deposits the specified asset as collateral on AAVE's lending pool
  */
 contract AaveV3Deposit is Executable, UseStorageSlot, UseRegistry {
-  using Write for StorageSlot.TransactionStorage;
-  using Read for StorageSlot.TransactionStorage;
+  using StorageSlot for bytes32;
+
   using SafeMath for uint256;
 
   constructor(address _registry) UseRegistry(ServiceRegistry(_registry)) {}
@@ -30,7 +30,7 @@ contract AaveV3Deposit is Executable, UseStorageSlot, UseRegistry {
   function execute(bytes calldata data, uint8[] memory paramsMap) external payable override {
     DepositData memory deposit = parseInputs(data);
 
-    uint256 mappedDepositAmount = store().readUint(bytes32(deposit.amount), paramsMap[1]);
+    uint256 mappedDepositAmount = storeInSlot("transaction").readUint(bytes32(deposit.amount), paramsMap[1]);
 
     uint256 actualDepositAmount = deposit.sumAmounts
       ? mappedDepositAmount.add(deposit.amount)
@@ -50,7 +50,7 @@ contract AaveV3Deposit is Executable, UseStorageSlot, UseRegistry {
       );
     }
 
-    store().write(bytes32(actualDepositAmount));
+    storeInSlot("transaction").write(bytes32(actualDepositAmount));
   }
 
   function parseInputs(bytes memory _callData) public pure returns (DepositData memory params) {

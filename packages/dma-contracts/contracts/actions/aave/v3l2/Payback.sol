@@ -2,7 +2,7 @@
 pragma solidity ^0.8.15;
 
 import { Executable } from "../../common/Executable.sol";
-import { UseStore, Write, Read } from "../../common/UseStore.sol";
+import { UseStorageSlot, StorageSlot } from "../../../libs/UseStorageSlot.sol";
 import { OperationStorage } from "../../../core/OperationStorage.sol";
 import { IVariableDebtToken } from "../../../interfaces/aave/IVariableDebtToken.sol";
 import { IWETHGateway } from "../../../interfaces/aave/IWETHGateway.sol";
@@ -11,6 +11,7 @@ import { ILendingPool } from "../../../interfaces/aave/ILendingPool.sol";
 import { IPoolV3 } from "../../../interfaces/aaveV3/IPoolV3.sol";
 
 import { AAVE_POOL, AAVE_L2_ENCODER } from "../../../core/constants/Aave.sol";
+import { IServiceRegistry } from "../../../interfaces/IServiceRegistry.sol";
 
 /**
  * @title Payback | AAVE V3 Action contract
@@ -24,11 +25,14 @@ interface IL2Encoder {
   function encodeRepayParams(address, uint256, uint256) external view returns (bytes32);
 }
 
-contract AaveV3L2Payback is Executable, UseStore {
-  using Write for OperationStorage;
-  using Read for OperationStorage;
+contract AaveV3L2Payback is Executable, UseStorageSlot {
+  using StorageSlot for bytes32;
 
-  constructor(address _registry) UseStore(_registry) {}
+  IServiceRegistry public registry;
+
+  constructor(address _registry) UseStorageSlot() {
+    registry = IServiceRegistry(_registry);
+  }
 
   /**
    * @dev Look at UseStore.sol to get additional info on paramsMapping.
@@ -39,7 +43,7 @@ contract AaveV3L2Payback is Executable, UseStore {
   function execute(bytes calldata data, uint8[] memory paramsMap) external payable override {
     PaybackData memory payback = parseInputs(data);
 
-    payback.amount = store().readUint(bytes32(payback.amount), paramsMap[1], address(this));
+    payback.amount = storeInSlot("transaction").readUint(bytes32(payback.amount), paramsMap[1]);
 
     IL2Pool(registry.getRegisteredService(AAVE_POOL)).repay(
       IL2Encoder(registry.getRegisteredService(AAVE_L2_ENCODER)).encodeRepayParams(
@@ -49,7 +53,7 @@ contract AaveV3L2Payback is Executable, UseStore {
       )
     );
 
-    store().write(bytes32(payback.amount));
+    storeInSlot("transaction").write(bytes32(payback.amount));
   }
 
   function parseInputs(bytes memory _callData) public pure returns (PaybackData memory params) {

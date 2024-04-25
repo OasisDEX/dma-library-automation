@@ -2,7 +2,7 @@
 pragma solidity ^0.8.15;
 
 import { Executable } from "../../common/Executable.sol";
-import { UseStorageSlot, StorageSlot, Write, Read } from "../../../libs/UseStorageSlot.sol";
+import { UseStorageSlot, StorageSlot, StorageSlot } from "../../../libs/UseStorageSlot.sol";
 import { ServiceRegistry } from "../../../core/ServiceRegistry.sol";
 import { ILendingPool } from "../../../interfaces/aave/ILendingPool.sol";
 import { WithdrawData } from "../../../core/types/Aave.sol";
@@ -15,7 +15,7 @@ import { UseRegistry } from "../../../libs/UseRegistry.sol";
  * @notice Withdraw collateral from AAVE's lending pool
  */
 contract AaveV3Withdraw is Executable, UseStorageSlot, UseRegistry {
-  using Write for StorageSlot.TransactionStorage;
+  using StorageSlot for bytes32;
 
   constructor(address _registry) UseRegistry(ServiceRegistry(_registry)) {}
 
@@ -31,7 +31,7 @@ contract AaveV3Withdraw is Executable, UseStorageSlot, UseRegistry {
       withdraw.to
     );
 
-    store().write(bytes32(amountWithdrawn));
+    storeInSlot("transaction").write(bytes32(amountWithdrawn));
   }
 
   function parseInputs(bytes memory _callData) public pure returns (WithdrawData memory params) {
