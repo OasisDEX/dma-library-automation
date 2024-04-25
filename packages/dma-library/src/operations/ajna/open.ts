@@ -8,7 +8,6 @@ import {
   IOperation,
   Protocol,
   WithAjnaBucketPrice,
-  WithAjnaStrategyAddresses,
   WithCollateral,
   WithDebtAndBorrow,
   WithFlashloan,
@@ -16,6 +15,7 @@ import {
   WithOptionalDeposit,
   WithPosition,
   WithProxy,
+  WithSummerStrategyAddresses,
   WithSwap,
 } from '@dma-library/types'
 import BigNumber from 'bignumber.js'
@@ -28,7 +28,7 @@ type OpenArgs = WithCollateral &
   WithFlashloan &
   WithProxy &
   WithPosition &
-  WithAjnaStrategyAddresses &
+  WithSummerStrategyAddresses &
   WithAjnaBucketPrice &
   WithNetwork
 
@@ -98,6 +98,7 @@ export const open: AjnaOpenOperation = async ({
   )
 
   const depositBorrow = actions.ajna.ajnaDepositBorrow(
+    network,
     {
       quoteToken: debt.address,
       collateralToken: collateral.address,
@@ -115,7 +116,7 @@ export const open: AjnaOpenOperation = async ({
     amount: flashloan.amount.plus(BALANCER_FEE.div(FEE_BASE).times(flashloan.amount)),
   })
 
-  const protocol: Protocol = 'Ajna'
+  const protocol: Protocol = network === Network.MAINNET ? 'Ajna_rc13' : 'Ajna_rc14'
 
   const positionCreated = actions.common.positionCreated(network, {
     protocol,
@@ -145,6 +146,6 @@ export const open: AjnaOpenOperation = async ({
 
   return {
     calls: [takeAFlashLoan],
-    operationName: getAjnaOpenOperationDefinition(Network.MAINNET).name,
+    operationName: getAjnaOpenOperationDefinition(network).name,
   }
 }

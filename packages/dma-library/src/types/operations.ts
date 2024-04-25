@@ -5,7 +5,8 @@ import { AaveLikeStrategyAddresses } from '@dma-library/operations/aave-like'
 import { MorphoBlueStrategyAddresses } from '@dma-library/operations/morphoblue/addresses'
 import { BigNumber } from 'bignumber.js'
 
-import { AjnaStrategyAddresses } from '../operations/ajna'
+import { SummerStrategyAddresses } from '../operations/ajna'
+import { AaveLikePosition } from './aave-like'
 import { ActionCall } from './action-call'
 import { FlashloanProvider } from './common'
 import { MorphoBlueMarket } from './morphoblue'
@@ -137,6 +138,10 @@ export type WithBorrowedDebt = {
   }
 }
 
+export type WithAaveLikePosition = {
+  position: AaveLikePosition
+}
+
 export type WithPositionAndLockedCollateral = WithPosition & {
   position: WithPosition['position'] & WithLockedCollateral
 }
@@ -145,8 +150,8 @@ export type WithAaveLikeStrategyAddresses = {
   addresses: AaveLikeStrategyAddresses
 }
 
-export type WithAjnaStrategyAddresses = {
-  addresses: AjnaStrategyAddresses
+export type WithSummerStrategyAddresses = {
+  addresses: SummerStrategyAddresses
 }
 
 export type WithEMode = {
@@ -222,4 +227,17 @@ export type WithCloseToOpenSwap = {
 
 export type WithAfterOpenSwap = {
   swapAfterOpen: WithSwap['swap']
+}
+
+export type WithAToken = {
+  aToken: {
+    address: Address
+    amount: BigNumber
+  }
+}
+
+export type WithVDToken = {
+  vdToken: {
+    address: Address
+  }
 }

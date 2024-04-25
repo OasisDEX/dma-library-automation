@@ -3,6 +3,7 @@ import { AaveVersion } from '@dma-library/types/aave'
 import { WithV2Protocol, WithV3Protocol } from '@dma-library/types/aave/protocol'
 import { views } from '@dma-library/views'
 
+import { AaveV3WithdrawToLTV, withdraw } from './auto/withdraw-to-ltv'
 import { AaveV2ChangeDebt, changeDebt } from './borrow/change-debt'
 import { AaveV2DepositBorrow, AaveV3DepositBorrow, depositBorrow } from './borrow/deposit-borrow'
 import {
@@ -18,7 +19,6 @@ import {
 import { AaveV2Adjust, AaveV3Adjust, adjust } from './multiply/adjust'
 import { AaveV2Close, AaveV3Close, close } from './multiply/close'
 import { AaveV2Open, AaveV3Open, open } from './multiply/open'
-import { AaveV3WithdrawToLTV, withdraw } from './auto/withdraw-to-ltv'
 
 export const aave: {
   borrow: {
