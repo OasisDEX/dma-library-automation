@@ -2,6 +2,7 @@ import { Address } from '@deploy-configurations/types/address'
 import { ZERO } from '@dma-common/constants'
 import { negativeToZero, normalizeValue } from '@dma-common/utils/common'
 import {
+  ajnaCollateralizationFactor,
   calculateMaxGenerate,
   getAjnaBorrowOriginationFee,
   getNeutralPrice,
@@ -9,6 +10,7 @@ import {
 } from '@dma-library/protocols/ajna'
 import { AjnaWarning } from '@dma-library/types/ajna'
 import { AjnaCumulativesData } from '@dma-library/views/ajna'
+import { getBuyingPower } from '@dma-library/views/common'
 import { IRiskRatio, RiskRatio } from '@domain'
 import { BigNumber } from 'bignumber.js'
 
@@ -85,7 +87,7 @@ export class AjnaPosition implements LendingPosition {
 
   get collateralAvailable() {
     const collateralAvailable = this.collateralAmount.minus(
-      this.debtAmount.div(this.pool.lowestUtilizedPrice),
+      this.debtAmount.times(ajnaCollateralizationFactor).div(this.pool.lowestUtilizedPrice),
     )
 
     return negativeToZero(normalizeValue(collateralAvailable))
@@ -113,18 +115,21 @@ export class AjnaPosition implements LendingPosition {
   }
 
   get minRiskRatio() {
-    const loanToValue = this.pool.poolMinDebtAmount.div(
-      this.collateralAmount.times(this.collateralPrice),
-    )
+    const loanToValue = this.pool.loansCount.gt(10)
+      ? this.pool.poolMinDebtAmount.div(this.collateralAmount.times(this.collateralPrice))
+      : ZERO
 
     return new RiskRatio(normalizeValue(loanToValue), RiskRatio.TYPE.LTV)
   }
 
   get buyingPower() {
-    return this.collateralAmount
-      .times(this.collateralPrice)
-      .times(this.maxRiskRatio.loanToValue)
-      .minus(this.debtAmount.times(this.quotePrice))
+    return getBuyingPower({
+      netValue: this.netValue,
+      collateralPrice: this.collateralPrice,
+      marketPrice: this.marketPrice,
+      debtAmount: this.debtAmount,
+      maxRiskRatio: this.maxRiskRatio,
+    })
   }
 
   debtAvailable(collateralAmount?: BigNumber) {
@@ -151,7 +156,15 @@ export class AjnaPosition implements LendingPosition {
       this.debtAmount,
       this.collateralPrice,
       this.quotePrice,
-      getNeutralPrice(this.debtAmount, newCollateralAmount, this.pool.interestRate),
+      getNeutralPrice(
+        this.debtAmount,
+        newCollateralAmount,
+        this.pool.interestRate,
+        this.t0NeutralPrice,
+        this.thresholdPrice,
+        false,
+        false,
+      ),
       this.pnl,
     )
   }
@@ -165,7 +178,15 @@ export class AjnaPosition implements LendingPosition {
       this.debtAmount,
       this.collateralPrice,
       this.quotePrice,
-      getNeutralPrice(this.debtAmount, newCollateralAmount, this.pool.interestRate),
+      getNeutralPrice(
+        this.debtAmount,
+        newCollateralAmount,
+        this.pool.interestRate,
+        this.t0NeutralPrice,
+        this.thresholdPrice,
+        false,
+        this.collateralAmount.gt(newCollateralAmount),
+      ),
       this.pnl,
     )
   }
@@ -179,7 +200,15 @@ export class AjnaPosition implements LendingPosition {
       newDebt,
       this.collateralPrice,
       this.quotePrice,
-      getNeutralPrice(newDebt, this.collateralAmount, this.pool.interestRate),
+      getNeutralPrice(
+        newDebt,
+        this.collateralAmount,
+        this.pool.interestRate,
+        this.t0NeutralPrice,
+        this.thresholdPrice,
+        this.debtAmount.lt(newDebt),
+        false,
+      ),
       this.pnl,
     )
   }
@@ -193,7 +222,15 @@ export class AjnaPosition implements LendingPosition {
       newDebt,
       this.collateralPrice,
       this.quotePrice,
-      getNeutralPrice(newDebt, this.collateralAmount, this.pool.interestRate),
+      getNeutralPrice(
+        newDebt,
+        this.collateralAmount,
+        this.pool.interestRate,
+        this.t0NeutralPrice,
+        this.thresholdPrice,
+        false,
+        false,
+      ),
       this.pnl,
     )
   }
@@ -206,7 +243,15 @@ export class AjnaPosition implements LendingPosition {
       ZERO,
       this.collateralPrice,
       this.quotePrice,
-      getNeutralPrice(ZERO, ZERO, this.pool.interestRate),
+      getNeutralPrice(
+        ZERO,
+        ZERO,
+        this.pool.interestRate,
+        this.t0NeutralPrice,
+        this.thresholdPrice,
+        false,
+        true,
+      ),
       this.pnl,
     )
   }

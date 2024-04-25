@@ -2,7 +2,7 @@ import { isProtocol, Protocol, ProtocolNames } from '@deploy-configurations/type
 
 import { ActionCall } from './action-call'
 import { calldataTypes } from './actions'
-import type { AjnaError, AjnaStrategy } from './ajna'
+import type { AjnaError, SummerStrategy } from './ajna'
 import {
   AjnaBorrowPayload,
   AjnaCommonDependencies,
@@ -20,7 +20,6 @@ import { MorphoBlueMarket, MorphoBluePosition } from './morphoblue'
 import type {
   IOperation,
   WithAjnaBucketPrice,
-  WithAjnaStrategyAddresses,
   WithBorrowing,
   WithCollateral,
   WithCollateralAndWithdrawal,
@@ -34,6 +33,7 @@ import type {
   WithPosition,
   WithPositionAndLockedCollateral,
   WithProxy,
+  WithSummerStrategyAddresses,
   WithSwap,
   WithWithdrawal,
 } from './operations'
@@ -57,7 +57,7 @@ import type { SwapData } from './swap-data'
 export type { IMultiplyStrategy, IStrategy }
 export type { CommonDMADependencies } from './common'
 export { FlashloanProvider }
-export type { AjnaError, AjnaStrategy, Strategy }
+export type { AjnaError, Strategy, SummerStrategy }
 export { AjnaEarnPosition, AjnaPosition }
 
 export type {
@@ -70,7 +70,12 @@ export type {
   AjnaOpenMultiplyPayload,
 }
 
-export { AaveLikePosition, AaveLikeTokens } from './aave-like'
+export {
+  AaveLikePosition,
+  AaveLikePositionV2,
+  AaveLikeProtocolEnum,
+  AaveLikeTokens,
+} from './aave-like'
 
 export { ActionCall }
 export { calldataTypes }
@@ -78,7 +83,6 @@ export { calldataTypes }
 export type {
   IOperation,
   WithAjnaBucketPrice,
-  WithAjnaStrategyAddresses,
   WithBorrowing,
   WithCollateral,
   WithCollateralAndWithdrawal,
@@ -92,6 +96,7 @@ export type {
   WithPosition,
   WithPositionAndLockedCollateral,
   WithProxy,
+  WithSummerStrategyAddresses,
   WithSwap,
   WithWithdrawal,
 }
@@ -117,3 +122,20 @@ export type { Swap }
 
 export { MorphoBluePosition }
 export type { MorphoBlueMarket }
+
+export type {
+  Erc4626CommonDependencies,
+  Erc4626DepositPayload,
+  Erc4626DepositStrategy,
+  Erc4626StrategyAddresses,
+  Erc4626WithdrawPayload,
+  Erc4626WithdrawStrategy,
+  IErc4626Position,
+} from './common'
+export { Erc4626Position, FeeType } from './common'
+export type {
+  EarnCumulativesData,
+  EarnCumulativesRawData,
+  LendingCumulativesData,
+  LendingCumulativesRawData,
+} from './cumulatives'
