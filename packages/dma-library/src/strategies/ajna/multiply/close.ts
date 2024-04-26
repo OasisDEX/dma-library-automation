@@ -4,15 +4,15 @@ import { amountToWei } from '@dma-common/utils/common'
 import { calculateFee } from '@dma-common/utils/swap'
 import { areSymbolsEqual } from '@dma-common/utils/symbols'
 import { operations } from '@dma-library/operations'
-import { prepareAjnaDMAPayload, resolveAjnaEthAction } from '@dma-library/protocols/ajna'
+import { prepareAjnaDMAPayload, resolveTxValue } from '@dma-library/protocols/ajna'
 import { ajnaBuckets } from '@dma-library/strategies'
 import * as StrategiesCommon from '@dma-library/strategies/common'
 import {
   AjnaPosition,
-  AjnaStrategy,
   FlashloanProvider,
   IOperation,
   PositionType,
+  SummerStrategy,
   SwapData,
 } from '@dma-library/types'
 import {
@@ -20,6 +20,7 @@ import {
   AjnaCommonDMADependencies,
 } from '@dma-library/types/ajna/ajna-dependencies'
 import { encodeOperation } from '@dma-library/utils/operation'
+import * as SwapUtils from '@dma-library/utils/swap'
 import * as Domain from '@domain'
 import { FLASHLOAN_SAFETY_MARGIN } from '@domain/constants'
 import BigNumber from 'bignumber.js'
@@ -27,7 +28,7 @@ import BigNumber from 'bignumber.js'
 export type AjnaCloseStrategy = (
   args: AjnaCloseMultiplyPayload,
   dependencies: AjnaCommonDMADependencies,
-) => Promise<AjnaStrategy<AjnaPosition>>
+) => Promise<SummerStrategy<AjnaPosition>>
 
 const positionType: PositionType = 'Multiply'
 
@@ -56,15 +57,13 @@ export const closeMultiply: AjnaCloseStrategy = async (args, dependencies) => {
 
   const targetPosition = args.position.close()
 
-  // TODO: remove this
-  const fee = ZERO
-  // const fee = SwapUtils.feeResolver(args.collateralTokenSymbol, args.quoteTokenSymbol, {
-  //   isEarnPosition: SwapUtils.isCorrelatedPosition(
-  //     args.collateralTokenSymbol,
-  //     args.quoteTokenSymbol,
-  //   ),
-  //   isIncreasingRisk: false,
-  // })
+  const fee = SwapUtils.feeResolver(args.collateralTokenSymbol, args.quoteTokenSymbol, {
+    isEarnPosition: SwapUtils.isCorrelatedPosition(
+      args.collateralTokenSymbol,
+      args.quoteTokenSymbol,
+    ),
+    isIncreasingRisk: false,
+  })
 
   const postSwapFee =
     collectFeeFrom === 'targetToken' ? calculateFee(swapData.toTokenAmount, fee.toNumber()) : ZERO
@@ -92,7 +91,7 @@ export const closeMultiply: AjnaCloseStrategy = async (args, dependencies) => {
     successes: [],
     notices: [],
     // TODO instead of zero we will need data from swap
-    txValue: resolveAjnaEthAction(isDepositingEth, ZERO),
+    txValue: resolveTxValue(isDepositingEth, ZERO),
   })
 }
 
@@ -123,8 +122,6 @@ async function getAjnaSwapDataToCloseToDebt(
     slippage: args.slippage,
     swapAmountBeforeFees: swapAmountBeforeFees,
     getSwapData: dependencies.getSwapData,
-    // TODO: remove this
-    __feeOverride: ZERO,
   })
 }
 
@@ -158,10 +155,7 @@ async function getAjnaSwapDataToCloseToCollateral(
     debtPrice,
     slippage: args.slippage,
     outstandingDebt,
-    ETHAddress: dependencies.WETH,
     getSwapData: dependencies.getSwapData,
-    // TODO: remove this
-    __feeOverride: ZERO,
   })
 }
 
@@ -194,15 +188,14 @@ async function buildOperation(
     address: position.pool.quoteToken,
   }
 
-  // TODO: remove this
-  const fee = ZERO
-  // const fee = SwapUtils.feeResolver(args.collateralTokenSymbol, args.quoteTokenSymbol, {
-  //   isEarnPosition: SwapUtils.isCorrelatedPosition(
-  //     args.collateralTokenSymbol,
-  //     args.quoteTokenSymbol,
-  //   ),
-  //   isIncreasingRisk: false,
-  // })
+  const fee = SwapUtils.feeResolver(args.collateralTokenSymbol, args.quoteTokenSymbol, {
+    isEarnPosition: SwapUtils.isCorrelatedPosition(
+      args.collateralTokenSymbol,
+      args.quoteTokenSymbol,
+    ),
+    isIncreasingRisk: false,
+  })
+
   const collateralAmountToBeSwapped = args.shouldCloseToCollateral
     ? swapData.fromTokenAmount.plus(preSwapFee)
     : lockedCollateralAmount
@@ -249,6 +242,7 @@ async function buildOperation(
       pool: args.poolAddress,
     },
     price: new BigNumber(ajnaBuckets[ajnaBuckets.length - 1]),
+    network: dependencies.network,
   }
 
   if (args.shouldCloseToCollateral) {

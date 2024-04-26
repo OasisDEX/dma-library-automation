@@ -2,37 +2,6 @@ import { Network } from '@deploy-configurations/types/network'
 
 export function loadContractNames(network: Network) {
   return SERVICE_REGISTRY_NAMES
-  //
-  // if (network === Network.MAINNET) {
-  //   console.log('LOADING MAINNET CONFIG')
-  //   loadedConfig = require('./contract-names.mainnet')
-  //   console.log("LOADED CONFIG: ", JSON.stringify(loadedConfig.SERVICE_REGISTRY_NAMES.common))
-  //   return loadedConfig.SERVICE_REGISTRY_NAMES
-  // } else if (network === Network.OPTIMISM) {
-  //   loadedConfig = require('./contract-names.optimism')
-  //   return loadedConfig.SERVICE_REGISTRY_NAMES
-  // } else if (network === Network.ARBITRUM) {
-  //   loadedConfig = require('./contract-names.arbitrum')
-  //   return loadedConfig.SERVICE_REGISTRY_NAMES
-  // } else if (network === Network.BASE) {
-  //   loadedConfig = require('./contract-names.base')
-  //   return loadedConfig.SERVICE_REGISTRY_NAMES
-  // } else if (network === Network.GOERLI) {
-  //   loadedConfig = require('./contract-names.mainnet')
-  //   return loadedConfig.SERVICE_REGISTRY_NAMES
-  // } else if (network === Network.SEPOLIA) {
-  //   loadedConfig = require('./contract-names.mainnet')
-  //   return loadedConfig.SERVICE_REGISTRY_NAMES
-  // } else if (network === Network.LOCAL) {
-  //   loadedConfig = require('./contract-names.local')
-  //   return loadedConfig.SERVICE_REGISTRY_NAMES
-  // } else if (network === Network.TEST) {
-  //   loadedConfig = require('./contract-names.test')
-  //   return loadedConfig.SERVICE_REGISTRY_NAMES
-  // } else {
-  //   throw new Error(`Invalid network: ${network}`)
-  // }
-  // return loadedConfig.SERVICE_REGISTRY_NAMES
 }
 
 /**
@@ -46,6 +15,7 @@ export function loadContractNames(network: Network) {
 export const SERVICE_REGISTRY_NAMES = {
   common: {
     PULL_TOKEN: 'PullToken_7',
+    PULL_TOKEN_MAX_AMOUNT: 'PullTokenMaxAmount',
     SEND_TOKEN: 'SendToken_7',
     SEND_TOKEN_AUTO: 'SendTokenAuto_7',
     SET_APPROVAL: 'SetApproval_6',
@@ -55,8 +25,12 @@ export const SERVICE_REGISTRY_NAMES = {
     WRAP_ETH: 'WrapEth_6',
     UNWRAP_ETH: 'UnwrapEth_6',
     RETURN_FUNDS: 'ReturnFunds_6',
+    RETURN_MULTIPLE_TOKENS: 'ReturnMultipleTokens',
     COLLECT_FEE: 'CollectFee_3',
     POSITION_CREATED: 'PositionCreated',
+    TOKEN_BALANCE: 'TokenBalance',
+    ERC4626_DEPOSIT: 'ERC4626Deposit',
+    ERC4626_WITHDRAW: 'ERC4626Withdraw',
     ACCOUNT_GUARD: 'AccountGuard',
     ACCOUNT_FACTORY: 'AccountFactory',
     OPERATION_EXECUTOR: 'OperationExecutor_5',
@@ -101,13 +75,12 @@ export const SERVICE_REGISTRY_NAMES = {
     L2_ENCODER: 'AaveL2Encoder',
   },
   spark: {
-    DEPOSIT: 'SparkDeposit_auto_3',
-    WITHDRAW: 'SparkWithdraw_auto_3',
-    WITHDRAW_AUTO: 'SparkWithdrawAuto_auto_3',
-    BORROW: 'SparkBorrow_auto_3',
-    PAYBACK: 'SparkPayback_auto_3',
+    DEPOSIT: 'SparkDeposit',
+    WITHDRAW: 'SparkWithdraw',
+    BORROW: 'SparkBorrow_2',
+    PAYBACK: 'SparkPayback_2',
     LENDING_POOL: 'SparkLendingPool',
-    SET_EMODE: 'SparkSetEMode_auto_3',
+    SET_EMODE: 'SparkSetEMode',
   },
   maker: {
     DEPOSIT: 'MakerDeposit',
@@ -125,23 +98,24 @@ export const SERVICE_REGISTRY_NAMES = {
     CHAINLOG_VIEW: 'ChainLogView',
   },
   ajna: {
-    DEPOSIT_BORROW: 'AjnaDepositBorrow',
-    REPAY_WITHDRAW: 'AjnaRepayWithdraw',
-    ERC20_POOL_FACTORY: 'ERC20PoolFactory',
-    AJNA_POOL_UTILS_INFO: 'AjnaPoolUtilsInfo',
+    DEPOSIT_BORROW: 'AjnaDepositBorrow_5',
+    REPAY_WITHDRAW: 'AjnaRepayWithdraw_5',
+    ERC20_POOL_FACTORY: 'ERC20PoolFactoryRc14',
+    AJNA_POOL_UTILS_INFO: 'AjnaPoolUtilsInfoRc14',
   },
   morphoblue: {
     MORPHO_BLUE: 'MorphoBlue',
     DEPOSIT: 'MorphoBlueDeposit',
     WITHDRAW: 'MorphoBlueWithdraw',
     BORROW: 'MorphoBlueBorrow',
-    PAYBACK: 'MorphoBluePayback',
+    PAYBACK: 'MorphoBluePayback_2',
+    CLAIM_REWARDS: 'MorphoBlueClaimRewards',
   },
   test: {
     DUMMY_ACTION: 'DummyAction',
     DUMMY_OPTIONAL_ACTION: 'DummyOptionalAction',
     DUMMY_SWAP: 'DummySwap',
-    DUMMY_EXCHANGE: 'DummyExchange',
+    DUMMY_EXCHANGE: 'MockExchange',
     SWAP: 'uSwap',
   },
 } as const

@@ -1,12 +1,12 @@
 import ajnaProxyActionsAbi from '@abis/external/protocols/ajna/ajnaProxyActions.json'
 import poolInfoAbi from '@abis/external/protocols/ajna/poolInfoUtils.json'
 import { ZERO } from '@dma-common/constants'
-import { getAjnaEarnActionOutput, resolveAjnaEthAction } from '@dma-library/protocols/ajna'
+import { getAjnaEarnActionOutput, resolveTxValue } from '@dma-library/protocols/ajna'
 import {
   AjnaEarnPosition,
   AjnaOpenEarnDependencies,
   AjnaOpenEarnPayload,
-  AjnaStrategy,
+  SummerStrategy,
 } from '@dma-library/types/ajna'
 import { views } from '@dma-library/views'
 import BigNumber from 'bignumber.js'
@@ -15,7 +15,7 @@ import { ethers } from 'ethers'
 export type AjnaOpenEarnStrategy = (
   args: AjnaOpenEarnPayload,
   dependencies: AjnaOpenEarnDependencies,
-) => Promise<AjnaStrategy<AjnaEarnPosition>>
+) => Promise<SummerStrategy<AjnaEarnPosition>>
 
 export const open: AjnaOpenEarnStrategy = async (args, dependencies) => {
   const action = 'open-earn'
@@ -25,6 +25,8 @@ export const open: AjnaOpenEarnStrategy = async (args, dependencies) => {
       quotePrice: args.quotePrice,
       proxyAddress: args.dpmProxyAddress,
       poolAddress: args.poolAddress,
+      collateralToken: args.collateralToken,
+      quoteToken: args.quoteToken,
     },
     {
       getEarnData: dependencies.getEarnData,
@@ -70,6 +72,7 @@ export const open: AjnaOpenEarnStrategy = async (args, dependencies) => {
     position.pnl,
     position.totalEarnings,
     false,
+    position.historicalApy,
   )
 
   return getAjnaEarnActionOutput({
@@ -81,7 +84,7 @@ export const open: AjnaOpenEarnStrategy = async (args, dependencies) => {
       collateralAmount: ZERO,
       ...args,
     },
-    txValue: resolveAjnaEthAction(isLendingEth, args.quoteAmount),
+    txValue: resolveTxValue(isLendingEth, args.quoteAmount),
     action,
   })
 }

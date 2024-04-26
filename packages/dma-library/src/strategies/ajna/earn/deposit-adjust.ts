@@ -2,8 +2,8 @@
 import ajnaProxyActionsAbi from '@abis/external/protocols/ajna/ajnaProxyActions.json'
 import poolInfoAbi from '@abis/external/protocols/ajna/poolInfoUtils.json'
 import { ZERO } from '@dma-common/constants'
-import { getAjnaEarnActionOutput, resolveAjnaEthAction } from '@dma-library/protocols/ajna'
-import { AjnaCommonDependencies, AjnaEarnPosition, AjnaStrategy } from '@dma-library/types/ajna'
+import { getAjnaEarnActionOutput, resolveTxValue } from '@dma-library/protocols/ajna'
+import { AjnaCommonDependencies, AjnaEarnPosition, SummerStrategy } from '@dma-library/types/ajna'
 import { AjnaEarnPayload } from '@dma-library/types/ajna/ajna-dependencies'
 import BigNumber from 'bignumber.js'
 import { ethers } from 'ethers'
@@ -13,7 +13,7 @@ import bucketPrices from './buckets.json'
 export type AjnaDepositAndAdjustStrategy = (
   args: AjnaEarnPayload,
   dependencies: AjnaCommonDependencies,
-) => Promise<AjnaStrategy<AjnaEarnPosition>>
+) => Promise<SummerStrategy<AjnaEarnPosition>>
 
 export const depositAndAdjust: AjnaDepositAndAdjustStrategy = async (args, dependencies) => {
   const action = 'deposit-earn'
@@ -21,6 +21,7 @@ export const depositAndAdjust: AjnaDepositAndAdjustStrategy = async (args, depen
     args.position.pool.quoteToken.toLowerCase() === dependencies.WETH.toLowerCase()
   const isDepositing = args.quoteAmount.gt(ZERO)
   const isAdjusting = !args.price.eq(args.position.price) && args.position.price.gt(ZERO)
+  const isPositionEmpty = args.position.quoteTokenAmount.isZero()
 
   const ajnaProxyActions = new ethers.Contract(
     dependencies.ajnaProxyActions,
@@ -74,7 +75,10 @@ export const depositAndAdjust: AjnaDepositAndAdjustStrategy = async (args, depen
       ethers.utils.parseUnits(args.quoteAmount.toString(), args.quoteTokenPrecision).toString(),
       args.price.shiftedBy(18).toString(),
     ])
-    targetPosition = args.position.deposit(args.quoteAmount)
+
+    targetPosition = isPositionEmpty
+      ? args.position.moveQuote(priceToIndex).deposit(args.quoteAmount)
+      : args.position.deposit(args.quoteAmount)
   }
 
   if (!data || !targetPosition) throw new Error('Invalid depositAndAdjust params')
@@ -84,7 +88,7 @@ export const depositAndAdjust: AjnaDepositAndAdjustStrategy = async (args, depen
     data,
     dependencies,
     args,
-    txValue: resolveAjnaEthAction(isLendingEth, args.quoteAmount),
+    txValue: resolveTxValue(isLendingEth, args.quoteAmount),
     action,
   })
 }

@@ -11,7 +11,7 @@ import {
 } from '@dma-contracts/test/fixtures'
 import { ETH, MULTIPLE, USDC } from '@dma-contracts/test/fixtures/factories/common'
 import { AjnaPosition, Network, RiskRatio, strategies } from '@dma-library'
-import { AjnaPool, AjnaStrategy } from '@dma-library/types/ajna'
+import { AjnaPool, SummerStrategy } from '@dma-library/types/ajna'
 import BigNumber from 'bignumber.js'
 import { ethers } from 'ethers'
 
@@ -46,7 +46,7 @@ const ethUsdcMultiplyAjnaPosition: EthUsdcMultiplyAjnaPosition = async ({
   const pool = ajnaSystem.pools.wethUsdcPool
   if (!pool) throw new Error('wethUsdcPool is not set')
 
-  await addLiquidityToPool(ajnaSystem, pool, config)
+  await addLiquidityToPool(ajnaSystem, pool)
 
   const ajnaPool = await dependencies.getPoolData(pool.address)
 
@@ -179,7 +179,7 @@ async function getEthUsdcMultiplyAjnaPositionPayload(
 }
 
 async function executeTx(
-  payload: AjnaStrategy<AjnaPosition>,
+  payload: SummerStrategy<AjnaPosition>,
   dependencies: StrategyDependenciesAjna,
   feeRecipient: string,
   config: RuntimeConfig,
@@ -217,7 +217,7 @@ function buildPositionDetails(
   dependencies: StrategyDependenciesAjna,
   tokens: ReturnType<typeof configureTokens>,
   getSwapDataFn: AjnaPositionDetails['getSwapData'],
-  payload: AjnaStrategy<AjnaPosition>,
+  payload: SummerStrategy<AjnaPosition>,
   pool: AjnaPool,
   feesCollected: BigNumber,
   mockMarketPrice: BigNumber,

@@ -17,7 +17,7 @@ import {
   PositionType,
   SwapData,
 } from '@dma-library/types'
-import { AjnaCommonDMADependencies, AjnaPosition, AjnaStrategy } from '@dma-library/types/ajna'
+import { AjnaCommonDMADependencies, AjnaPosition, SummerStrategy } from '@dma-library/types/ajna'
 import * as SwapUtils from '@dma-library/utils/swap'
 import { views } from '@dma-library/views'
 import * as Domain from '@domain'
@@ -27,7 +27,7 @@ import BigNumber from 'bignumber.js'
 export type AjnaOpenMultiplyStrategy = (
   args: AjnaOpenMultiplyPayload,
   dependencies: AjnaCommonDMADependencies,
-) => Promise<AjnaStrategy<AjnaPosition>>
+) => Promise<SummerStrategy<AjnaPosition>>
 
 const positionType: PositionType = 'Multiply'
 
@@ -84,6 +84,8 @@ async function getPosition(args: AjnaOpenMultiplyPayload, dependencies: AjnaComm
       quotePrice: args.quotePrice,
       proxyAddress: args.dpmProxyAddress,
       poolAddress: args.poolAddress,
+      collateralToken: args.collateralToken,
+      quoteToken: args.quoteToken,
     },
     {
       poolInfoAddress: dependencies.poolInfoAddress,
@@ -176,6 +178,7 @@ async function simulateAdjustment(
     options: {
       collectSwapFeeFrom: collectFeeFrom,
     },
+    network: dependencies.network,
   }
 
   // TODO: Refactor AjnaPosition to extend IPositionV2 (eventually)
