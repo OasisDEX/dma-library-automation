@@ -1,12 +1,13 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 pragma solidity ^0.8.15;
 
-import { Executable } from "../../common/Executable.sol";
-import { UseStorageSlot, StorageSlot, Write, Read } from "../../../libs/UseStorageSlot.sol";
-import { ServiceRegistry } from "../../../core/ServiceRegistry.sol";
+import { Executable } from "../common/Executable.sol";
+import { UseStorageSlot, StorageSlot, Write, Read } from "../../libs/UseStorageSlot.sol";
+import { ServiceRegistry } from "../../core/ServiceRegistry.sol";
 import { BorrowData } from "../../core/types/MorphoBlue.sol";
 import { MORPHO_BLUE } from "../../core/constants/MorphoBlue.sol";
 import { IMorpho } from "../../interfaces/morpho-blue/IMorpho.sol";
+import { UseRegistry } from "../../libs/UseRegistry.sol";
 
 /**
  * @title Borrow | Morpho Blue Action contract
@@ -23,7 +24,7 @@ contract MorphoBlueBorrow is Executable, UseStorageSlot, UseRegistry {
   function execute(bytes calldata data, uint8[] memory) external payable override {
     BorrowData memory borrowData = parseInputs(data);
 
-    IMorpho morphoBlue = IMorpho(registry.getRegisteredService(MORPHO_BLUE));
+    IMorpho morphoBlue = IMorpho(getRegisteredService(MORPHO_BLUE));
     morphoBlue.borrow(borrowData.marketParams, borrowData.amount, 0, address(this), address(this));
 
     store().write(bytes32(borrowData.amount));

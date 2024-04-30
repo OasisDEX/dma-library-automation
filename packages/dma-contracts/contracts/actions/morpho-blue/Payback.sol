@@ -1,15 +1,16 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 pragma solidity ^0.8.15;
 
-import { Executable } from "../../common/Executable.sol";
-import { UseStorageSlot, StorageSlot, Write, Read } from "../../../libs/UseStorageSlot.sol";
-import { ServiceRegistry } from "../../../core/ServiceRegistry.sol";
+import { Executable } from "../common/Executable.sol";
+import { UseStorageSlot, StorageSlot, Write, Read } from "../../libs/UseStorageSlot.sol";
+import { ServiceRegistry } from "../../core/ServiceRegistry.sol";
 import { PaybackData } from "../../core/types/MorphoBlue.sol";
 import { MORPHO_BLUE } from "../../core/constants/MorphoBlue.sol";
 import { Id, IMorpho, MarketParams } from "../../interfaces/morpho-blue/IMorpho.sol";
 import { MarketParamsLib } from "../../libs/morpho-blue/MarketParamsLib.sol";
 import { MorphoLib } from "../../libs/morpho-blue/MorphoLib.sol";
 import { SharesMathLib } from "../../libs/morpho-blue/SharesMathLib.sol";
+import { UseRegistry } from "../../libs/UseRegistry.sol";
 
 /**
  * @title Payback | MorphoBlue Action contract
@@ -22,7 +23,7 @@ contract MorphoBluePayback is Executable, UseStorageSlot, UseRegistry {
   using MorphoLib for IMorpho;
   using SharesMathLib for uint256;
 
-  constructor(address _registry) UseStore(_registry) {}
+  constructor(address _registry) UseRegistry(ServiceRegistry(_registry)) {}
 
   /**
    * @param data Encoded calldata that conforms to the PaybackData struct
@@ -31,9 +32,9 @@ contract MorphoBluePayback is Executable, UseStorageSlot, UseRegistry {
   function execute(bytes calldata data, uint8[] memory paramsMap) external payable override {
     PaybackData memory paybackData = parseInputs(data);
 
-    paybackData.amount = store().readUint(bytes32(paybackData.amount), paramsMap[0], address(this));
+    paybackData.amount = store().readUint(bytes32(paybackData.amount), paramsMap[0]);
 
-    IMorpho morphoBlue = IMorpho(registry.getRegisteredService(MORPHO_BLUE));
+    IMorpho morphoBlue = IMorpho(getRegisteredService(MORPHO_BLUE));
 
     address onBehalf = paybackData.onBehalf == address(0) ? address(this) : paybackData.onBehalf;
 

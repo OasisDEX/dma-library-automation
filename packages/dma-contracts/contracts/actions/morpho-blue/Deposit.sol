@@ -1,12 +1,13 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 pragma solidity ^0.8.15;
 
-import { Executable } from "../../common/Executable.sol";
-import { UseStorageSlot, StorageSlot, Write, Read } from "../../../libs/UseStorageSlot.sol";
-import { ServiceRegistry } from "../../../core/ServiceRegistry.sol";
+import { Executable } from "../common/Executable.sol";
+import { UseStorageSlot, StorageSlot, Write, Read } from "../../libs/UseStorageSlot.sol";
+import { ServiceRegistry } from "../../core/ServiceRegistry.sol";
 import { DepositData } from "../../core/types/MorphoBlue.sol";
 import { MORPHO_BLUE } from "../../core/constants/MorphoBlue.sol";
 import { IMorpho } from "../../interfaces/morpho-blue/IMorpho.sol";
+import { UseRegistry } from "../../libs/UseRegistry.sol";
 
 /**
  * @title Deposit | Morpho Blue Action contract
@@ -16,7 +17,7 @@ contract MorphoBlueDeposit is Executable, UseStorageSlot, UseRegistry {
   using Write for StorageSlot.TransactionStorage;
   using Read for StorageSlot.TransactionStorage;
 
-  constructor(address _registry) UseStore(_registry) {}
+  constructor(address _registry) UseRegistry(ServiceRegistry(_registry)) {}
 
   /**
    * @param data Encoded calldata that conforms to the DepositData struct
@@ -27,15 +28,14 @@ contract MorphoBlueDeposit is Executable, UseStorageSlot, UseRegistry {
 
     uint256 mappedDepositAmount = store().readUint(
       bytes32(depositData.amount),
-      paramsMap[1],
-      address(this)
+      paramsMap[1]
     );
 
     uint256 actualDepositAmount = depositData.sumAmounts
     ? mappedDepositAmount + depositData.amount
     : mappedDepositAmount;
 
-    IMorpho morphoBlue = IMorpho(registry.getRegisteredService(MORPHO_BLUE));
+    IMorpho morphoBlue = IMorpho(getRegisteredService(MORPHO_BLUE));
     morphoBlue.supplyCollateral(
       depositData.marketParams,
       actualDepositAmount,
