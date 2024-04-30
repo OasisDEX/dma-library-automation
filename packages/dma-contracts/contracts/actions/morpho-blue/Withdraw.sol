@@ -1,9 +1,9 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 pragma solidity ^0.8.15;
 
-import { Executable } from "../common/Executable.sol";
-import { UseStore, Write } from "../common/UseStore.sol";
-import { OperationStorage } from "../../core/OperationStorage.sol";
+import { Executable } from "../../common/Executable.sol";
+import { UseStorageSlot, StorageSlot, Write, Read } from "../../../libs/UseStorageSlot.sol";
+import { ServiceRegistry } from "../../../core/ServiceRegistry.sol";
 import { WithdrawData } from "../../core/types/MorphoBlue.sol";
 import { MORPHO_BLUE } from "../../core/constants/MorphoBlue.sol";
 import { IMorpho } from "../../interfaces/morpho-blue/IMorpho.sol";
@@ -12,8 +12,8 @@ import { IMorpho } from "../../interfaces/morpho-blue/IMorpho.sol";
  * @title Withdraw | MorphoBlue Action contract
  * @notice Withdraw collateral from Morpho Blue's lending pool
  */
-contract MorphoBlueWithdraw is Executable, UseStore {
-  using Write for OperationStorage;
+contract MorphoBlueWithdraw is Executable, UseStorageSlot, UseRegistry {
+  using Write for StorageSlot.TransactionStorage;
 
   constructor(address _registry) UseStore(_registry) {}
 
