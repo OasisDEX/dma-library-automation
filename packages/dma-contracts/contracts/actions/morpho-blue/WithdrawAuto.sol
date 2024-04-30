@@ -12,31 +12,38 @@ import { UseRegistry } from "../../libs/UseRegistry.sol";
 /**
  * @title Withdraw | MorphoBlue Action contract
  * @notice Withdraw collateral from Morpho Blue's lending pool
- * with the amount to withdraw being read from the proxies t/x storage slot
+ * with the amount to withdraw being read from an OperationStorage slot
  */
-contract MorphoBlueWithdraw is Executable, UseStorageSlot, UseRegistry {
+contract MorphoBlueWithdrawAuto is Executable, UseStorageSlot, UseRegistry {
   using Write for StorageSlot.TransactionStorage;
+  using Read for StorageSlot.TransactionStorage;
 
   constructor(address _registry) UseRegistry(ServiceRegistry(_registry)) {}
 
   /**
    * @param data Encoded calldata that conforms to the WithdrawData struct
    */
-  function execute(bytes calldata data, uint8[] memory) external payable override {
-    WithdrawData memory withdrawData = parseInputs(data);
+  function execute(bytes calldata data, uint8[] memory paramsMap) external payable override {
+    WithdrawData memory withdraw = parseInputs(data);
+    
+    uint256 mappedWithdrawAmount = store().readUint(
+      bytes32(0),
+      paramsMap[0]
+    );
 
     IMorpho morphoBlue = IMorpho(getRegisteredService(MORPHO_BLUE));
     morphoBlue.withdrawCollateral(
-      withdrawData.marketParams,
-      withdrawData.amount,
+      withdraw.marketParams,
+      mappedWithdrawAmount,
       address(this),
-      withdrawData.to
+      withdraw.to
     );
 
-    store().write(bytes32(withdrawData.amount));
+    store().write(bytes32(mappedWithdrawAmount));
   }
 
   function parseInputs(bytes memory _callData) public pure returns (WithdrawData memory params) {
     return abi.decode(_callData, (WithdrawData));
   }
 }
+
