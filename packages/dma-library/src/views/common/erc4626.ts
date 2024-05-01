@@ -24,7 +24,11 @@ export async function getErc4626Position(
 ): Promise<Erc4626Position> {
   const { precision } = underlyingAsset
 
-  const vaultContractInstance = new ethers.Contract(vaultAddress, erc4626abi, provider) as IERC4626
+  const vaultContractInstance = new ethers.Contract(
+    vaultAddress,
+    erc4626abi,
+    provider,
+  ) as unknown as IERC4626
   const [vaultParameters, subgraphResponse] = await Promise.all([
     getVaultApyParameters(vaultAddress),
     getLazyVaultSubgraphResponse(vaultAddress, proxyAddress),

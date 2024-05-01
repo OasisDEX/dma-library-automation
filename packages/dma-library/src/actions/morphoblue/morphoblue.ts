@@ -94,6 +94,7 @@ export function morphoBluePayback(
     morphoBlueMarket: MorphoBlueMarket
     amount: BigNumber
     onBehalf?: Address
+    paybackAll?: boolean
   },
   paramsMapping: [amount: number] = [0],
 ): ActionCall {

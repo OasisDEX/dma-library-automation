@@ -11,6 +11,7 @@ export type MorphoBluePaybackWithdrawArgs = {
   morphoBlueMarket: MorphoBlueMarket
   amountCollateralToWithdrawInBaseUnit: BigNumber
   amountDebtToPaybackInBaseUnit: BigNumber
+  isPaybackAll: boolean
   proxy: string
   user: string
 }

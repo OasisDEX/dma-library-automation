@@ -4,21 +4,22 @@ import { areAddressesEqual } from '@dma-common/utils/addresses/index'
 import { amountFromWei, amountToWei } from '@dma-common/utils/common'
 import { calculateFee } from '@dma-common/utils/swap'
 import { BALANCER_FEE } from '@dma-library/config/flashloan-fees'
-import { prepareAjnaDMAPayload, resolveAjnaEthAction } from '@dma-library/protocols/ajna'
+import { getNeutralPrice, prepareAjnaDMAPayload, resolveTxValue } from '@dma-library/protocols/ajna'
 import {
   validateBorrowUndercollateralized,
   validateLiquidity,
 } from '@dma-library/strategies/ajna/validation'
-import { validateGenerateCloseToMaxLtv } from '@dma-library/strategies/ajna/validation/borrowish/closeToMaxLtv'
 import { validateLiquidationPriceCloseToMarketPrice } from '@dma-library/strategies/ajna/validation/borrowish/liquidationPriceCloseToMarket'
 import { validateDustLimitMultiply } from '@dma-library/strategies/ajna/validation/multiply/dustLimit'
+import { validateGenerateCloseToMaxLtv } from '@dma-library/strategies/validation/closeToMaxLtv'
 import {
   AjnaMultiplyPayload,
-  AjnaPosition,
   IOperation,
   PositionType,
   SwapData,
-} from '@dma-library/types'
+  // eslint-disable-next-line import/no-unresolved
+} from '../../../types'
+import { AjnaPosition } from '../../../types/ajna/ajna-position'
 import { AjnaCommonDMADependencies } from '@dma-library/types/ajna'
 import { encodeOperation } from '@dma-library/utils/operation'
 import * as SwapUtils from '@dma-library/utils/swap'
@@ -104,6 +105,7 @@ export async function simulateAdjustment(
     options: {
       collectSwapFeeFrom: collectFeeFrom,
     },
+    network: dependencies.network,
   }
 
   // TODO: Refactor AjnaPosition to extend IPositionV2 (eventually)
@@ -192,7 +194,17 @@ export function prepareAjnaMultiplyDMAPayload(
     debtAmount,
     args.collateralPrice,
     args.quotePrice,
-    args.position.t0NeutralPrice,
+    getNeutralPrice(
+      debtAmount,
+      collateralAmount,
+      args.position.pool.interestRate,
+      args.position.t0NeutralPrice,
+      args.position.thresholdPrice,
+      // this doesn't matter for multiply since we always
+      // either generate or withdraw, so re-stamp will happen
+      true,
+      true,
+    ),
     args.position.pnl,
   )
 
@@ -235,7 +247,7 @@ export function prepareAjnaMultiplyDMAPayload(
     warnings,
     successes: [],
     notices: [],
-    txValue: resolveAjnaEthAction(isDepositingEth, txAmount),
+    txValue: resolveTxValue(isDepositingEth, txAmount),
   })
 }
 

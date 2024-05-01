@@ -1,4 +1,3 @@
-// Borrow
 // Auto
 import { type AaveV3WithdrawOperation, withdraw as aaveV3Withdraw } from './auto/withdraw'
 import {
@@ -62,6 +61,8 @@ const borrow = {
     depositBorrow: aaveV2DepositBorrow,
     openDepositBorrow: aaveV2OpenDepositBorrow,
     paybackWithdraw: aaveV2PaybackWithdraw,
+    withdraw: () => null,
+    withdrawToDebt: () => null,
   },
   v3: {
     borrow: aaveV3Borrow,
@@ -69,6 +70,8 @@ const borrow = {
     depositBorrow: aaveV3DepositBorrow,
     openDepositBorrow: aaveV3OpenDepositBorrow,
     paybackWithdraw: aaveV3PaybackWithdraw,
+    withdraw: () => null,
+    withdrawToDebt: () => null,
   },
 }
 
@@ -94,6 +97,8 @@ export type AaveBorrowOperations = {
     depositBorrow: AaveV2DepositBorrowOperation
     openDepositBorrow: AaveV2OpenDepositBorrowOperation
     paybackWithdraw: AaveV2PaybackWithdrawOperation
+    withdraw: any
+    withdrawToDebt: any
   }
   v3: {
     borrow: AaveV3BorrowOperation
@@ -101,6 +106,8 @@ export type AaveBorrowOperations = {
     depositBorrow: AaveV3DepositBorrowOperation
     openDepositBorrow: AaveV3OpenDepositBorrowOperation
     paybackWithdraw: AaveV3PaybackWithdrawOperation
+    withdraw: any
+    withdrawToDebt: any
   }
 }
 
