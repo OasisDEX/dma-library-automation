@@ -99,7 +99,6 @@ export function morphoBluePayback(
   paramsMapping: [amount: number] = [0],
 ): ActionCall {
   const SERVICE_REGISTRY_NAMES = loadContractNames(network)
-
   return createAction(
     getActionHash(SERVICE_REGISTRY_NAMES.morphoblue.PAYBACK),
     [calldataTypes.morphoblue.Payback],
@@ -114,6 +113,7 @@ export function morphoBluePayback(
         },
         amount: args.amount.toFixed(0),
         onBehalf: args.onBehalf ?? ADDRESS_ZERO,
+        paybackAll: args.paybackAll ?? false,
       },
       paramsMapping,
     ],
