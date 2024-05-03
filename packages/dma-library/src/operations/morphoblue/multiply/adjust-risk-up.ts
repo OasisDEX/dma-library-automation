@@ -110,11 +110,16 @@ export const adjustRiskUp: MorphoBlueAdjustUpOperation = async ({
     amount: debt.borrow.amount,
   })
 
-  const sendQuoteTokenToOpExecutor = actions.common.sendToken(network, {
-    asset: debt.address,
-    to: addresses.operationExecutor,
-    amount: debt.borrow.amount,
-  })
+  const flashloanActionStorageIndex = 1
+  const sendQuoteTokenToOpExecutor = actions.common.sendTokenAuto(
+    network,
+    {
+      asset: debt.address,
+      to: addresses.operationExecutor,
+      amount: ZERO, // Taken from mapping
+    },
+    [0, 0, flashloanActionStorageIndex],
+  )
 
   const flashloanCalls = [
     pullCollateralTokensToProxy,
@@ -126,7 +131,7 @@ export const adjustRiskUp: MorphoBlueAdjustUpOperation = async ({
     sendQuoteTokenToOpExecutor,
   ]
 
-  const takeAFlashLoan = actions.common.takeAFlashLoan(network, {
+  const takeAFlashLoan = actions.common.takeAFlashLoanBalancer(network, {
     isDPMProxy: proxy.isDPMProxy,
     asset: flashloan.token.address,
     flashloanAmount: flashloan.token.amount,

@@ -1,7 +1,7 @@
 const aaveLike = {
   Borrow: `tuple(address asset, uint256 amount, address to)`,
   Deposit: `tuple(address asset, uint256 amount, bool sumAmounts, bool setAsCollateral)`,
-  Payback: `tuple(address asset, uint256 amount, bool paybackAll, address onBehalf)`,
+  Payback: `tuple(address asset, uint256 amount, bool paybackAll, address onBehalfOf)`,
   Withdraw: `tuple(address asset, uint256 amount, address to)`,
   SetEMode: `tuple(uint8 categoryId)`,
 }
@@ -23,7 +23,6 @@ export const calldataTypes = {
     UnwrapEth: `tuple(uint256 amount)`,
     ReturnFunds: `tuple(address asset)`,
     ReturnMultipleTokens: `tuple(address[] assets)`,
-    CollectFee: `tuple(address asset)`,
     PullToken: `tuple(address asset, address from, uint256 amount)`,
     PullTokenMaxAmount: `tuple(address asset, address from, uint256 amount)`,
     PositionCreated: `tuple(string protocol, string positionType, address collateralToken, address debtToken)`,
@@ -56,7 +55,8 @@ export const calldataTypes = {
     Deposit: `tuple(${morphoBlueMarketParams}, uint256 amount, bool sumAmounts)`,
     Withdraw: `tuple(${morphoBlueMarketParams}, uint256 amount, address to)`,
     Borrow: `tuple(${morphoBlueMarketParams}, uint256 amount)`,
-    Payback: `tuple(${morphoBlueMarketParams}, uint256 amount, address onBehalf)`,
+    Payback: `tuple(${morphoBlueMarketParams}, uint256 amount, address onBehalf, bool paybackAll)`,
+    ClaimRewards: `tuple(address[] urd, address[] rewards, uint256[] claimable, bytes32[][] proofs)`,
   },
   ajna: {
     DepositBorrow: `tuple(address quoteToken, address collateralToken, uint256 depositAmount, uint256 borrowAmount, bool sumDepositAmounts, uint256 price)`,

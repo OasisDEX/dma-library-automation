@@ -16,6 +16,7 @@ export type OperationRegistryMaybe = OperationsRegistry | undefined
 export type ServiceRegistryMaybe = ServiceRegistry | undefined
 
 export type ActionDefinition = {
+  label: string
   hash: string
   optional: boolean
 }

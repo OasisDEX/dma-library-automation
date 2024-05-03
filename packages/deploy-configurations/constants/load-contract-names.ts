@@ -26,6 +26,8 @@ export const SERVICE_REGISTRY_NAMES = {
     RETURN_FUNDS: 'ReturnFunds_6',
     COLLECT_FEE: 'CollectFee_3',
     POSITION_CREATED: 'PositionCreated',
+    ERC4626_DEPOSIT: 'ERC4626Deposit',
+    ERC4626_WITHDRAW: 'ERC4626Withdraw',
     ACCOUNT_GUARD: 'AccountGuard',
     ACCOUNT_FACTORY: 'AccountFactory',
     OPERATION_EXECUTOR: 'OperationExecutor_5',

@@ -9,38 +9,47 @@ export function getMorphoBlueAdjustDownOperationDefinition(network: Network) {
     name: OPERATION_NAMES.morphoblue.ADJUST_RISK_DOWN,
     actions: [
       {
-        hash: getActionHash(SERVICE_REGISTRY_NAMES.common.TAKE_A_FLASHLOAN),
+        label: SERVICE_REGISTRY_NAMES.common.TAKE_A_FLASHLOAN_BALANCER,
+        hash: getActionHash(SERVICE_REGISTRY_NAMES.common.TAKE_A_FLASHLOAN_BALANCER),
         optional: false,
       },
       {
+        label: SERVICE_REGISTRY_NAMES.common.SET_APPROVAL,
         hash: getActionHash(SERVICE_REGISTRY_NAMES.common.SET_APPROVAL),
         optional: false,
       },
       {
+        label: SERVICE_REGISTRY_NAMES.morphoblue.PAYBACK,
         hash: getActionHash(SERVICE_REGISTRY_NAMES.morphoblue.PAYBACK),
         optional: false,
       },
       {
+        label: SERVICE_REGISTRY_NAMES.morphoblue.WITHDRAW,
         hash: getActionHash(SERVICE_REGISTRY_NAMES.morphoblue.WITHDRAW),
         optional: false,
       },
       {
+        label: SERVICE_REGISTRY_NAMES.common.SWAP_ACTION,
         hash: getActionHash(SERVICE_REGISTRY_NAMES.common.SWAP_ACTION),
         optional: false,
       },
       {
-        hash: getActionHash(SERVICE_REGISTRY_NAMES.common.SEND_TOKEN),
+        label: SERVICE_REGISTRY_NAMES.common.SEND_TOKEN_AUTO,
+        hash: getActionHash(SERVICE_REGISTRY_NAMES.common.SEND_TOKEN_AUTO),
         optional: false,
       },
       {
+        label: SERVICE_REGISTRY_NAMES.common.UNWRAP_ETH,
         hash: getActionHash(SERVICE_REGISTRY_NAMES.common.UNWRAP_ETH),
         optional: true,
       },
       {
+        label: SERVICE_REGISTRY_NAMES.common.RETURN_FUNDS,
         hash: getActionHash(SERVICE_REGISTRY_NAMES.common.RETURN_FUNDS),
         optional: false,
       },
       {
+        label: SERVICE_REGISTRY_NAMES.common.RETURN_FUNDS,
         hash: getActionHash(SERVICE_REGISTRY_NAMES.common.RETURN_FUNDS),
         optional: false,
       },

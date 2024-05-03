@@ -1,7 +1,6 @@
 import { getMorphoBlueCloseOperationDefinition } from '@deploy-configurations/operation-definitions'
-import { FEE_BASE, MAX_UINT } from '@dma-common/constants'
+import { MAX_UINT } from '@dma-common/constants'
 import { actions } from '@dma-library/actions'
-import { BALANCER_FEE } from '@dma-library/config/flashloan-fees'
 import {
   IOperation,
   WithCollateral,
@@ -92,11 +91,16 @@ export const close: MorphoBlueCloseOperation = async ({
     collectFeeInFromToken: swap.collectFeeFrom === 'sourceToken',
   })
 
-  const sendDebtToOpExecutor = actions.common.sendToken(network, {
-    asset: debt.address,
-    to: addresses.operationExecutor,
-    amount: flashloan.token.amount.plus(BALANCER_FEE.div(FEE_BASE).times(flashloan.token.amount)),
-  })
+  const flashloanActionStorageIndex = 1
+  const sendDebtToOpExecutor = actions.common.sendTokenAuto(
+    network,
+    {
+      asset: debt.address,
+      to: addresses.operationExecutor,
+      amount: new BigNumber(0),
+    },
+    [0, 0, flashloanActionStorageIndex],
+  )
 
   const unwrapEth = actions.common.unwrapEth(network, {
     amount: new BigNumber(MAX_UINT),
@@ -112,7 +116,7 @@ export const close: MorphoBlueCloseOperation = async ({
     asset: collateral.isEth ? addresses.tokens.ETH : collateral.address,
   })
 
-  const takeAFlashLoan = actions.common.takeAFlashLoan(network, {
+  const takeAFlashLoan = actions.common.takeAFlashLoanBalancer(network, {
     isDPMProxy: proxy.isDPMProxy,
     asset: flashloan.token.address,
     flashloanAmount: flashloan.token.amount,
