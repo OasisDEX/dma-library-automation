@@ -39,11 +39,6 @@ export function getMorphoBlueAdjustDownOperationDefinition(network: Network) {
         optional: false,
       },
       {
-        label: SERVICE_REGISTRY_NAMES.common.UNWRAP_ETH,
-        hash: getActionHash(SERVICE_REGISTRY_NAMES.common.UNWRAP_ETH),
-        optional: true,
-      },
-      {
         label: SERVICE_REGISTRY_NAMES.common.RETURN_FUNDS,
         hash: getActionHash(SERVICE_REGISTRY_NAMES.common.RETURN_FUNDS),
         optional: false,

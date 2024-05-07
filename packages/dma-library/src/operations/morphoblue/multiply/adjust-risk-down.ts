@@ -13,7 +13,6 @@ import {
   WithProxy,
   WithSwap,
 } from '@dma-library/types/operations'
-import BigNumber from 'bignumber.js'
 
 export type MorphoBlueAdjustRiskDownArgs = WithMorphoBlueMarket &
   WithCollateralAndWithdrawal &
@@ -99,11 +98,6 @@ export const adjustRiskDown: MorphoBlueAdjustDownOperation = async ({
     [0, 0, flashloanActionStorageIndex],
   )
 
-  const unwrapEth = actions.common.unwrapEth(network, {
-    amount: new BigNumber(MAX_UINT),
-  })
-  unwrapEth.skipped = !debt.isEth && !collateral.isEth
-
   const returnDebtFunds = actions.common.returnFunds(network, {
     asset: debt.isEth ? addresses.tokens.ETH : debt.address,
   })
@@ -117,8 +111,7 @@ export const adjustRiskDown: MorphoBlueAdjustDownOperation = async ({
     paybackDebt,
     withdrawCollateral,
     swapCollateralTokensForDebtTokens,
-    sendDebtTokenToOpExecutor,
-    unwrapEth,
+    sendDebtTokenToOpExecutor
   ]
 
   const takeAFlashLoan = actions.common.takeAFlashLoanBalancer(network, {
