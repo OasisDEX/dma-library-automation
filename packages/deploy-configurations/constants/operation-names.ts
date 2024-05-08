@@ -65,7 +65,7 @@ export const OPERATION_NAMES = {
   morphoblue: {
     OPEN_POSITION: 'MorphoBlueOpenPosition',
     CLOSE_POSITION: 'MorphoBlueClosePosition',
-    ADJUST_RISK_UP: 'MorphoBlueAdjustRiskUp',
+    ADJUST_RISK_UP: 'MorphoBlueAdjustRiskUp_2',
     ADJUST_RISK_DOWN: 'MorphoBlueAdjustRiskDown',
     DEPOSIT_BORROW: 'MorphoBlueDepositBorrow',
     OPEN_DEPOSIT_BORROW: 'MorphoBlueOpenDepositBorrow',

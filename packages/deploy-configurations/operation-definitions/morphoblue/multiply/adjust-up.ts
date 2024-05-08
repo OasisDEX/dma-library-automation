@@ -45,7 +45,7 @@ export function getMorphoBlueAdjustUpOperationDefinition(network: Network) {
       },
       {
         label: SERVICE_REGISTRY_NAMES.common.SEND_TOKEN_AUTO,
-        hash: getActionHash(SERVICE_REGISTRY_NAMES.common.SEND_TOKEN),
+        hash: getActionHash(SERVICE_REGISTRY_NAMES.common.SEND_TOKEN_AUTO),
         optional: false,
       },
     ],
