@@ -1,4 +1,6 @@
-import { getMorphoBlueCloseOperationDefinition } from '@deploy-configurations/operation-definitions'
+import { getMorphoBlueCloseOperationDefinition as getMorphoBlueCloseAndExitOperationDefinition } from '@deploy-configurations/operation-definitions'
+import { getMorphoBlueCloseAndRemainOperationDefinition } from '@deploy-configurations/operation-definitions/morphoblue/multiply/close-and-remain'
+import { Network } from '@deploy-configurations/types/network'
 import { MAX_UINT } from '@dma-common/constants'
 import { actions } from '@dma-library/actions'
 import {
@@ -29,7 +31,9 @@ export type MorphoBlueCloseArgs = WithMorphoBlueMarket &
   WithMorphpBlueStrategyAddresses &
   WithNetwork &
   WithPaybackDebt &
-  WithWithdrawCollateral
+  WithWithdrawCollateral & {
+    shouldExit: boolean
+  }
 
 export type MorphoBlueCloseOperation = ({
   morphoBlueMarket,
@@ -53,6 +57,7 @@ export const close: MorphoBlueCloseOperation = async ({
   network,
   amountDebtToPaybackInBaseUnit,
   amountCollateralToWithdrawInBaseUnit,
+  shouldExit,
 }) => {
   if (collateral.address !== morphoBlueMarket.collateralToken) {
     throw new Error('Collateral token must be the same as MorphoBlue market collateral token')
@@ -102,18 +107,37 @@ export const close: MorphoBlueCloseOperation = async ({
     [0, 0, flashloanActionStorageIndex],
   )
 
-  const unwrapEth = actions.common.unwrapEth(network, {
-    amount: new BigNumber(MAX_UINT),
-  })
-
-  unwrapEth.skipped = !debt.isEth && !collateral.isEth
-
   const returnDebtFunds = actions.common.returnFunds(network, {
-    asset: debt.isEth ? addresses.tokens.ETH : debt.address,
+    asset: debt.isEth ? `0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE` : debt.address,
   })
 
-  const returnCollateralFunds = actions.common.returnFunds(network, {
-    asset: collateral.isEth ? addresses.tokens.ETH : collateral.address,
+  let returnCollateralFunds
+  let withdrawRemainingCollateral
+
+  if (shouldExit) {
+    withdrawRemainingCollateral = actions.spark.withdraw(network, {
+      asset: collateral.address,
+      amount: new BigNumber(MAX_UINT),
+      to: proxy.address,
+    })
+    returnCollateralFunds = actions.common.returnFunds(network, {
+      asset: collateral.isEth ? `0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE` : collateral.address,
+    })
+  }
+
+  const calls = [
+    setDebtTokenApprovalOnPool,
+    paybackDebt,
+    withdrawCollateral,
+    swapCollateralTokensForDebtTokens,
+    sendDebtToOpExecutor,
+    returnDebtFunds,
+    withdrawRemainingCollateral,
+    returnCollateralFunds,
+  ]
+  // Filter out undefined calls
+  const filteredCalls = calls.filter(call => {
+    return call !== undefined
   })
 
   const takeAFlashLoan = actions.common.takeAFlashLoanBalancer(network, {
@@ -122,18 +146,23 @@ export const close: MorphoBlueCloseOperation = async ({
     flashloanAmount: flashloan.token.amount,
     isProxyFlashloan: true,
     provider: flashloan.provider,
-    calls: [
-      setDebtTokenApprovalOnPool,
-      paybackDebt,
-      withdrawCollateral,
-      swapCollateralTokensForDebtTokens,
-      sendDebtToOpExecutor,
-      unwrapEth,
-    ],
+    calls: filteredCalls,
   })
 
   return {
-    calls: [takeAFlashLoan, returnDebtFunds, returnCollateralFunds],
-    operationName: getMorphoBlueCloseOperationDefinition(network).name,
+    calls: [takeAFlashLoan],
+    operationName: getMorphoBlueCloseOperationDefinition(network, shouldExit).name,
   }
+}
+
+function getMorphoBlueCloseOperationDefinition(network: Network, shouldExit: boolean) {
+  if (shouldExit) {
+    return getMorphoBlueCloseAndExitOperationDefinition(network)
+  }
+
+  if (!shouldExit) {
+    return getMorphoBlueCloseAndRemainOperationDefinition(network)
+  }
+
+  throw new Error('Invalid operation definition')
 }
