@@ -65,6 +65,7 @@ export const OPERATION_NAMES = {
   morphoblue: {
     OPEN_POSITION: 'MorphoBlueOpenPosition',
     CLOSE_POSITION: 'MorphoBlueClosePosition',
+    CLOSE_AND_REMAIN: 'MorphoBlueCloseAndRemain',
     ADJUST_RISK_UP: 'MorphoBlueAdjustRiskUp_2',
     ADJUST_RISK_DOWN: 'MorphoBlueAdjustRiskDown',
     DEPOSIT_BORROW: 'MorphoBlueDepositBorrow',
@@ -72,6 +73,9 @@ export const OPERATION_NAMES = {
     DEPOSIT: 'MorphoBlueDeposit',
     BORROW: 'MorphoBlueBorrow',
     PAYBACK_WITHDRAW: 'MorphoBluePaybackWithdraw',
+    // Used with Partial Take Profit
+    WITHDRAW: 'MorphoBlueWithdraw',
+    WITHDRAW_TO_DEBT: 'MorphoBlueWithdrawToDebt',
   },
   common: {
     CUSTOM_OPERATION: 'CustomOperation',
