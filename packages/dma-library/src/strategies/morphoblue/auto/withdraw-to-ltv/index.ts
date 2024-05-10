@@ -18,7 +18,6 @@ import BigNumber from 'bignumber.js'
 export type MorphoBlueWithdrawArgs = {
   network: Network
   dpmProxyAddress: string
-  oraclePrice: BigNumber
   targetLTV: BigNumber
   slippage: BigNumber
   shouldWithdrawToDebt: boolean
@@ -43,7 +42,7 @@ export const withdraw: MorphoBlueWithdrawToLTV = async (args, dependencies) => {
     args.quoteTokenPrecision,
     args.quoteTokenPrecision,
     args.targetLTV,
-    args.oraclePrice,
+    args.position.price,
   )
 
   const collateralTokenSymbol = await getTokenSymbol(
