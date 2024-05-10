@@ -272,6 +272,7 @@ async function buildOperation(
       irm: args.position.marketParams.irm,
       lltv: args.position.marketParams.lltv.times(TEN.pow(18)),
     },
+    shouldExit: !args.shouldCloseToCollateral
   }
 
   return await operations.morphoblue.multiply.close(closeArgs)
