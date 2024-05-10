@@ -9,18 +9,22 @@ export function getMorphoBlueWithdrawOperationDefinition(network: Network) {
     name: OPERATION_NAMES.morphoblue.WITHDRAW,
     actions: [
       {
+        label: SERVICE_REGISTRY_NAMES.morphoblue.WITHDRAW,
         hash: getActionHash(SERVICE_REGISTRY_NAMES.morphoblue.WITHDRAW),
         optional: false,
       },
       {
+        label: SERVICE_REGISTRY_NAMES.common.COLLECT_FEE,
         hash: getActionHash(SERVICE_REGISTRY_NAMES.common.COLLECT_FEE),
         optional: false,
       },
       {
+        label: SERVICE_REGISTRY_NAMES.common.UNWRAP_ETH,
         hash: getActionHash(SERVICE_REGISTRY_NAMES.common.UNWRAP_ETH),
         optional: false,
       },
       {
+        label: SERVICE_REGISTRY_NAMES.common.RETURN_FUNDS,
         hash: getActionHash(SERVICE_REGISTRY_NAMES.common.RETURN_FUNDS),
         optional: false,
       },
