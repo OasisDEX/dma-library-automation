@@ -51,6 +51,7 @@ export { getMorphoBlueOpenDepositBorrowOperationDefinition } from './morphoblue/
 export { getMorphoBluePaybackWithdrawOperationDefinition } from './morphoblue/borrow'
 export { getMorphoBlueOpenOperationDefinition } from './morphoblue/multiply'
 export { getMorphoBlueCloseOperationDefinition } from './morphoblue/multiply'
+export { getMorphoBlueCloseAndRemainOperationDefinition } from './morphoblue/multiply'
 export { getMorphoBlueAdjustDownOperationDefinition } from './morphoblue/multiply'
 export { getMorphoBlueAdjustUpOperationDefinition } from './morphoblue/multiply'
 

@@ -1,5 +1,4 @@
-import { getMorphoBlueCloseOperationDefinition as getMorphoBlueCloseAndExitOperationDefinition } from '@deploy-configurations/operation-definitions'
-import { getMorphoBlueCloseAndRemainOperationDefinition } from '@deploy-configurations/operation-definitions/morphoblue/multiply/close-and-remain'
+import { getMorphoBlueCloseOperationDefinition as getMorphoBlueCloseAndExitOperationDefinition, getMorphoBlueCloseAndRemainOperationDefinition } from '@deploy-configurations/operation-definitions'
 import { Network } from '@deploy-configurations/types/network'
 import { MAX_UINT } from '@dma-common/constants'
 import { actions } from '@dma-library/actions'
