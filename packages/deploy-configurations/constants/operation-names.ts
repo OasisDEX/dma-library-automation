@@ -74,8 +74,8 @@ export const OPERATION_NAMES = {
     BORROW: 'MorphoBlueBorrow',
     PAYBACK_WITHDRAW: 'MorphoBluePaybackWithdraw',
     // Used with Partial Take Profit
-    WITHDRAW: 'MorphoBlueWithdraw_auto',
-    WITHDRAW_TO_DEBT: 'MorphoBlueWithdrawToDebt_auto',
+    WITHDRAW: 'MorphoBlueWithdraw_auto_2',
+    WITHDRAW_TO_DEBT: 'MorphoBlueWithdrawToDebt_auto_2',
   },
   common: {
     CUSTOM_OPERATION: 'CustomOperation',
