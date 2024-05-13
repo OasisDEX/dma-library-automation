@@ -1,5 +1,5 @@
 import { Network } from '@deploy-configurations/types/network'
-import { ZERO } from '@dma-common/constants'
+import { TEN, ZERO } from '@dma-common/constants'
 import { MorphoBlueStrategyAddresses } from '@dma-library/operations/morphoblue/addresses'
 import { withdraw as withdrawOp } from '@dma-library/operations/morphoblue/auto/withdraw'
 import { withdrawToDebt } from '@dma-library/operations/morphoblue/auto/withdraw-to-debt'
@@ -36,11 +36,11 @@ export type MorphoBlueWithdrawToLTV = (
 ) => Promise<SummerStrategy<MorphoBluePosition>>
 
 export const withdraw: MorphoBlueWithdrawToLTV = async (args, dependencies) => {
-  const amountToWithdraw = determineWithdrawalAmount(
+  const [amountToWithdraw, amountToWithdrawInWeiLike] = determineWithdrawalAmount(
     args.position.debtAmount,
     args.position.collateralAmount,
     args.quoteTokenPrecision,
-    args.quoteTokenPrecision,
+    args.collateralTokenPrecision,
     args.targetLTV,
     args.position.price,
   )
@@ -57,11 +57,22 @@ export const withdraw: MorphoBlueWithdrawToLTV = async (args, dependencies) => {
   const collateralAddress = args.position.marketParams.collateralToken
   const debtAddress = args.position.marketParams.loanToken
   const targetPosition = args.position.withdraw(amountToWithdraw)
+
+  const morphoBlueMarket = {
+    loanToken: args.position.marketParams.loanToken,
+    collateralToken: args.position.marketParams.collateralToken,
+    oracle: args.position.marketParams.oracle,
+    irm: args.position.marketParams.irm,
+    lltv: args.position.marketParams.lltv.times(TEN.pow(18)),
+  }
+
   if (args.shouldWithdrawToDebt) {
     const FEE = new BigNumber(20)
     const FEE_BASIS = new BigNumber(10000)
-    const feeAmount = amountToWithdraw.times(FEE.div(FEE_BASIS)).integerValue(BigNumber.ROUND_FLOOR)
-    const amountToSwap = amountToWithdraw.minus(feeAmount)
+    const feeAmount = amountToWithdrawInWeiLike
+      .times(FEE.div(FEE_BASIS))
+      .integerValue(BigNumber.ROUND_FLOOR)
+    const amountToSwap = amountToWithdrawInWeiLike.minus(feeAmount)
     const { swapData, collectFeeFrom } = await getSwapDataHelper<
       typeof dependencies.addresses,
       AaveLikeTokens
@@ -82,8 +93,8 @@ export const withdraw: MorphoBlueWithdrawToLTV = async (args, dependencies) => {
     })
 
     const operation = await withdrawToDebt({
-      morphoBlueMarket: args.position.marketParams,
-      withdrawAmount: amountToWithdraw,
+      morphoBlueMarket: morphoBlueMarket,
+      withdrawAmount: amountToWithdrawInWeiLike,
       collateralTokenAddress: collateralAddress,
       receiveAtLeast: swapData.minToTokenAmount,
       swapAmount: amountToSwap,
@@ -115,8 +126,8 @@ export const withdraw: MorphoBlueWithdrawToLTV = async (args, dependencies) => {
 
   if (!args.shouldWithdrawToDebt) {
     const operation = await withdrawOp({
-      morphoBlueMarket: args.position.marketParams,
-      withdrawAmount: amountToWithdraw,
+      morphoBlueMarket: morphoBlueMarket,
+      withdrawAmount: amountToWithdrawInWeiLike,
       collateralTokenAddress: collateralAddress,
       collateralIsEth: collateralTokenSymbol === 'WETH' || collateralTokenSymbol === 'ETH',
       proxy: args.dpmProxyAddress,
@@ -153,15 +164,8 @@ function determineWithdrawalAmount(
   targetLTV: BigNumber,
   oraclePrice: BigNumber,
 ) {
-  // We scale down because BigNumber can handle precision maths
-  // with large floating point numbers
-  const scaledDownDebt = existingDebt.div(new BigNumber(10).pow(debtDecimals))
-
   // nextCollateral = existingDebt / (targetLTV * oraclePrice)
-  const scaledDownNextCollateral = scaledDownDebt.div(targetLTV.times(oraclePrice))
-  const nextCollateral = scaledDownNextCollateral.multipliedBy(
-    new BigNumber(10).pow(collateralDecimals),
-  )
+  const nextCollateral = existingDebt.div(targetLTV.times(oraclePrice))
   const amountToWithdraw = existingCollateral.minus(nextCollateral)
 
   if (amountToWithdraw.lte(ZERO)) {
@@ -170,7 +174,10 @@ function determineWithdrawalAmount(
     throw new Error('Cannot withdraw zero or less')
   }
 
-  return amountToWithdraw
+  return [
+    amountToWithdraw,
+    amountToWithdraw.multipliedBy(new BigNumber(10).pow(collateralDecimals)),
+  ]
 }
 
 function getTokenAddressFromDependencies(deps: MorphoBlueWithdrawDependencies, symbol: string) {

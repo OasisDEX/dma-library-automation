@@ -23,6 +23,7 @@ export const calldataTypes = {
     UnwrapEth: `tuple(uint256 amount)`,
     ReturnFunds: `tuple(address asset)`,
     ReturnMultipleTokens: `tuple(address[] assets)`,
+    CollectFee: `tuple(address asset)`,
     PullToken: `tuple(address asset, address from, uint256 amount)`,
     PullTokenMaxAmount: `tuple(address asset, address from, uint256 amount)`,
     PositionCreated: `tuple(string protocol, string positionType, address collateralToken, address debtToken)`,
