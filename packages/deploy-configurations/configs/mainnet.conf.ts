@@ -261,9 +261,12 @@ export const config: SystemConfig = {
       CollectFee: {
         name: 'CollectFee',
         deploy: false,
-        address: '0x7c31665154caC48EB37a92dA52f63CEA78f3BA6C',
+        address: '0x4E3829bA3a5eb8047d3C612BfffDD5aB3420F6E9',
         serviceRegistryName: SERVICE_REGISTRY_NAMES.common.COLLECT_FEE,
-        history: [ '0x7c31665154caC48EB37a92dA52f63CEA78f3BA6C' ],
+        history: [
+          '0x7c31665154caC48EB37a92dA52f63CEA78f3BA6C',
+          '0x7c31665154caC48EB37a92dA52f63CEA78f3BA6C'
+        ],
         constructorArgs: [
           'address:ServiceRegistry',
           20,
@@ -444,7 +447,7 @@ export const config: SystemConfig = {
       },
       MorphoBlueBorrow: {
         name: 'MorphoBlueBorrow',
-        deploy: true,
+        deploy: false,
         address: '0xc45601E97847018752c85eBbB848a6cf86D68dEF',
         serviceRegistryName: SERVICE_REGISTRY_NAMES.morphoblue.BORROW,
         history: [

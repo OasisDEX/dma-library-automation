@@ -45,7 +45,7 @@ export function getMorphoBlueCloseOperationDefinition(network: Network) {
       },
       {
         label: SERVICE_REGISTRY_NAMES.morphoblue.WITHDRAW,
-        hash: getActionHash(SERVICE_REGISTRY_NAMES.spark.WITHDRAW),
+        hash: getActionHash(SERVICE_REGISTRY_NAMES.morphoblue.WITHDRAW),
         optional: false,
       },
       {

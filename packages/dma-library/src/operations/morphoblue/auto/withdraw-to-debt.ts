@@ -1,4 +1,4 @@
-import { getMorphoBlueWithdrawToDebtOperationDefinition } from '@deploy-configurations/operation-definitions/morphoblue/auto/withdraw-to-debt'
+import { getMorphoBlueWithdrawToDebtOperationDefinition } from '@deploy-configurations/operation-definitions'
 import { Network } from '@deploy-configurations/types/network'
 import { MAX_UINT, ZERO } from '@dma-common/constants'
 import { actions } from '@dma-library/actions'
@@ -50,7 +50,7 @@ export const withdrawToDebt: MorphoBlueWithdrawToDebtOperation = async args => {
         ? args.addresses.tokens.WETH
         : args.collateralTokenAddress,
     toAsset: args.debtIsEth ? args.addresses.tokens.WETH : args.debtTokenAddress,
-    amount: args.withdrawAmount,
+    amount: args.swapAmount,
     receiveAtLeast: args.receiveAtLeast,
     fee: ZERO.toNumber(),
     withData: args.swapData,

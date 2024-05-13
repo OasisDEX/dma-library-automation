@@ -24,7 +24,7 @@ export const SERVICE_REGISTRY_NAMES = {
     WRAP_ETH: 'WrapEth_6',
     UNWRAP_ETH: 'UnwrapEth_6',
     RETURN_FUNDS: 'ReturnFunds_6',
-    COLLECT_FEE: 'CollectFee_3',
+    COLLECT_FEE: 'CollectFee_auto',
     POSITION_CREATED: 'PositionCreated',
     ERC4626_DEPOSIT: 'ERC4626Deposit',
     ERC4626_WITHDRAW: 'ERC4626Withdraw',
@@ -118,3 +118,6 @@ export const SERVICE_REGISTRY_NAMES = {
   },
 } as const
 
+export type AllValues<T> = { [K in keyof T]: T[K] extends object ? AllValues<T[K]> : T[K] }[keyof T]
+
+export type ContractNames = AllValues<typeof SERVICE_REGISTRY_NAMES>
