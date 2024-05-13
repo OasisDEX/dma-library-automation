@@ -64,7 +64,7 @@ export const OPERATION_NAMES = {
   },
   morphoblue: {
     OPEN_POSITION: 'MorphoBlueOpenPosition',
-    CLOSE_POSITION: 'MorphoBlueClosePosition_auto_2',
+    CLOSE_POSITION: 'MorphoBlueCloseAndExit_auto_3',
     CLOSE_AND_REMAIN: 'MorphoBlueCloseAndRemain_auto',
     ADJUST_RISK_UP: 'MorphoBlueAdjustRiskUp_2',
     ADJUST_RISK_DOWN: 'MorphoBlueAdjustRiskDown',

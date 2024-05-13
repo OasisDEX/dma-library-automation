@@ -220,9 +220,11 @@ async function buildOperation(
     isIncreasingRisk: false,
   })
 
-  const collateralAmountToBeSwapped = args.shouldCloseToCollateral
-    ? swapData.fromTokenAmount.plus(preSwapFee)
-    : lockedCollateralAmount
+  const shouldCloseAndExit = !args.shouldCloseToCollateral
+  const collateralAmountToBeSwapped = shouldCloseAndExit
+    ? lockedCollateralAmount
+    : swapData.fromTokenAmount.plus(preSwapFee)
+  const amountToWithdrawInBaseUnit = collateralAmountToBeSwapped
 
   const closeArgs = {
     collateral: {
@@ -264,7 +266,7 @@ async function buildOperation(
     },
     network: dependencies.network,
     amountDebtToPaybackInBaseUnit: amountToFlashloan,
-    amountCollateralToWithdrawInBaseUnit: lockedCollateralAmount,
+    amountCollateralToWithdrawInBaseUnit: amountToWithdrawInBaseUnit,
     morphoBlueMarket: {
       loanToken: args.position.marketParams.loanToken,
       collateralToken: args.position.marketParams.collateralToken,
@@ -272,7 +274,7 @@ async function buildOperation(
       irm: args.position.marketParams.irm,
       lltv: args.position.marketParams.lltv.times(TEN.pow(18)),
     },
-    shouldExit: !args.shouldCloseToCollateral
+    shouldExit: shouldCloseAndExit,
   }
 
   return await operations.morphoblue.multiply.close(closeArgs)

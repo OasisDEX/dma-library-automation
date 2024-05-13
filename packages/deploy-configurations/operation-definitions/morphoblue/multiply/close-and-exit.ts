@@ -43,16 +43,6 @@ export function getMorphoBlueCloseOperationDefinition(network: Network) {
         hash: getActionHash(SERVICE_REGISTRY_NAMES.common.RETURN_FUNDS),
         optional: false,
       },
-      {
-        label: SERVICE_REGISTRY_NAMES.morphoblue.WITHDRAW,
-        hash: getActionHash(SERVICE_REGISTRY_NAMES.morphoblue.WITHDRAW),
-        optional: false,
-      },
-      {
-        label: SERVICE_REGISTRY_NAMES.common.RETURN_FUNDS,
-        hash: getActionHash(SERVICE_REGISTRY_NAMES.common.RETURN_FUNDS),
-        optional: false,
-      },
     ],
     log: false,
   }

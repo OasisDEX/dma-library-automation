@@ -1,6 +1,8 @@
-import { getMorphoBlueCloseOperationDefinition as getMorphoBlueCloseAndExitOperationDefinition, getMorphoBlueCloseAndRemainOperationDefinition } from '@deploy-configurations/operation-definitions'
+import {
+  getMorphoBlueCloseAndRemainOperationDefinition,
+  getMorphoBlueCloseOperationDefinition as getMorphoBlueCloseAndExitOperationDefinition,
+} from '@deploy-configurations/operation-definitions'
 import { Network } from '@deploy-configurations/types/network'
-import { MAX_UINT } from '@dma-common/constants'
 import { actions } from '@dma-library/actions'
 import {
   IOperation,
@@ -110,20 +112,6 @@ export const close: MorphoBlueCloseOperation = async ({
     asset: debt.isEth ? `0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE` : debt.address,
   })
 
-  let returnCollateralFunds
-  let withdrawRemainingCollateral
-
-  if (shouldExit) {
-    withdrawRemainingCollateral = actions.spark.withdraw(network, {
-      asset: collateral.address,
-      amount: new BigNumber(MAX_UINT),
-      to: proxy.address,
-    })
-    returnCollateralFunds = actions.common.returnFunds(network, {
-      asset: collateral.isEth ? `0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE` : collateral.address,
-    })
-  }
-
   const calls = [
     setDebtTokenApprovalOnPool,
     paybackDebt,
@@ -131,8 +119,6 @@ export const close: MorphoBlueCloseOperation = async ({
     swapCollateralTokensForDebtTokens,
     sendDebtToOpExecutor,
     returnDebtFunds,
-    withdrawRemainingCollateral,
-    returnCollateralFunds,
   ]
   // Filter out undefined calls
   const filteredCalls = calls.filter(call => {
