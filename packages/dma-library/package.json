@@ -1,6 +1,6 @@
 {
   "name": "@oasisdex/dma-library",
-  "version": "0.6.4-automation.22-debug-close-to-debt",
+  "version": "0.6.4-automation.22-debug-close-to-debt.2",
   "typings": "lib/index.d.ts",
   "types": "lib/index.d.ts",
   "main": "lib/index.js",
