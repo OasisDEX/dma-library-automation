@@ -84,11 +84,15 @@ contract OperationExecutor is IERC3156FlashBorrower, IFlashLoanRecipient, UseSto
    *
    * @param calls List of action calls to be executed.
    */
-  function executeOp(Call[] memory calls) public payable returns (bytes32) {
+  function executeOp(Call[] memory calls) external payable returns (bytes32) {
     aggregate(calls);
 
     bytes32[] memory actions = storeInSlot("actions").returnStoredArray();
     bytes32 operationName = getOperation(keccak256(abi.encodePacked(actions)));
+
+    /* Transient storage cleared in case of `executeOp ` being called multiple times in one transaction */
+    storeInSlot("actions").clearStoredArray();
+    storeInSlot("transaction").clearStoredArray();
 
     emit Operation(operationName, calls);
 

@@ -16,7 +16,7 @@ library StorageSlot {
    * @return slotPosition The storage slot position as a bytes32 value.
    */
   function getStorageSlotPosition(string memory salt) internal pure returns (bytes32 slotPosition) {
-    slotPosition = bytes32(uint256(keccak256(abi.encodePacked("summer.proxy.storage", salt))));
+    slotPosition = keccak256(abi.encodePacked("summer.proxy.storage", salt));
   }
 
   /**
@@ -39,6 +39,21 @@ library StorageSlot {
     }
 
     return values;
+  }
+
+  /**
+   * @dev Clears the stored array at the specified slot position.
+   * @param slotPosition The position of the storage slot.
+   */
+  function clearStoredArray(bytes32 slotPosition) internal {
+    uint256 length = _getLength(slotPosition);
+
+    for (uint256 i = 0; i < length; i++) {
+      bytes32 key = _getKey(slotPosition, i);
+      assembly {
+        tstore(key, 0)
+      }
+    }
   }
 
   /**
@@ -111,7 +126,7 @@ library StorageSlot {
   /**
    * @dev Retrieves the length of an array based on the provided slot position.
    * @param slotPosition The position of the storage slot.
-   * @return The length of the storage slot.
+   * @return length The length of the storage slot.
    */
   function _getLength(bytes32 slotPosition) internal view returns (uint256 length) {
     bytes32 lengthKey = keccak256(abi.encodePacked(slotPosition, "length"));
@@ -122,7 +137,7 @@ library StorageSlot {
   /**
    * @dev Retrieves the length of an array based on the provided length key.
    * @param lengthKey Key to the length of the storage slot.
-   * @return The length of the storage slot.
+   * @return length The length of the storage slot.
    */
   function _getLengthByLengthKey(bytes32 lengthKey) internal view returns (uint256 length) {
     assembly {
