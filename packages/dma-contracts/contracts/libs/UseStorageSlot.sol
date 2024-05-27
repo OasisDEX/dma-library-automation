@@ -25,12 +25,7 @@ library StorageSlot {
    * @return An array of bytes32 values stored in the specified slot.
    */
   function returnStoredArray(bytes32 slotPosition) internal view returns (bytes32[] memory) {
-    bytes32 lengthKey = keccak256(abi.encodePacked(slotPosition, "length"));
-    uint256 length;
-
-    assembly {
-      length := tload(lengthKey)
-    }
+    uint256 length = _getLength(slotPosition);
 
     bytes32[] memory values = new bytes32[](length);
 
@@ -53,12 +48,8 @@ library StorageSlot {
    * @notice This function updates the length of the storage slot by incrementing it by 1.
    */
   function write(bytes32 slotPosition, bytes32 value) internal {
-    // each arryas length is stored in a separate key
     bytes32 lengthKey = keccak256(abi.encodePacked(slotPosition, "length"));
-    uint256 length;
-    assembly {
-      length := tload(lengthKey)
-    }
+    uint256 length = _getLengthByLengthKey(lengthKey);
     bytes32 key = _getKey(slotPosition, length);
     assembly {
       // store the value at the key
@@ -80,6 +71,8 @@ library StorageSlot {
     bytes32 param,
     uint256 paramMapping
   ) internal view returns (bytes32) {
+    uint256 length = _getLength(slotPosition);
+    require(paramMapping <= length, "StorageSlot: Index out of bounds");
     // if paramMapping is 0, return the param
     if (paramMapping == 0) return param;
     bytes32 key = _getKey(slotPosition, paramMapping - 1);
@@ -113,6 +106,29 @@ library StorageSlot {
    */
   function _getKey(bytes32 slotPosition, uint256 index) internal pure returns (bytes32) {
     return keccak256(abi.encodePacked(slotPosition, index));
+  }
+
+  /**
+   * @dev Retrieves the length of an array based on the provided slot position.
+   * @param slotPosition The position of the storage slot.
+   * @return The length of the storage slot.
+   */
+  function _getLength(bytes32 slotPosition) internal view returns (uint256 length) {
+    bytes32 lengthKey = keccak256(abi.encodePacked(slotPosition, "length"));
+    length = _getLengthByLengthKey(lengthKey);
+    return length;
+  }
+
+  /**
+   * @dev Retrieves the length of an array based on the provided length key.
+   * @param lengthKey Key to the length of the storage slot.
+   * @return The length of the storage slot.
+   */
+  function _getLengthByLengthKey(bytes32 lengthKey) internal view returns (uint256 length) {
+    assembly {
+      length := tload(lengthKey)
+    }
+    return length;
   }
 }
 
