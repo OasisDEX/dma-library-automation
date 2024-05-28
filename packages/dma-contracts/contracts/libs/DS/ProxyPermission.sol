@@ -17,7 +17,7 @@ contract ProxyPermission {
     dsGuardFactory = IDSGuardFactory(_dsGuardFactory);
   }
 
-  function givePermission(bool isDPMProxy, address _contractAddr) public {
+  function givePermission(bool isDPMProxy, address _contractAddr) internal {
     if (isDPMProxy) {
       // DPM permission
       IAccountGuard(IAccountImplementation(address(this)).guard()).permit(
@@ -40,7 +40,7 @@ contract ProxyPermission {
     }
   }
 
-  function removePermission(bool isDPMProxy, address _contractAddr) public {
+  function removePermission(bool isDPMProxy, address _contractAddr) internal {
     if (isDPMProxy) {
       // DPM permission
       IAccountGuard(IAccountImplementation(address(this)).guard()).permit(
