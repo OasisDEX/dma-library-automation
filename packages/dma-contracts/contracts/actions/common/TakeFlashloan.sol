@@ -12,7 +12,7 @@ import { OPERATION_EXECUTOR, DAI, CHAINLOG_VIEWER } from "../../core/constants/C
 import { MCD_FLASH } from "../../core/constants/Maker.sol";
 import { BALANCER_VAULT } from "../../core/constants/Balancer.sol";
 import { ChainLogView } from "../../core/views/ChainLogView.sol";
-import { ProxyPermission } from "../../libs/DS/ProxyPermission.sol";
+
 import { ProxyPermission } from "../../libs/DS/ProxyPermission.sol";
 import { IERC20 } from "../../libs/SafeERC20.sol";
 import { UseRegistry } from "../../libs/UseRegistry.sol";

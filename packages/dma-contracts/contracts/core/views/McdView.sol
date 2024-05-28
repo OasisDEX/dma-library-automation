@@ -5,7 +5,7 @@ import "../../libs/DS/DSMath.sol";
 
 import "../../interfaces/maker/IManager.sol";
 import "../../interfaces/maker/ISpotter.sol";
-import "../../interfaces/maker/IVat.sol";
+
 
 /// @title Getter contract for Position info from Maker protocol
 contract McdView is DSMath {

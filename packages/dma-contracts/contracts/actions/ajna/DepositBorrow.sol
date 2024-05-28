@@ -3,7 +3,7 @@ pragma solidity ^0.8.15;
 
 import { Executable } from "../common/Executable.sol";
 import { UseStorageSlot, StorageSlot } from "../../libs/UseStorageSlot.sol";
-import { OperationStorage } from "../../core/OperationStorage.sol";
+
 import { DepositBorrowData } from "../../core/types/Ajna.sol";
 import {
   AJNA_POOL_UTILS_INFO,

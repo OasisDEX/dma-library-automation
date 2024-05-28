@@ -3,7 +3,7 @@ pragma solidity ^0.8.15;
 
 import { Executable } from "../common/Executable.sol";
 import { UseStorageSlot, StorageSlot } from "../../libs/UseStorageSlot.sol";
-import { OperationStorage } from "../../core/OperationStorage.sol";
+
 import { WithdrawData } from "../../core/types/MorphoBlue.sol";
 import { MORPHO_BLUE } from "../../core/constants/MorphoBlue.sol";
 import { IMorpho } from "../../interfaces/morpho-blue/IMorpho.sol";
