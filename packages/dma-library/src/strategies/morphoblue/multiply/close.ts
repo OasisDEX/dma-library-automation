@@ -41,7 +41,8 @@ const positionType: PositionType = 'Multiply'
 
 export const closeMultiply: MorphoCloseStrategy = async (args, dependencies) => {
   const position = args.position
-
+  console.log("MB Close Multiply")
+  console.log("shouldCloseToCollateral", args.shouldCloseToCollateral)
   const getSwapData = args.shouldCloseToCollateral
     ? getMorphoSwapDataToCloseToCollateral
     : getMorphoSwapDataToCloseToDebt
@@ -49,10 +50,12 @@ export const closeMultiply: MorphoCloseStrategy = async (args, dependencies) => 
     args.position.marketParams.collateralToken,
     dependencies.provider,
   )
+  console.log("collateralTokenSymbol", collateralTokenSymbol)
   const debtTokenSymbol = await getTokenSymbol(
     args.position.marketParams.loanToken,
     dependencies.provider,
   )
+  console.log("debtTokenSymbol", debtTokenSymbol)
 
   const { swapData, collectFeeFrom, preSwapFee } = await getSwapData(
     args,
@@ -154,6 +157,7 @@ async function getMorphoSwapDataToCloseToCollateral(
   collateralTokenSymbol: string,
   debtTokenSymbol: string,
 ) {
+  console.log("Morpho Clsoing to Coll...")
   const outstandingDebt = amountToWei(position.debtAmount, args.quoteTokenPrecision).integerValue(
     BigNumber.ROUND_DOWN,
   )

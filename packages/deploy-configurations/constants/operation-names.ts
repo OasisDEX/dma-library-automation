@@ -24,8 +24,8 @@ export const OPERATION_NAMES = {
       DEPOSIT: 'AAVEV3Deposit',
       BORROW: 'AAVEV3Borrow',
       PAYBACK_WITHDRAW: 'AAVEV3PaybackWithdraw',
-      WITHDRAW: 'AAVEV3Withdraw_3',
-      WITHDRAW_TO_DEBT: 'AAVEV3WithdrawToDebt_4',
+      WITHDRAW: 'AAVEV3Withdraw_auto',
+      WITHDRAW_TO_DEBT: 'AAVEV3WithdrawToDebt_auto',
     },
   },
   spark: {
@@ -39,8 +39,8 @@ export const OPERATION_NAMES = {
     DEPOSIT: 'SparkDeposit',
     BORROW: 'SparkBorrow',
     PAYBACK_WITHDRAW: 'SparkPaybackWithdraw',
-    WITHDRAW: 'SparkWithdraw_3',
-    WITHDRAW_TO_DEBT: 'SparkWithdrawToDebt_3',
+    WITHDRAW: 'SparkWithdraw_auto',
+    WITHDRAW_TO_DEBT: 'SparkWithdrawToDebt_auto',
   },
   maker: {
     OPEN_AND_DRAW: 'OpenAndDraw',
