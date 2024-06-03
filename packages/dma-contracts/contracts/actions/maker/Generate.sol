@@ -27,13 +27,13 @@ contract MakerGenerate is Executable, UseStorageSlot {
 
   function execute(bytes calldata data, uint8[] memory paramsMap) external payable override {
     GenerateData memory generateData = parseInputs(data);
-    generateData.vaultId = storeInSlot("transaction").readUint(
+    generateData.vaultId = getTransactionStorageSlot().readUint(
       bytes32(generateData.vaultId),
       paramsMap[1]
     );
 
     uint256 amountGenerated = _generate(generateData);
-    storeInSlot("transaction").write(bytes32(amountGenerated));
+    getTransactionStorageSlot().write(bytes32(amountGenerated));
   }
 
   function _generate(GenerateData memory data) internal returns (uint256) {

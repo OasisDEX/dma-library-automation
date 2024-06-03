@@ -47,6 +47,6 @@ contract DummySwap is Executable, UseStorageSlot {
 
     require(amountBought >= swap.receiveAtLeast, "Exchange / Received less");
 
-    storeInSlot("transaction").write(bytes32(amountBought));
+    getTransactionStorageSlot().write(bytes32(amountBought));
   }
 }

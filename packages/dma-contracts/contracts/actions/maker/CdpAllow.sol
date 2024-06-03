@@ -25,7 +25,7 @@ contract CdpAllow is Executable, UseStorageSlot {
 
   function execute(bytes calldata data, uint8[] memory paramsMap) external payable override {
     CdpAllowData memory cdpAllowData = parseInputs(data);
-    cdpAllowData.vaultId = storeInSlot("transaction").readUint(
+    cdpAllowData.vaultId = getTransactionStorageSlot().readUint(
       bytes32(cdpAllowData.vaultId),
       paramsMap[0]
     );

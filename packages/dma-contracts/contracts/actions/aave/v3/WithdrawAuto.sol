@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
-pragma solidity ^0.8.15;
+pragma solidity 0.8.24;
 
 import { Executable } from "../../common/Executable.sol";
 
@@ -28,7 +28,7 @@ contract AaveV3WithdrawAuto is Executable, UseStorageSlot, UseRegistry {
   function execute(bytes calldata data, uint8[] memory paramsMap) external payable override {
     WithdrawData memory withdraw = parseInputs(data);
     
-    uint256 mappedWithdrawAmount = storeInSlot("transaction").readUint(
+    uint256 mappedWithdrawAmount = getTransactionStorageSlot().readUint(
       bytes32(0),
       paramsMap[0]
     );    
@@ -39,7 +39,7 @@ contract AaveV3WithdrawAuto is Executable, UseStorageSlot, UseRegistry {
       withdraw.to
     );
 
-    storeInSlot("transaction").write(bytes32(amountWithdrawn));
+    getTransactionStorageSlot().write(bytes32(amountWithdrawn));
   }
 
   function parseInputs(bytes memory _callData) public pure returns (WithdrawData memory params) {

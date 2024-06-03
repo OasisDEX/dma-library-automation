@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
-pragma solidity ^0.8.15;
+pragma solidity 0.8.24;
 
 import { Executable } from "../common/Executable.sol";
 import { IERC20 } from "../../libs/SafeERC20.sol";
@@ -27,7 +27,7 @@ contract TokenBalance is Executable, UseStorageSlot, UseRegistry {
 
     uint256 balance = IERC20(read.asset).balanceOf(read.owner);
 
-    storeInSlot("transaction").write(bytes32(balance));
+    getTransactionStorageSlot().write(bytes32(balance));
   }
 
   function parseInputs(

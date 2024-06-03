@@ -12,6 +12,6 @@ contract DummyReadAction is Executable, UseStorageSlot {
   event ReadValue(bytes32 value);
 
   function execute(bytes calldata, uint8[] memory paramsMap) external payable override {
-    emit ReadValue(storeInSlot("transaction").read(bytes32(0), paramsMap[0]));
+    emit ReadValue(getTransactionStorageSlot().read(bytes32(0), paramsMap[0]));
   }
 }

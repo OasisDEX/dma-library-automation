@@ -10,6 +10,6 @@ contract DummyWriteAction is Executable, UseStorageSlot {
   using StorageSlot for bytes32;
 
   function execute(bytes calldata _calldata, uint8[] memory) external payable override {
-    storeInSlot("transaction").write(bytes32(abi.decode(_calldata, (uint256))));
+    getTransactionStorageSlot().write(bytes32(abi.decode(_calldata, (uint256))));
   }
 }

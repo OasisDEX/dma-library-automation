@@ -21,7 +21,7 @@ contract MakerOpenVault is Executable, UseStorageSlot {
     OpenVaultData memory openVaultData = parseInputs(data);
 
     uint256 vaultId = _openVault(openVaultData);
-    storeInSlot("transaction").write(bytes32(vaultId));
+    getTransactionStorageSlot().write(bytes32(vaultId));
   }
 
   function _openVault(OpenVaultData memory data) internal returns (uint256) {

@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
-pragma solidity ^0.8.15;
+pragma solidity 0.8.24;
 /**
  * @notice This error is thrown when there is no operation found for a given operation hash
  */

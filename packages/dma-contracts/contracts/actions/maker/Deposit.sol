@@ -27,11 +27,11 @@ contract MakerDeposit is Executable, UseStorageSlot {
   function execute(bytes calldata data, uint8[] memory paramsMap) external payable override {
     DepositData memory depositData = parseInputs(data);
 
-    depositData.vaultId = storeInSlot("transaction").readUint(bytes32(depositData.vaultId), paramsMap[1]);
-    depositData.amount = storeInSlot("transaction").readUint(bytes32(depositData.amount), paramsMap[2]);
+    depositData.vaultId = getTransactionStorageSlot().readUint(bytes32(depositData.vaultId), paramsMap[1]);
+    depositData.amount = getTransactionStorageSlot().readUint(bytes32(depositData.amount), paramsMap[2]);
 
     uint256 amountDeposited = _deposit(depositData);
-    storeInSlot("transaction").write(bytes32(amountDeposited));
+    getTransactionStorageSlot().write(bytes32(amountDeposited));
   }
 
   function _deposit(DepositData memory data) internal returns (uint256) {

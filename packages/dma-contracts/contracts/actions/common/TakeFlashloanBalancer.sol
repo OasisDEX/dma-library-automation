@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
-pragma solidity ^0.8.15;
+pragma solidity 0.8.24;
 
 import { Executable } from "../common/Executable.sol";
 import { ServiceRegistry } from "../../core/ServiceRegistry.sol";
@@ -57,9 +57,9 @@ contract TakeFlashloanBalancer is Executable, ProxyPermission, UseStorageSlot, U
     ).getFlashLoanFeePercentage();
     if (feePercentage > 0) {
       uint256 fullFlashloanAmount = amounts[0] + FixedPoint.mulUp(amounts[0], feePercentage);
-      storeInSlot("transaction").write(bytes32(fullFlashloanAmount));
+      getTransactionStorageSlot().write(bytes32(fullFlashloanAmount));
     } else {
-      storeInSlot("transaction").write(bytes32(amounts[0]));
+      getTransactionStorageSlot().write(bytes32(amounts[0]));
     }
 
     IVault(getRegisteredService(BALANCER_VAULT)).flashLoan(

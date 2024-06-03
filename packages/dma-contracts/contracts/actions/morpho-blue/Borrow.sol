@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
-pragma solidity ^0.8.15;
+pragma solidity 0.8.24;
 
 import { Executable } from "../common/Executable.sol";
 import { UseStorageSlot, StorageSlot } from "../../libs/UseStorageSlot.sol";
@@ -33,7 +33,7 @@ contract MorphoBlueBorrow is Executable, UseStorageSlot {
     IMorpho morphoBlue = IMorpho(registry.getRegisteredService(MORPHO_BLUE));
     morphoBlue.borrow(borrowData.marketParams, borrowData.amount, 0, address(this), address(this));
 
-    storeInSlot("transaction").write(bytes32(borrowData.amount));
+    getTransactionStorageSlot().write(bytes32(borrowData.amount));
   }
 
   function parseInputs(bytes memory _callData) public pure returns (BorrowData memory params) {

@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
-pragma solidity ^0.8.15;
+pragma solidity 0.8.24;
 
 import { Executable } from "../common/Executable.sol";
 import { UseStorageSlot, StorageSlot } from "../../libs/UseStorageSlot.sol";
@@ -42,12 +42,12 @@ contract AjnaDepositBorrow is Executable, UseStorageSlot {
     );
     require(address(pool) != address(0), "AjnaDepositBorrow: Pool not found");
 
-    uint256 mappedDepositAmount = storeInSlot("transaction").readUint(
+    uint256 mappedDepositAmount = getTransactionStorageSlot().readUint(
       bytes32(args.depositAmount),
       paramsMap[2]
     );
 
-    uint256 mappedBorrowAmount = storeInSlot("transaction").readUint(
+    uint256 mappedBorrowAmount = getTransactionStorageSlot().readUint(
       bytes32(args.borrowAmount),
       paramsMap[3]
     );
@@ -64,8 +64,8 @@ contract AjnaDepositBorrow is Executable, UseStorageSlot {
       index,
       actualDepositAmount * pool.collateralScale()
     );
-    storeInSlot("transaction").write(bytes32(args.depositAmount));
-    storeInSlot("transaction").write(bytes32(args.borrowAmount));
+    getTransactionStorageSlot().write(bytes32(args.depositAmount));
+    getTransactionStorageSlot().write(bytes32(args.borrowAmount));
   }
 
   function parseInputs(

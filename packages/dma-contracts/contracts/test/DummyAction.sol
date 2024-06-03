@@ -16,7 +16,7 @@ contract DummyAction is Executable, UseStorageSlot {
   constructor(address _registry) UseStorageSlot() {}
 
   function execute(bytes calldata, uint8[] memory) external payable override {
-    storeInSlot("transaction").write(bytes32("123"));
+    getTransactionStorageSlot().write(bytes32("123"));
 
     emit DummyActionEvent(msg.sender, 123);
   }

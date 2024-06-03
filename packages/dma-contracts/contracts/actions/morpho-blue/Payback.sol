@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
-pragma solidity ^0.8.15;
+pragma solidity 0.8.24;
 
 import { Executable } from "../common/Executable.sol";
 import { UseStorageSlot, StorageSlot } from "../../libs/UseStorageSlot.sol";
@@ -31,14 +31,14 @@ contract MorphoBluePayback is Executable, UseStorageSlot {
   function execute(bytes calldata data, uint8[] memory paramsMap) external payable override {
     PaybackData memory paybackData = parseInputs(data);
 
-    paybackData.amount = storeInSlot("transaction").readUint(bytes32(paybackData.amount), paramsMap[0]);
+    paybackData.amount = getTransactionStorageSlot().readUint(bytes32(paybackData.amount), paramsMap[0]);
 
     IMorpho morphoBlue = IMorpho(registry.getRegisteredService(MORPHO_BLUE));
 
     address onBehalf = paybackData.onBehalf == address(0) ? address(this) : paybackData.onBehalf;
     morphoBlue.repay(paybackData.marketParams, paybackData.amount, 0, onBehalf, bytes(""));
 
-    storeInSlot("transaction").write(bytes32(paybackData.amount));
+    getTransactionStorageSlot().write(bytes32(paybackData.amount));
   }
 
   function parseInputs(bytes memory _callData) public pure returns (PaybackData memory params) {

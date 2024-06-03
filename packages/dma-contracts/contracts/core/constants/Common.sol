@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
-pragma solidity ^0.8.15;
+pragma solidity 0.8.24;
 
 string constant OPERATION_STORAGE = "OperationStorage_5";
 string constant OPERATION_EXECUTOR = "OperationExecutor_5";

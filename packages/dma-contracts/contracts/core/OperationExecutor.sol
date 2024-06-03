@@ -1,12 +1,11 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
-pragma solidity ^0.8.15;
+pragma solidity 0.8.24;
 
 import { OperationsRegistry } from "./OperationsRegistry.sol";
 import { ServiceRegistry } from "../core/ServiceRegistry.sol";
 import { ChainLogView } from "../core/views/ChainLogView.sol";
 import { StorageSlot, UseStorageSlot } from "../libs/UseStorageSlot.sol";
 import { ActionAddress } from "../libs/ActionAddress.sol";
-
 
 import { IERC3156FlashBorrower } from "../interfaces/flashloan/IERC3156FlashBorrower.sol";
 
@@ -87,12 +86,12 @@ contract OperationExecutor is IERC3156FlashBorrower, IFlashLoanRecipient, UseSto
   function executeOp(Call[] memory calls) external payable returns (bytes32) {
     aggregate(calls);
 
-    bytes32[] memory actions = storeInSlot("actions").returnStoredArray();
+    bytes32[] memory actions = getActionsStorageSlot().returnStoredArray();
     bytes32 operationName = getOperation(keccak256(abi.encodePacked(actions)));
 
     /* Transient storage cleared in case of `executeOp ` being called multiple times in one transaction */
-    storeInSlot("actions").clearStoredArray();
-    storeInSlot("transaction").clearStoredArray();
+    getTransactionStorageSlot().clear();
+    getActionsStorageSlot().clear();
 
     emit Operation(operationName, calls);
 
@@ -103,7 +102,7 @@ contract OperationExecutor is IERC3156FlashBorrower, IFlashLoanRecipient, UseSto
     for (uint256 current = 0; current < calls.length; current++) {
       bytes32 targetHash = calls[current].targetHash;
       address target = REGISTRY.getServiceAddress(targetHash);
-      storeInSlot("actions").write(targetHash);
+      getActionsStorageSlot().write(targetHash);
       target.execute(calls[current].callData);
     }
   }

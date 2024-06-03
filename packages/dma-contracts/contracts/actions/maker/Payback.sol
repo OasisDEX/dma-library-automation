@@ -37,7 +37,7 @@ contract MakerPayback is Executable, UseStorageSlot {
   function execute(bytes calldata data, uint8[] memory paramsMap) external payable override {
     PaybackData memory paybackData = parseInputs(data);
     paybackData.vaultId = uint256(
-      storeInSlot("transaction").read(bytes32(paybackData.vaultId), paramsMap[0])
+      getTransactionStorageSlot().read(bytes32(paybackData.vaultId), paramsMap[0])
     );
     IManager manager = IManager(registry.getRegisteredService(MCD_MANAGER));
     IDaiJoin daiJoin = IDaiJoin(registry.getRegisteredService(MCD_JOIN_DAI));
@@ -45,7 +45,7 @@ contract MakerPayback is Executable, UseStorageSlot {
       ? _paybackAll(manager, daiJoin, paybackData)
       : _payback(manager, daiJoin, paybackData);
 
-    storeInSlot("transaction").write(bytes32(amountPaidBack));
+    getTransactionStorageSlot().write(bytes32(amountPaidBack));
   }
 
   function _payback(
