@@ -8,7 +8,7 @@ import { UseStorageSlot, StorageSlot } from "../../../libs/UseStorageSlot.sol";
 
 import { ILendingPool } from "../../../interfaces/aave/ILendingPool.sol";
 import { BorrowData } from "../../../core/types/Aave.sol";
-import { AAVE_WETH_GATEWAY, AAVE_LENDING_POOL } from "../../../core/constants/Aave.sol";
+import { AAVE_LENDING_POOL } from "../../../core/constants/Aave.sol";
 
 import { IServiceRegistry } from "../../../interfaces/IServiceRegistry.sol";
 
