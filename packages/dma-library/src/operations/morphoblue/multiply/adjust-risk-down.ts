@@ -1,5 +1,5 @@
 import { getMorphoBlueAdjustDownOperationDefinition } from '@deploy-configurations/operation-definitions'
-import { FEE_BASE, MAX_UINT } from '@dma-common/constants'
+import { FEE_BASE, MAX_UINT, ZERO } from "@dma-common/constants";
 import { actions } from '@dma-library/actions'
 import { BALANCER_FEE } from '@dma-library/config/flashloan-fees'
 import { IOperation } from '@dma-library/types'
@@ -13,7 +13,6 @@ import {
   WithProxy,
   WithSwap,
 } from '@dma-library/types/operations'
-import BigNumber from 'bignumber.js'
 
 export type MorphoBlueAdjustRiskDownArgs = WithMorphoBlueMarket &
   WithCollateralAndWithdrawal &
@@ -88,16 +87,16 @@ export const adjustRiskDown: MorphoBlueAdjustDownOperation = async ({
     collectFeeInFromToken: swap.collectFeeFrom === 'sourceToken',
   })
 
-  const sendDebtTokenToOpExecutor = actions.common.sendToken(network, {
-    asset: debt.address,
-    to: addresses.operationExecutor,
-    amount: flashloan.token.amount.plus(BALANCER_FEE.div(FEE_BASE).times(flashloan.token.amount)),
-  })
-
-  const unwrapEth = actions.common.unwrapEth(network, {
-    amount: new BigNumber(MAX_UINT),
-  })
-  unwrapEth.skipped = !debt.isEth && !collateral.isEth
+  const flashloanActionStorageIndex = 1
+  const sendDebtTokenToOpExecutor = actions.common.sendTokenAuto(
+    network,
+    {
+      asset: debt.address,
+      to: addresses.operationExecutor,
+      amount: ZERO, // Taken from mapping
+    },
+    [0, 0, flashloanActionStorageIndex],
+  )
 
   const returnDebtFunds = actions.common.returnFunds(network, {
     asset: debt.isEth ? addresses.tokens.ETH : debt.address,
@@ -112,11 +111,10 @@ export const adjustRiskDown: MorphoBlueAdjustDownOperation = async ({
     paybackDebt,
     withdrawCollateral,
     swapCollateralTokensForDebtTokens,
-    sendDebtTokenToOpExecutor,
-    unwrapEth,
+    sendDebtTokenToOpExecutor
   ]
 
-  const takeAFlashLoan = actions.common.takeAFlashLoan(network, {
+  const takeAFlashLoan = actions.common.takeAFlashLoanBalancer(network, {
     isDPMProxy: proxy.isDPMProxy,
     asset: flashloan.token.address,
     flashloanAmount: flashloan.token.amount,

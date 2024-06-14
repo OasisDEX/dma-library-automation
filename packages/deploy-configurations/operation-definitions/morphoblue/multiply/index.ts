@@ -1,4 +1,5 @@
 export { getMorphoBlueAdjustDownOperationDefinition } from './adjust-down'
 export { getMorphoBlueAdjustUpOperationDefinition } from './adjust-up'
-export { getMorphoBlueCloseOperationDefinition } from './close'
+export { getMorphoBlueCloseOperationDefinition } from './close-and-exit'
+export { getMorphoBlueCloseAndRemainOperationDefinition } from './close-and-remain'
 export { getMorphoBlueOpenOperationDefinition } from './open'

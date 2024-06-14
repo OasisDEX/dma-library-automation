@@ -15,7 +15,6 @@ export function loadContractNames(network: Network) {
 export const SERVICE_REGISTRY_NAMES = {
   common: {
     PULL_TOKEN: 'PullToken_7',
-    PULL_TOKEN_MAX_AMOUNT: 'PullTokenMaxAmount',
     SEND_TOKEN: 'SendToken_7',
     SEND_TOKEN_AUTO: 'SendTokenAuto_7',
     SET_APPROVAL: 'SetApproval_6',
@@ -25,10 +24,8 @@ export const SERVICE_REGISTRY_NAMES = {
     WRAP_ETH: 'WrapEth_6',
     UNWRAP_ETH: 'UnwrapEth_6',
     RETURN_FUNDS: 'ReturnFunds_6',
-    RETURN_MULTIPLE_TOKENS: 'ReturnMultipleTokens',
-    COLLECT_FEE: 'CollectFee_3',
+    COLLECT_FEE: 'CollectFee_auto',
     POSITION_CREATED: 'PositionCreated',
-    TOKEN_BALANCE: 'TokenBalance',
     ERC4626_DEPOSIT: 'ERC4626Deposit',
     ERC4626_WITHDRAW: 'ERC4626Withdraw',
     ACCOUNT_GUARD: 'AccountGuard',
@@ -75,12 +72,13 @@ export const SERVICE_REGISTRY_NAMES = {
     L2_ENCODER: 'AaveL2Encoder',
   },
   spark: {
-    DEPOSIT: 'SparkDeposit',
-    WITHDRAW: 'SparkWithdraw',
-    BORROW: 'SparkBorrow_2',
-    PAYBACK: 'SparkPayback_2',
+    DEPOSIT: 'SparkDeposit_auto_3',
+    WITHDRAW: 'SparkWithdraw_auto_3',
+    WITHDRAW_AUTO: 'SparkWithdrawAuto_auto_3',
+    BORROW: 'SparkBorrow_auto_3',
+    PAYBACK: 'SparkPayback_auto_3',
     LENDING_POOL: 'SparkLendingPool',
-    SET_EMODE: 'SparkSetEMode',
+    SET_EMODE: 'SparkSetEMode_auto_3',
   },
   maker: {
     DEPOSIT: 'MakerDeposit',
@@ -98,24 +96,28 @@ export const SERVICE_REGISTRY_NAMES = {
     CHAINLOG_VIEW: 'ChainLogView',
   },
   ajna: {
-    DEPOSIT_BORROW: 'AjnaDepositBorrow_5',
-    REPAY_WITHDRAW: 'AjnaRepayWithdraw_5',
-    ERC20_POOL_FACTORY: 'ERC20PoolFactoryRc14',
-    AJNA_POOL_UTILS_INFO: 'AjnaPoolUtilsInfoRc14',
+    DEPOSIT_BORROW: 'AjnaDepositBorrow',
+    REPAY_WITHDRAW: 'AjnaRepayWithdraw',
+    ERC20_POOL_FACTORY: 'ERC20PoolFactory',
+    AJNA_POOL_UTILS_INFO: 'AjnaPoolUtilsInfo',
   },
   morphoblue: {
     MORPHO_BLUE: 'MorphoBlue',
-    DEPOSIT: 'MorphoBlueDeposit',
-    WITHDRAW: 'MorphoBlueWithdraw',
-    BORROW: 'MorphoBlueBorrow',
-    PAYBACK: 'MorphoBluePayback_2',
-    CLAIM_REWARDS: 'MorphoBlueClaimRewards',
+    DEPOSIT: 'MorphoBlueDeposit_auto',
+    WITHDRAW: 'MorphoBlueWithdraw_auto',
+    WITHDRAW_AUTO: 'MorphoBlueWithdrawAuto_auto',
+    BORROW: 'MorphoBlueBorrow_auto',
+    PAYBACK: 'MorphoBluePayback_auto',
   },
   test: {
     DUMMY_ACTION: 'DummyAction',
     DUMMY_OPTIONAL_ACTION: 'DummyOptionalAction',
     DUMMY_SWAP: 'DummySwap',
-    DUMMY_EXCHANGE: 'MockExchange',
+    DUMMY_EXCHANGE: 'DummyExchange',
     SWAP: 'uSwap',
   },
 } as const
+
+export type AllValues<T> = { [K in keyof T]: T[K] extends object ? AllValues<T[K]> : T[K] }[keyof T]
+
+export type ContractNames = AllValues<typeof SERVICE_REGISTRY_NAMES>

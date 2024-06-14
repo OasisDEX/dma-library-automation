@@ -51,8 +51,11 @@ export { getMorphoBlueOpenDepositBorrowOperationDefinition } from './morphoblue/
 export { getMorphoBluePaybackWithdrawOperationDefinition } from './morphoblue/borrow'
 export { getMorphoBlueOpenOperationDefinition } from './morphoblue/multiply'
 export { getMorphoBlueCloseOperationDefinition } from './morphoblue/multiply'
+export { getMorphoBlueCloseAndRemainOperationDefinition } from './morphoblue/multiply'
 export { getMorphoBlueAdjustDownOperationDefinition } from './morphoblue/multiply'
 export { getMorphoBlueAdjustUpOperationDefinition } from './morphoblue/multiply'
+export { getMorphoBlueWithdrawOperationDefinition } from './morphoblue/auto/withdraw'
+export { getMorphoBlueWithdrawToDebtOperationDefinition } from './morphoblue/auto/withdraw-to-debt'
 
 // COMMON
 export { getErc4626DepositOperationDefinition } from './common/erc4626'

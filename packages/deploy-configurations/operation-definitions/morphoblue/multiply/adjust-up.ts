@@ -9,35 +9,43 @@ export function getMorphoBlueAdjustUpOperationDefinition(network: Network) {
     name: OPERATION_NAMES.morphoblue.ADJUST_RISK_UP,
     actions: [
       {
-        hash: getActionHash(SERVICE_REGISTRY_NAMES.common.TAKE_A_FLASHLOAN),
+        label: SERVICE_REGISTRY_NAMES.common.TAKE_A_FLASHLOAN_BALANCER,
+        hash: getActionHash(SERVICE_REGISTRY_NAMES.common.TAKE_A_FLASHLOAN_BALANCER),
         optional: false,
       },
       {
+        label: SERVICE_REGISTRY_NAMES.common.PULL_TOKEN,
         hash: getActionHash(SERVICE_REGISTRY_NAMES.common.PULL_TOKEN),
         optional: true,
       },
       {
+        label: SERVICE_REGISTRY_NAMES.common.WRAP_ETH,
         hash: getActionHash(SERVICE_REGISTRY_NAMES.common.WRAP_ETH),
         optional: true,
       },
       {
+        label: SERVICE_REGISTRY_NAMES.common.SWAP_ACTION,
         hash: getActionHash(SERVICE_REGISTRY_NAMES.common.SWAP_ACTION),
         optional: false,
       },
       {
+        label: SERVICE_REGISTRY_NAMES.common.SET_APPROVAL,
         hash: getActionHash(SERVICE_REGISTRY_NAMES.common.SET_APPROVAL),
         optional: false,
       },
       {
+        label: SERVICE_REGISTRY_NAMES.morphoblue.DEPOSIT,
         hash: getActionHash(SERVICE_REGISTRY_NAMES.morphoblue.DEPOSIT),
         optional: false,
       },
       {
+        label: SERVICE_REGISTRY_NAMES.morphoblue.BORROW,
         hash: getActionHash(SERVICE_REGISTRY_NAMES.morphoblue.BORROW),
         optional: false,
       },
       {
-        hash: getActionHash(SERVICE_REGISTRY_NAMES.common.SEND_TOKEN),
+        label: SERVICE_REGISTRY_NAMES.common.SEND_TOKEN_AUTO,
+        hash: getActionHash(SERVICE_REGISTRY_NAMES.common.SEND_TOKEN_AUTO),
         optional: false,
       },
     ],
