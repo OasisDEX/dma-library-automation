@@ -41,6 +41,12 @@ export class OperationsDatabase {
       return undefined
     }
 
+    console.log('Action hashes')
+    for (const action of op.actions) {
+      console.log('label ->', action.label)
+      console.log('hash  ->', action.hash)
+    }
+    console.log('\n')
     return JSON.stringify([this.calculateActionsHash(op.actions), op.name])
   }
 

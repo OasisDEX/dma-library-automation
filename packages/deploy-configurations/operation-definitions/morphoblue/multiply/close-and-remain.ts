@@ -2,11 +2,20 @@ import { loadContractNames, OPERATION_NAMES } from '@deploy-configurations/const
 import { Network } from '@deploy-configurations/types/network'
 import { getActionHash } from '@deploy-configurations/utils/action-hash'
 
-export function getMorphoBlueAdjustDownOperationDefinition(network: Network) {
+/**
+ * Operation Definition for MorphoBlue Close and Remain
+ *
+ * @remarks
+ * Actions not required relative to Close and Exit left for context
+ * This operation is used to close a position and remain with the collateral in protocol
+ *
+ * @param network
+ */
+export function getMorphoBlueCloseAndRemainOperationDefinition(network: Network) {
   const SERVICE_REGISTRY_NAMES = loadContractNames(network)
 
   return {
-    name: OPERATION_NAMES.morphoblue.ADJUST_RISK_DOWN,
+    name: OPERATION_NAMES.morphoblue.CLOSE_AND_REMAIN,
     actions: [
       {
         label: SERVICE_REGISTRY_NAMES.common.TAKE_A_FLASHLOAN_BALANCER,
@@ -43,11 +52,7 @@ export function getMorphoBlueAdjustDownOperationDefinition(network: Network) {
         hash: getActionHash(SERVICE_REGISTRY_NAMES.common.RETURN_FUNDS),
         optional: false,
       },
-      {
-        label: SERVICE_REGISTRY_NAMES.common.RETURN_FUNDS,
-        hash: getActionHash(SERVICE_REGISTRY_NAMES.common.RETURN_FUNDS),
-        optional: false,
-      },
     ],
+    log: false,
   }
 }

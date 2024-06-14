@@ -1,3 +1,5 @@
+import { MorphoBlueWithdrawToLTV, withdraw } from "@dma-library/strategies/morphoblue/auto/withdraw-to-ltv";
+
 import {
   depositBorrow as morphoDepositBorrow,
   MorphoDepositBorrowStrategy,
@@ -22,6 +24,9 @@ export const morphoblue: {
     close: MorphoCloseStrategy
     adjust: MorphoAdjustRiskStrategy
   }
+  auto: {
+    withdraw: MorphoBlueWithdrawToLTV
+  }
 } = {
   borrow: {
     openDepositBorrow: morphoblueOpenDepositBorrow,
@@ -32,5 +37,8 @@ export const morphoblue: {
     open: openMultiply,
     adjust: adjustMultiply,
     close: closeMultiply,
+  },
+  auto: {
+    withdraw,
   },
 }
