@@ -37,7 +37,7 @@ contract CollectFee is Executable, UseStorageSlot, UseRegistry {
         uint256 feeAmount = (transactionAmount * feePercentage) / DIVISOR;
 
         // Transfer fee from the user's proxy to the feeRecipient
-        IERC20(asset).safeTransferFrom(msg.sender, feeRecipient, feeAmount);
+        IERC20(asset).safeTransfer(feeRecipient, feeAmount);
 
         emit FeePaid(feeRecipient, feeAmount, asset);
     }

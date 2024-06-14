@@ -2,20 +2,22 @@
 pragma solidity ^0.8.15;
 
 import { Executable } from "../common/Executable.sol";
-import { UseStore, Write } from "../common/UseStore.sol";
-import { OperationStorage } from "../../core/OperationStorage.sol";
+import { UseStorageSlot, StorageSlot, Write, Read } from "../../libs/UseStorageSlot.sol";
+import { ServiceRegistry } from "../../core/ServiceRegistry.sol";
 import { WithdrawData } from "../../core/types/MorphoBlue.sol";
 import { MORPHO_BLUE } from "../../core/constants/MorphoBlue.sol";
 import { IMorpho } from "../../interfaces/morpho-blue/IMorpho.sol";
+import { UseRegistry } from "../../libs/UseRegistry.sol";
 
 /**
  * @title Withdraw | MorphoBlue Action contract
  * @notice Withdraw collateral from Morpho Blue's lending pool
+ * with the amount to withdraw being read from the proxies t/x storage slot
  */
-contract MorphoBlueWithdraw is Executable, UseStore {
-  using Write for OperationStorage;
+contract MorphoBlueWithdraw is Executable, UseStorageSlot, UseRegistry {
+  using Write for StorageSlot.TransactionStorage;
 
-  constructor(address _registry) UseStore(_registry) {}
+  constructor(address _registry) UseRegistry(ServiceRegistry(_registry)) {}
 
   /**
    * @param data Encoded calldata that conforms to the WithdrawData struct
@@ -23,7 +25,7 @@ contract MorphoBlueWithdraw is Executable, UseStore {
   function execute(bytes calldata data, uint8[] memory) external payable override {
     WithdrawData memory withdrawData = parseInputs(data);
 
-    IMorpho morphoBlue = IMorpho(registry.getRegisteredService(MORPHO_BLUE));
+    IMorpho morphoBlue = IMorpho(getRegisteredService(MORPHO_BLUE));
     morphoBlue.withdrawCollateral(
       withdrawData.marketParams,
       withdrawData.amount,

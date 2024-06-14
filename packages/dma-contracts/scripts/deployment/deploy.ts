@@ -11,7 +11,6 @@ import {
   getAaveBorrowV2OperationDefinition,
   getAaveBorrowV3OperationDefinition,
   getAaveCloseV2OperationDefinition,
-  getAaveCloseV3OperationDefinition,
   getAaveDepositBorrowV2OperationDefinition,
   getAaveDepositBorrowV3OperationDefinition,
   getAaveDepositV2OperationDefinition,
@@ -86,14 +85,13 @@ import * as path from 'path'
 import prompts from 'prompts'
 import { inspect } from 'util'
 
-const restrictedNetworks = [Network.MAINNET, Network.OPTIMISM, Network.GOERLI]
+const restrictedNetworks = [Network.MAINNET, Network.OPTIMISM, Network.BASE, Network.GOERLI]
 
 const rpcUrls: any = {
   [Network.MAINNET]: 'https://eth-mainnet.alchemyapi.io/v2/TPEGdU79CfRDkqQ4RoOCTRzUX4GUAO44',
   [Network.OPTIMISM]: 'https://opt-mainnet.g.alchemy.com/v2/d2-w3caSVd_wPT05UkXyA3kr3un3Wx_g',
   [Network.ARBITRUM]: 'https://arb-mainnet.g.alchemy.com/v2/d2-w3caSVd_wPT05UkXyA3kr3un3Wx_g',
-  // [Network.ARBITRUM]: 'https://rpc.tenderly.co/fork/6c093119-48df-4c2b-ab74-c51da8885ce5',
-  [Network.BASE]: 'https://base-mainnet.g.alchemy.com/v2/d2-w3caSVd_wPT05UkXyA3kr3un3Wx_g',
+  [Network.BASE]: 'https://base-mainnet.g.alchemy.com/v2/u1r6F2lU2lAtudnuMLzXheVwFiLAM9X5',
   [Network.GOERLI]: 'https://eth-goerli.alchemyapi.io/v2/TPEGdU79CfRDkqQ4RoOCTRzUX4GUAO44',
 }
 
@@ -129,8 +127,8 @@ abstract class DeployedSystemHelpers {
   async getForkedNetworkChainId(provider: providers.JsonRpcProvider) {
     try {
       return (await provider.getNetwork()).chainId
-      const metadata = await provider.send('hardhat_metadata', [])
-      return metadata.forkedNetwork.chainId
+      // const metadata = await provider.send('hardhat_metadata', [])
+      // return metadata.forkedNetwork.chainId
     } catch (e) {
       console.log('\x1b[33m[ WARN ] Current network is not a fork! \x1b[0m')
     }
@@ -174,9 +172,13 @@ abstract class DeployedSystemHelpers {
     this.signer = this.provider.getSigner()
 
     this.signerAddress = await this.signer.getAddress()
+    console.log('signerAddress', this.signerAddress)
     this.isRestrictedNetwork = restrictedNetworks.includes(this.network)
+
     this.chainId = await this.getForkedNetworkChainId(this.provider)
+    console.log('this.chainId', this.chainId)
     this.forkedNetwork = this.getNetworkFromChainId(this.chainId)
+    console.log('this.forkedNetwork', this.forkedNetwork)
 
     this.rpcUrl = this.getRpcUrl(this.forkedNetwork)
     this.log('RPC URL', this.rpcUrl)
@@ -498,6 +500,7 @@ export class DeploymentSystem extends DeployedSystemHelpers {
       this.network === Network.MAINNET ||
       this.network === Network.ARBITRUM ||
       this.network === Network.GOERLI ||
+      this.network === Network.BASE ||
       this.network === Network.OPTIMISM
     ) {
       await this.verifyContract(contract.address, constructorArguments)
@@ -674,7 +677,7 @@ export class DeploymentSystem extends DeployedSystemHelpers {
         this.ethers.getContractFactory(configItem.name as string, this.signer),
         constructorParams,
       )
-      //
+
       // // Note: Useful for verifying contracts retrospectively. Comment out the lines above
       // const contractInstance = await this.ethers.getContractAt(configItem.name, configItem.address)
 
@@ -909,10 +912,10 @@ export class DeploymentSystem extends DeployedSystemHelpers {
       getAaveOpenV3OperationDefinition(network).name,
       getAaveOpenV3OperationDefinition(network).actions,
     )
-    await operationsRegistry.addOp(
-      getAaveCloseV3OperationDefinition(network).name,
-      getAaveCloseV3OperationDefinition(network).actions,
-    )
+    // await operationsRegistry.addOp(
+    //   getAaveCloseV3OperationDefinition(network).name,
+    //   getAaveCloseV3OperationDefinition(network).actions,
+    // )
     await operationsRegistry.addOp(
       getAaveAdjustDownV3OperationDefinition(network).name,
       getAaveAdjustDownV3OperationDefinition(network).actions,

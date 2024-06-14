@@ -118,7 +118,6 @@ async function getAaveSwapDataToCloseToCollateral(
     outstandingDebt: dependencies.currentPosition.debt.amount,
     slippage,
     // Needs to be WETH for isETH comparison
-    ETHAddress: addresses.tokens.WETH,
     getSwapData: dependencies.getSwapData,
   })
 }

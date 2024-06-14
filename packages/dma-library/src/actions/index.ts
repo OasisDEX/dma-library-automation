@@ -18,15 +18,20 @@ import {
 } from './ajna'
 import {
   collectFee,
+  erc4626Deposit,
+  erc4626Withdraw,
   positionCreated,
   pullToken,
+  pullTokenMaxAmount,
   returnFunds,
+  returnMultipleTokens,
   sendToken,
   sendTokenAuto,
   setApproval,
   swap,
   takeAFlashLoan,
   takeAFlashLoanBalancer,
+  tokenBalance,
   unwrapEth,
   wrapEth,
 } from './common'
@@ -56,7 +61,9 @@ const aave = {
 }
 
 const common = {
+  collectFee,
   pullToken,
+  pullTokenMaxAmount,
   sendToken,
   sendTokenAuto,
   setApproval,
@@ -67,7 +74,10 @@ const common = {
   unwrapEth,
   takeAFlashLoan,
   takeAFlashLoanBalancer,
-  collectFee,
+  tokenBalance,
+  erc4626Deposit,
+  erc4626Withdraw,
+  returnMultipleTokens,
 }
 
 const ajna: {

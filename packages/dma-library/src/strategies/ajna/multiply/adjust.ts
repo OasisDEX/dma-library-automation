@@ -11,9 +11,9 @@ import {
 import {
   AjnaMultiplyPayload,
   AjnaPosition,
-  AjnaStrategy,
   FlashloanProvider,
   PositionType,
+  SummerStrategy,
   SwapData,
 } from '@dma-library/types'
 import { AjnaCommonDMADependencies } from '@dma-library/types/ajna'
@@ -25,7 +25,7 @@ import BigNumber from 'bignumber.js'
 export type AjnaAdjustRiskStrategy = (
   args: AjnaMultiplyPayload,
   dependencies: AjnaCommonDMADependencies,
-) => Promise<AjnaStrategy<AjnaPosition>>
+) => Promise<SummerStrategy<AjnaPosition>>
 
 const positionType: PositionType = 'Multiply'
 
@@ -95,8 +95,6 @@ const adjustRiskDown: AjnaAdjustRiskStrategy = async (args, dependencies) => {
     riskIsIncreasing,
     oraclePrice,
     positionType,
-    // TODO: remove this
-    ZERO,
   )
 
   // Get swap data
@@ -106,8 +104,6 @@ const adjustRiskDown: AjnaAdjustRiskStrategy = async (args, dependencies) => {
     simulatedAdjustment,
     riskIsIncreasing,
     positionType,
-    // TODO: remove this
-    ZERO,
   )
 
   // Build operation
@@ -147,12 +143,10 @@ async function buildOperation(
   const fromTokenSymbol = riskIsIncreasing ? args.quoteTokenSymbol : args.collateralTokenSymbol
   const toTokenSymbol = riskIsIncreasing ? args.collateralTokenSymbol : args.quoteTokenSymbol
 
-  // TODO: remove this
-  const fee = ZERO
-  // const fee = SwapUtils.feeResolver(fromTokenSymbol, toTokenSymbol, {
-  //   isIncreasingRisk: riskIsIncreasing,
-  //   isEarnPosition: SwapUtils.isCorrelatedPosition(fromTokenSymbol, toTokenSymbol),
-  // })
+  const fee = SwapUtils.feeResolver(fromTokenSymbol, toTokenSymbol, {
+    isIncreasingRisk: riskIsIncreasing,
+    isEarnPosition: SwapUtils.isCorrelatedPosition(fromTokenSymbol, toTokenSymbol),
+  })
   // When adjusting risk up we need to flashloan the swap amount before deducting fees
   // Assuming an ETH/USDC position, we'd be Flashloaning USDC to swap for ETH
   // Once the received ETH is deposited as collateral we can then increase our debt

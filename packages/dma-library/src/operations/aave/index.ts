@@ -1,4 +1,9 @@
-// Borrow
+// Auto
+import { type AaveV3WithdrawOperation, withdraw as aaveV3Withdraw } from './auto/withdraw'
+import {
+  type AaveV3WithdrawToDebtOperation,
+  withdrawToDebt as aaveV3WithdrawToDebt,
+} from './auto/withdraw-to-debt'
 import { AaveV2BorrowOperation, borrow as aaveV2Borrow } from './borrow/v2/borrow'
 import { AaveV2DepositOperation, deposit as aaveV2Deposit } from './borrow/v2/deposit'
 import {
@@ -27,11 +32,6 @@ import {
   AaveV3PaybackWithdrawOperation,
   paybackWithdraw as aaveV3PaybackWithdraw,
 } from './borrow/v3/payback-withdraw'
-import { type AaveV3WithdrawOperation, withdraw as aaveV3Withdraw } from './borrow/v3/withdraw'
-import {
-  type AaveV3WithdrawToDebtOperation,
-  withdrawToDebt as aaveV3WithdrawToDebt,
-} from './borrow/v3/withdraw-to-debt'
 // Multiply
 import {
   AaveV2AdjustDownOperation,
@@ -61,6 +61,8 @@ const borrow = {
     depositBorrow: aaveV2DepositBorrow,
     openDepositBorrow: aaveV2OpenDepositBorrow,
     paybackWithdraw: aaveV2PaybackWithdraw,
+    withdraw: () => null,
+    withdrawToDebt: () => null,
   },
   v3: {
     borrow: aaveV3Borrow,
@@ -68,8 +70,8 @@ const borrow = {
     depositBorrow: aaveV3DepositBorrow,
     openDepositBorrow: aaveV3OpenDepositBorrow,
     paybackWithdraw: aaveV3PaybackWithdraw,
-    withdraw: aaveV3Withdraw,
-    withdrawToDebt: aaveV3WithdrawToDebt,
+    withdraw: () => null,
+    withdrawToDebt: () => null,
   },
 }
 
@@ -95,6 +97,8 @@ export type AaveBorrowOperations = {
     depositBorrow: AaveV2DepositBorrowOperation
     openDepositBorrow: AaveV2OpenDepositBorrowOperation
     paybackWithdraw: AaveV2PaybackWithdrawOperation
+    withdraw: any
+    withdrawToDebt: any
   }
   v3: {
     borrow: AaveV3BorrowOperation
@@ -102,8 +106,8 @@ export type AaveBorrowOperations = {
     depositBorrow: AaveV3DepositBorrowOperation
     openDepositBorrow: AaveV3OpenDepositBorrowOperation
     paybackWithdraw: AaveV3PaybackWithdrawOperation
-    withdraw: AaveV3WithdrawOperation
-    withdrawToDebt: AaveV3WithdrawToDebtOperation
+    withdraw: any
+    withdrawToDebt: any
   }
 }
 
@@ -125,9 +129,17 @@ export type AaveMultiplyOperations = {
 export type AaveOperations = {
   borrow: AaveBorrowOperations
   multiply: AaveMultiplyOperations
+  auto: {
+    withdraw: AaveV3WithdrawOperation
+    withdrawToDebt: AaveV3WithdrawToDebtOperation
+  }
 }
 
 export const aaveOperations: AaveOperations = {
   borrow,
   multiply,
+  auto: {
+    withdraw: aaveV3Withdraw,
+    withdrawToDebt: aaveV3WithdrawToDebt,
+  },
 }

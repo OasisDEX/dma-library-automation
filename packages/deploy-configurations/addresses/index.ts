@@ -29,6 +29,7 @@ import {
   MakerProtocolJoins,
   MakerProtocolPips,
 } from '@deploy-configurations/types/deployment-config/maker-protocol'
+import { MorphoBlueProtocol } from '@deploy-configurations/types/deployment-config/morpho-blue'
 import {
   OptionalSparkProtocolContracts,
   SparkProtocol,
@@ -45,7 +46,7 @@ enum AaveKeys {
   V3 = 'v3',
 }
 
-type DefaultDeployment = {
+export type DefaultDeployment = {
   [SystemKeys.MPA]: {
     [MpaKeys.CORE]: Record<Core, Address>
     [MpaKeys.ACTIONS]: Record<Actions, Address>
@@ -63,6 +64,7 @@ type DefaultDeployment = {
   }
   [SystemKeys.AUTOMATION]: Record<Automation, Address>
   [SystemKeys.AJNA]: Record<AjnaProtocol, Address>
+  [SystemKeys.MORPHO_BLUE]: Record<MorphoBlueProtocol, Address>
 }
 
 export type Addresses = {
@@ -78,10 +80,7 @@ export type Addresses = {
 if (!mainnetConfig.aave.v2) throw new Error('Missing aave v2 config on mainnet')
 if (!optimismConfig.aave.v3.L2Encoder) throw new Error('Missing L2Encoder config on optimism')
 
-const createAddressesStructure = (
-  networkConfig: SystemConfig,
-  ajnaConfig?: SystemConfig,
-): DefaultDeployment => ({
+const createAddressesStructure = (networkConfig: SystemConfig): DefaultDeployment => ({
   mpa: {
     core: {
       ...extractAddressesFromConfig<Core>(networkConfig.mpa.core),
@@ -119,7 +118,10 @@ const createAddressesStructure = (
     ...extractAddressesFromConfig(networkConfig.automation),
   },
   ajna: {
-    ...extractAddressesFromConfig(ajnaConfig?.ajna || networkConfig.ajna),
+    ...extractAddressesFromConfig(networkConfig.ajna),
+  },
+  morphoblue: {
+    ...extractAddressesFromConfig(networkConfig.morphoblue),
   },
 })
 
@@ -149,9 +151,9 @@ function extractAddressesFromConfig<T extends Contracts>(
 export const ADDRESSES: Addresses = {
   [Network.MAINNET]: createAddressesStructure(mainnetConfig),
   [Network.OPTIMISM]: createAddressesStructure(optimismConfig),
-  [Network.GOERLI]: createAddressesStructure(goerliConfig, goerliConfig),
-  [Network.ARBITRUM]: createAddressesStructure(arbitrumConfig, mainnetConfig),
-  [Network.BASE]: createAddressesStructure(baseConfig, mainnetConfig),
+  [Network.GOERLI]: createAddressesStructure(goerliConfig),
+  [Network.ARBITRUM]: createAddressesStructure(arbitrumConfig),
+  [Network.BASE]: createAddressesStructure(baseConfig),
   [Network.TEST]: createAddressesStructure(testConfig),
   [Network.SEPOLIA]: createAddressesStructure(sepoliaConfig),
 }

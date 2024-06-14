@@ -21,9 +21,6 @@ export type AjnaErrorDustLimit = {
 
 export type AjnaErrorDustLimitMultiply = {
   name: 'debt-less-then-dust-limit-multiply'
-  data: {
-    minDebtAmount: string
-  }
 }
 
 export type AjnaErrorWithdrawMoreThanAvailable = {
@@ -31,6 +28,10 @@ export type AjnaErrorWithdrawMoreThanAvailable = {
   data: {
     amount: string
   }
+}
+
+export type AjnaErrorWithdrawNotAvailable = {
+  name: 'withdraw-not-available'
 }
 
 export type AjnaErrorNotEnoughLiquidity = {
@@ -55,24 +56,49 @@ export type AjnaErrorOverWithdraw = {
   }
 }
 
-export type AjnaErrorOverRepay = {
-  name: 'payback-amount-exceeds-debt-token-balance'
+export type AaveLikeErrorTargetLtvExceedsSupplyCap = {
+  name: 'target-ltv-exceeds-supply-cap'
   data: {
-    amount: string
+    cap: string
   }
 }
 
-export type AjnaError =
+export type AaveLikeErrorTargetLtvExceedsBorrowCap = {
+  name: 'target-ltv-exceeds-borrow-cap'
+  data: {
+    cap: string
+  }
+}
+
+export type AaveLikeErrorAmountExceedsSupplyCap = {
+  name: 'deposit-amount-exceeds-supply-cap'
+  data: {
+    cap: string
+  }
+}
+
+export type AaveLikeErrorAmountExceedsBorrowCap = {
+  name: 'debt-amount-exceeds-borrow-cap'
+  data: {
+    cap: string
+  }
+}
+
+export type StrategyError =
   | AjnaErrorWithdrawUndercollateralized
   | AjnaErrorBorrowUndercollateralized
   | AjnaErrorWithdrawMoreThanAvailable
+  | AjnaErrorWithdrawNotAvailable
   | AjnaErrorAfterLupIndexBiggerThanHtpIndexDeposit
   | AjnaErrorAfterLupIndexBiggerThanHtpIndexWithdraw
   | AjnaErrorDustLimit
   | AjnaErrorDustLimitMultiply
   | AjnaErrorNotEnoughLiquidity
   | AjnaErrorOverWithdraw
-  | AjnaErrorOverRepay
+  | AaveLikeErrorTargetLtvExceedsSupplyCap
+  | AaveLikeErrorTargetLtvExceedsBorrowCap
+  | AaveLikeErrorAmountExceedsSupplyCap
+  | AaveLikeErrorAmountExceedsBorrowCap
 
 type AjnaWarningGenerateCloseToMaxLtv = {
   name: 'generate-close-to-max-ltv'
@@ -92,10 +118,19 @@ type AjnaWarningLiquidationPriceCloseToMarketPrice = {
   name: 'liquidation-price-close-to-market-price'
 }
 
-export type AjnaWarning =
+type AaveLikeWarningYieldLoopCloseToLiquidation = {
+  name: 'yield-loop-close-to-liquidation'
+  data: {
+    rangeToLiquidation: string
+    liquidationPenalty: string
+  }
+}
+
+export type StrategyWarning =
   | AjnaWarningGenerateCloseToMaxLtv
   | AjnaWarningWithdrawCloseToMaxLtv
   | AjnaWarningLiquidationPriceCloseToMarketPrice
+  | AaveLikeWarningYieldLoopCloseToLiquidation
 
 export type AjnaNoticePriceBelowHtp = {
   name: 'price-below-htp'
@@ -114,4 +149,15 @@ export type AjnaSuccessPriceaboveLup = {
   }
 }
 
-export type AjnaSuccess = AjnaSuccessPriceBetweenHtpAndLup | AjnaSuccessPriceaboveLup
+type AaveLikeSuccessYieldLoopSafeFromLiquidation = {
+  name: 'yield-loop-safe-from-liquidation'
+  data: {
+    rangeToLiquidation: string
+    liquidationPenalty: string
+  }
+}
+
+export type AjnaSuccess =
+  | AjnaSuccessPriceBetweenHtpAndLup
+  | AjnaSuccessPriceaboveLup
+  | AaveLikeSuccessYieldLoopSafeFromLiquidation

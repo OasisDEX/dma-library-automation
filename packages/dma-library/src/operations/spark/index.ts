@@ -1,3 +1,9 @@
+// Auto
+import { SparkWithdrawOperation, withdraw as sparkWithdraw } from './auto/withdraw'
+import {
+  SparkWithdrawToDebtOperation,
+  withdrawToDebt as sparkWithdrawToDebt,
+} from './auto/withdraw-to-debt'
 import { borrow as sparkBorrow, SparkBorrowOperation } from './borrow/borrow'
 import { deposit as sparkDeposit, SparkDepositOperation } from './borrow/deposit'
 import {
@@ -12,14 +18,6 @@ import {
   paybackWithdraw as sparkPaybackWithdraw,
   SparkPaybackWithdrawOperation,
 } from './borrow/payback-withdraw'
-import {
-  withdraw as sparkWithdraw,
-  SparkWithdrawOperation,
-} from './borrow/withdraw'
-import {
-  withdrawToDebt as sparkWithdrawToDebt,
-  SparkWithdrawToDebtOperation,
-} from './borrow/withdraw-to-debt'
 import {
   adjustRiskDown as sparkAdjustRiskDown,
   SparkAdjustDownOperation,
@@ -67,9 +65,17 @@ export type SparkMultiplyOperations = {
 export type SparkOperations = {
   borrow: SparkBorrowOperations
   multiply: SparkMultiplyOperations
+  auto: {
+    withdraw: SparkWithdrawOperation
+    withdrawToDebt: SparkWithdrawToDebtOperation
+  }
 }
 
 export const sparkOperations: SparkOperations = {
   borrow,
   multiply,
+  auto: {
+    withdraw: sparkWithdraw,
+    withdrawToDebt: sparkWithdrawToDebt,
+  },
 }

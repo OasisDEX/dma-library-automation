@@ -223,8 +223,8 @@ export const config: SystemConfig = {
       },
       CollectFee: {
         name: 'CollectFee',
-        deploy: false,
-        address: '',
+        deploy: true,
+        address: '0xA15e4A1087BA16f6bdb2be5f840D1d98BC3e6C70',
         serviceRegistryName: SERVICE_REGISTRY_NAMES.common.COLLECT_FEE,
         history: [],
         constructorArgs: [
@@ -400,7 +400,7 @@ export const config: SystemConfig = {
     },
     ETH: {
       name: 'ETH',
-      address: '0x82aF49447D8a07e3bd95BD0d56f35241523fBab1',
+      address: '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE',
     },
     FRAX: {
       name: 'FRAX',
