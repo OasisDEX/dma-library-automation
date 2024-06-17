@@ -15,6 +15,7 @@ import {
   SwapData,
 } from '@dma-library/types'
 import { StrategyError, StrategyWarning } from '@dma-library/types/ajna/ajna-validations'
+import * as StrategyParams from "@dma-library/types/strategy-params";
 import { encodeOperation } from '@dma-library/utils/operation'
 import * as SwapUtils from '@dma-library/utils/swap'
 import * as Domain from '@domain'
@@ -33,7 +34,7 @@ export interface MorphoCloseMultiplyPayload {
 }
 
 export type MorphoCloseStrategy = (
-  args: MorphoCloseMultiplyPayload,
+  args: MorphoCloseMultiplyPayload & StrategyParams.WithDebtCoverage,
   dependencies: MorphoMultiplyDependencies,
 ) => Promise<SummerStrategy<MorphoBluePosition>>
 
@@ -41,8 +42,7 @@ const positionType: PositionType = 'Multiply'
 
 export const closeMultiply: MorphoCloseStrategy = async (args, dependencies) => {
   const position = args.position
-  console.log("MB Close Multiply")
-  console.log("shouldCloseToCollateral", args.shouldCloseToCollateral)
+
   const getSwapData = args.shouldCloseToCollateral
     ? getMorphoSwapDataToCloseToCollateral
     : getMorphoSwapDataToCloseToDebt
@@ -50,12 +50,10 @@ export const closeMultiply: MorphoCloseStrategy = async (args, dependencies) => 
     args.position.marketParams.collateralToken,
     dependencies.provider,
   )
-  console.log("collateralTokenSymbol", collateralTokenSymbol)
   const debtTokenSymbol = await getTokenSymbol(
     args.position.marketParams.loanToken,
     dependencies.provider,
   )
-  console.log("debtTokenSymbol", debtTokenSymbol)
 
   const { swapData, collectFeeFrom, preSwapFee } = await getSwapData(
     args,
