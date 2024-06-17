@@ -84,6 +84,10 @@ const adjustRiskUp: MorphoAdjustRiskStrategy = async (args, dependencies) => {
     },
   }
 
+  if (!args.debtCoverage.isZero()) {
+    mappedPosition.debtAmount = mappedPosition.debtAmount.plus(args.debtCoverage)
+  }
+
   // Simulate adjust
   const riskIsIncreasing = true
   const simulatedAdjustment = await simulateAdjustment(
