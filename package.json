@@ -9,7 +9,8 @@
   "workspaces": {
     "packages": [
       "packages/**"
-    ]
+    ],
+    "nohoist": ["**/@openzeppelin/contracts"]
   },
   "scripts": {
     "dev": "lerna run --scope @oasisdex/dma-contracts dev",
