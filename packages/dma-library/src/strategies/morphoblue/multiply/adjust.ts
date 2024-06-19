@@ -12,6 +12,7 @@ import {
   SwapData,
 } from '@dma-library/types'
 import { SummerStrategy } from '@dma-library/types/ajna/ajna-strategy'
+import * as StrategyParams from '@dma-library/types/strategy-params'
 import * as SwapUtils from '@dma-library/utils/swap'
 import * as Domain from '@domain'
 import { isRiskIncreasing } from '@domain/utils'
@@ -38,14 +39,14 @@ export interface MorphoAdjustMultiplyPayload {
 }
 
 export type MorphoAdjustRiskStrategy = (
-  args: MorphoAdjustMultiplyPayload,
+  args: MorphoAdjustMultiplyPayload & StrategyParams.WithDebtCoverage,
   dependencies: MorphoMultiplyDependencies,
 ) => Promise<SummerStrategy<MorphoBluePosition>>
 
 const positionType: PositionType = 'Multiply'
 
 export const adjustMultiply: MorphoAdjustRiskStrategy = (
-  args: MorphoAdjustMultiplyPayload,
+  args: MorphoAdjustMultiplyPayload & StrategyParams.WithDebtCoverage,
   dependencies: MorphoMultiplyDependencies,
 ) => {
   if (isRiskIncreasing(args.riskRatio.loanToValue, args.position.riskRatio.loanToValue)) {
@@ -81,6 +82,10 @@ const adjustRiskUp: MorphoAdjustRiskStrategy = async (args, dependencies) => {
       loanToken: args.position.marketParams.loanToken,
       collateralToken: args.position.marketParams.collateralToken,
     },
+  }
+
+  if (!args.debtCoverage.isZero()) {
+    mappedPosition.debtAmount = mappedPosition.debtAmount.plus(args.debtCoverage)
   }
 
   // Simulate adjust
