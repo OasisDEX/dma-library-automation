@@ -74,6 +74,10 @@ const adjustRiskUp: MorphoAdjustRiskStrategy = async (args, dependencies) => {
     collateralAmount: args.collateralAmount.shiftedBy(args.collateralTokenPrecision),
   }
 
+  if (!args.debtCoverage.isZero()) {
+    args.position.debtAmount = args.position.debtAmount.plus(args.debtCoverage)
+  }
+
   const mappedPosition: MinimalPosition = {
     collateralAmount: args.position.collateralAmount.shiftedBy(args.collateralTokenPrecision),
     debtAmount: args.position.debtAmount.shiftedBy(args.quoteTokenPrecision),
@@ -82,10 +86,6 @@ const adjustRiskUp: MorphoAdjustRiskStrategy = async (args, dependencies) => {
       loanToken: args.position.marketParams.loanToken,
       collateralToken: args.position.marketParams.collateralToken,
     },
-  }
-
-  if (!args.debtCoverage.isZero()) {
-    mappedPosition.debtAmount = mappedPosition.debtAmount.plus(args.debtCoverage)
   }
 
   // Simulate adjust
