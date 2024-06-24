@@ -207,7 +207,7 @@ contract OperationExecutor is IERC3156FlashBorrower, IFlashLoanRecipient, UseSto
       let isFlashloanInProgress := tload(key)
       if eq(isFlashloanInProgress, 1) {
         mstore(0, errorSelector)
-        revert(0x1c, 0x04)
+        revert(0, 0x04)
       }
     }
   }
