@@ -57,7 +57,7 @@ contract TakeFlashloanBalancer is Executable, ProxyPermission, UseStorageSlot, U
     ).getFlashLoanFeePercentage();
     if (feePercentage > 0) {
       uint256 product = amounts[0] * feePercentage;
-      uint256 fullFlashloanAmount = product == 0 ? 0 : ((product - 1) / ONE) + 1;
+      uint256 fullFlashloanAmount = amounts[0] + (product == 0 ? 0 : ((product - 1) / ONE) + 1);
       getTransactionStorageSlot().write(bytes32(fullFlashloanAmount));
     } else {
       getTransactionStorageSlot().write(bytes32(amounts[0]));
