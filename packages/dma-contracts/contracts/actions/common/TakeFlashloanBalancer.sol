@@ -13,7 +13,6 @@ import { BALANCER_VAULT } from "../../core/constants/Balancer.sol";
 import { ProxyPermission } from "../../libs/DS/ProxyPermission.sol";
 import { IERC20 } from "../../libs/SafeERC20.sol";
 
-import "../../libs/FixedPoint.sol";
 import { UseStorageSlot, StorageSlot, StorageSlot } from "../../libs/UseStorageSlot.sol";
 import { UseRegistry } from "../../libs/UseRegistry.sol";
 

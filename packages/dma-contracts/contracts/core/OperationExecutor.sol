@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 pragma solidity 0.8.24;
 
+import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
 import { OperationsRegistry } from "./OperationsRegistry.sol";
 import { ServiceRegistry } from "../core/ServiceRegistry.sol";
 import { ChainLogView } from "../core/views/ChainLogView.sol";
@@ -31,7 +32,7 @@ interface IProxy {
  * Also it acts as a flashloan recipient
  */
 
-contract OperationExecutor is IERC3156FlashBorrower, IFlashLoanRecipient, UseStorageSlot {
+contract OperationExecutor is IERC3156FlashBorrower, IFlashLoanRecipient, UseStorageSlot, ReentrancyGuard {
   using ActionAddress for address;
   using SafeERC20 for IERC20;
   using StorageSlot for bytes32;
@@ -83,7 +84,7 @@ contract OperationExecutor is IERC3156FlashBorrower, IFlashLoanRecipient, UseSto
    *
    * @param calls List of action calls to be executed.
    */
-  function executeOp(Call[] memory calls) external payable returns (bytes32) {
+  function executeOp(Call[] memory calls) external nonReentrant payable returns (bytes32) {
     aggregate(calls);
 
     bytes32[] memory actions = getActionsStorageSlot().returnStoredArray();
@@ -145,7 +146,7 @@ contract OperationExecutor is IERC3156FlashBorrower, IFlashLoanRecipient, UseSto
     FlashloanData memory flData = abi.decode(data, (FlashloanData));
 
     address mcdFlash = CHAINLOG_VIEWER.getServiceAddress(MCD_FLASH);
-    checkIfLenderIsTrusted(mcdFlash);
+    checkIfSenderIsTrusted(mcdFlash);
     checkIfFlashloanedAssetIsTheRequiredOne(asset, flData.asset);
     checkIfFlashloanedAmountIsTheRequiredOne(asset, flData.amount);
     processFlashloan(flData, initiator);
@@ -180,7 +181,7 @@ contract OperationExecutor is IERC3156FlashBorrower, IFlashLoanRecipient, UseSto
     address asset = address(tokens[0]);
     (FlashloanData memory flData, address initiator) = abi.decode(data, (FlashloanData, address));
 
-    checkIfLenderIsTrusted(BALANCER_VAULT);
+    checkIfSenderIsTrusted(BALANCER_VAULT);
     checkIfFlashloanedAssetIsTheRequiredOne(asset, flData.asset);
     checkIfFlashloanedAmountIsTheRequiredOne(asset, flData.amount);
 
@@ -196,7 +197,7 @@ contract OperationExecutor is IERC3156FlashBorrower, IFlashLoanRecipient, UseSto
     IERC20(asset).safeTransfer(BALANCER_VAULT, paybackAmount);
   }
 
-  function checkIfLenderIsTrusted(address lender) public view {
+  function checkIfSenderIsTrusted(address lender) public view {
     if (msg.sender != lender) revert UntrustedLender(msg.sender);
   }
 

@@ -200,7 +200,6 @@ const config = {
       },
       hardfork: 'cancun',
       gas: 'auto',
-      initialBaseFeePerGas: 1000000000,
       allowUnlimitedContractSize: true,
     },
     ...(includeGoerli
