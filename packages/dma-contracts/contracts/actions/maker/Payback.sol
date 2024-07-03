@@ -3,11 +3,11 @@ pragma solidity >=0.8.5;
 
 import { Executable } from "../common/Executable.sol";
 import { UseStorageSlot, StorageSlot } from "../../libs/UseStorageSlot.sol";
-import { OperationStorage } from "../../core/OperationStorage.sol";
+
 import { SafeERC20, IERC20 } from "../../libs/SafeERC20.sol";
 import { IVat } from "../../interfaces/maker/IVat.sol";
 import { IDaiJoin } from "../../interfaces/maker/IDaiJoin.sol";
-import { IJoin } from "../../interfaces/maker/IJoin.sol";
+
 import { IManager } from "../../interfaces/maker/IManager.sol";
 import { SafeMath } from "../../libs/SafeMath.sol";
 import { PaybackData } from "../../core/types/Maker.sol";
@@ -37,7 +37,7 @@ contract MakerPayback is Executable, UseStorageSlot {
   function execute(bytes calldata data, uint8[] memory paramsMap) external payable override {
     PaybackData memory paybackData = parseInputs(data);
     paybackData.vaultId = uint256(
-      storeInSlot("transaction").read(bytes32(paybackData.vaultId), paramsMap[0])
+      getTransactionStorageSlot().read(bytes32(paybackData.vaultId), paramsMap[0])
     );
     IManager manager = IManager(registry.getRegisteredService(MCD_MANAGER));
     IDaiJoin daiJoin = IDaiJoin(registry.getRegisteredService(MCD_JOIN_DAI));
@@ -45,7 +45,7 @@ contract MakerPayback is Executable, UseStorageSlot {
       ? _paybackAll(manager, daiJoin, paybackData)
       : _payback(manager, daiJoin, paybackData);
 
-    storeInSlot("transaction").write(bytes32(amountPaidBack));
+    getTransactionStorageSlot().write(bytes32(amountPaidBack));
   }
 
   function _payback(

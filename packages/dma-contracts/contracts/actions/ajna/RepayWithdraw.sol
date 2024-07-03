@@ -1,9 +1,9 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
-pragma solidity ^0.8.15;
+pragma solidity 0.8.24;
 
 import { Executable } from "../common/Executable.sol";
 import { UseStorageSlot, StorageSlot } from "../../libs/UseStorageSlot.sol";
-import { OperationStorage } from "../../core/OperationStorage.sol";
+
 import { RepayWithdrawData } from "../../core/types/Ajna.sol";
 import {
   AJNA_POOL_UTILS_INFO,
@@ -42,8 +42,8 @@ contract AjnaRepayWithdraw is Executable, UseStorageSlot {
     );
     require(address(pool) != address(0), "AjnaDepositBorrow: Pool not found");
 
-    args.withdrawAmount = storeInSlot("transaction").readUint(bytes32(args.withdrawAmount), paramsMap[1]);
-    args.repayAmount = storeInSlot("transaction").readUint(bytes32(args.repayAmount), paramsMap[2]);
+    args.withdrawAmount = getTransactionStorageSlot().readUint(bytes32(args.withdrawAmount), paramsMap[1]);
+    args.repayAmount = getTransactionStorageSlot().readUint(bytes32(args.repayAmount), paramsMap[2]);
 
     uint256 index = poolUtilsInfo.priceToIndex(args.price);
 
@@ -69,8 +69,8 @@ contract AjnaRepayWithdraw is Executable, UseStorageSlot {
       index
     );
 
-    storeInSlot("transaction").write(bytes32(args.repayAmount));
-    storeInSlot("transaction").write(bytes32(args.withdrawAmount));
+    getTransactionStorageSlot().write(bytes32(args.repayAmount));
+    getTransactionStorageSlot().write(bytes32(args.withdrawAmount));
   }
 
   function parseInputs(

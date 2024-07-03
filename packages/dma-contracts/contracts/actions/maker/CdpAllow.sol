@@ -3,14 +3,14 @@ pragma solidity >=0.8.5;
 
 import { Executable } from "../common/Executable.sol";
 import { UseStorageSlot, StorageSlot } from "../../libs/UseStorageSlot.sol";
-import { OperationStorage } from "../../core/OperationStorage.sol";
-import { IVat } from "../../interfaces/maker/IVat.sol";
+
+
 import { IManager } from "../../interfaces/maker/IManager.sol";
-import { MathUtils } from "../../libs/MathUtils.sol";
+
 import { CdpAllowData } from "../../core/types/Maker.sol";
 import { SafeERC20, IERC20 } from "../../libs/SafeERC20.sol";
-import { IWETH } from "../../interfaces/tokens/IWETH.sol";
-import { WETH } from "../../core/constants/Common.sol";
+
+
 import { MCD_MANAGER } from "../../core/constants/Maker.sol";
 import { IServiceRegistry } from "../../interfaces/IServiceRegistry.sol";
 
@@ -25,7 +25,7 @@ contract CdpAllow is Executable, UseStorageSlot {
 
   function execute(bytes calldata data, uint8[] memory paramsMap) external payable override {
     CdpAllowData memory cdpAllowData = parseInputs(data);
-    cdpAllowData.vaultId = storeInSlot("transaction").readUint(
+    cdpAllowData.vaultId = getTransactionStorageSlot().readUint(
       bytes32(cdpAllowData.vaultId),
       paramsMap[0]
     );

@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
-pragma solidity ^0.8.15;
+pragma solidity 0.8.24;
 
 import { Executable } from "../common/Executable.sol";
 import { UseStorageSlot, StorageSlot, StorageSlot } from "../../libs/UseStorageSlot.sol";
@@ -28,7 +28,7 @@ contract SparkPayback is Executable, UseStorageSlot, UseRegistry {
   function execute(bytes calldata data, uint8[] memory paramsMap) external payable override {
     PaybackData memory payback = parseInputs(data);
 
-    payback.amount = storeInSlot("transaction").readUint(bytes32(payback.amount), paramsMap[1]);
+    payback.amount = getTransactionStorageSlot().readUint(bytes32(payback.amount), paramsMap[1]);
 
     IPool(getRegisteredService(SPARK_LENDING_POOL)).repay(
       payback.asset,
@@ -37,7 +37,7 @@ contract SparkPayback is Executable, UseStorageSlot, UseRegistry {
       address(this)
     );
 
-    storeInSlot("transaction").write(bytes32(payback.amount));
+    getTransactionStorageSlot().write(bytes32(payback.amount));
   }
 
   function parseInputs(bytes memory _callData) public pure returns (PaybackData memory params) {

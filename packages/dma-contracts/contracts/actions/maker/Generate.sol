@@ -3,10 +3,10 @@ pragma solidity >=0.8.5;
 
 import { Executable } from "../common/Executable.sol";
 import { UseStorageSlot, StorageSlot } from "../../libs/UseStorageSlot.sol";
-import { OperationStorage } from "../../core/OperationStorage.sol";
+
 import { IVat } from "../../interfaces/maker/IVat.sol";
 import { IManager } from "../../interfaces/maker/IManager.sol";
-import { IJoin } from "../../interfaces/maker/IJoin.sol";
+
 import { IDaiJoin } from "../../interfaces/maker/IDaiJoin.sol";
 import { IJug } from "../../interfaces/maker/IJug.sol";
 import { SafeMath } from "../../libs/SafeMath.sol";
@@ -27,13 +27,13 @@ contract MakerGenerate is Executable, UseStorageSlot {
 
   function execute(bytes calldata data, uint8[] memory paramsMap) external payable override {
     GenerateData memory generateData = parseInputs(data);
-    generateData.vaultId = storeInSlot("transaction").readUint(
+    generateData.vaultId = getTransactionStorageSlot().readUint(
       bytes32(generateData.vaultId),
       paramsMap[1]
     );
 
     uint256 amountGenerated = _generate(generateData);
-    storeInSlot("transaction").write(bytes32(amountGenerated));
+    getTransactionStorageSlot().write(bytes32(amountGenerated));
   }
 
   function _generate(GenerateData memory data) internal returns (uint256) {

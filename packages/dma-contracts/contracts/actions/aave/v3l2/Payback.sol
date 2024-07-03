@@ -1,14 +1,14 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
-pragma solidity ^0.8.15;
+pragma solidity 0.8.24;
 
 import { Executable } from "../../common/Executable.sol";
 import { UseStorageSlot, StorageSlot } from "../../../libs/UseStorageSlot.sol";
-import { OperationStorage } from "../../../core/OperationStorage.sol";
-import { IVariableDebtToken } from "../../../interfaces/aave/IVariableDebtToken.sol";
-import { IWETHGateway } from "../../../interfaces/aave/IWETHGateway.sol";
+
+
+
 import { PaybackData } from "../../../core/types/Aave.sol";
-import { ILendingPool } from "../../../interfaces/aave/ILendingPool.sol";
-import { IPoolV3 } from "../../../interfaces/aaveV3/IPoolV3.sol";
+
+
 
 import { AAVE_POOL, AAVE_L2_ENCODER } from "../../../core/constants/Aave.sol";
 import { IServiceRegistry } from "../../../interfaces/IServiceRegistry.sol";
@@ -43,7 +43,7 @@ contract AaveV3L2Payback is Executable, UseStorageSlot {
   function execute(bytes calldata data, uint8[] memory paramsMap) external payable override {
     PaybackData memory payback = parseInputs(data);
 
-    payback.amount = storeInSlot("transaction").readUint(bytes32(payback.amount), paramsMap[1]);
+    payback.amount = getTransactionStorageSlot().readUint(bytes32(payback.amount), paramsMap[1]);
 
     IL2Pool(registry.getRegisteredService(AAVE_POOL)).repay(
       IL2Encoder(registry.getRegisteredService(AAVE_L2_ENCODER)).encodeRepayParams(
@@ -53,7 +53,7 @@ contract AaveV3L2Payback is Executable, UseStorageSlot {
       )
     );
 
-    storeInSlot("transaction").write(bytes32(payback.amount));
+    getTransactionStorageSlot().write(bytes32(payback.amount));
   }
 
   function parseInputs(bytes memory _callData) public pure returns (PaybackData memory params) {

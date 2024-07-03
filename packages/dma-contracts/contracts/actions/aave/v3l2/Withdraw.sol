@@ -1,13 +1,13 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
-pragma solidity ^0.8.15;
+pragma solidity 0.8.24;
 
 import { Executable } from "../../common/Executable.sol";
 import { UseStorageSlot, StorageSlot } from "../../../libs/UseStorageSlot.sol";
-import { OperationStorage } from "../../../core/OperationStorage.sol";
-import { ILendingPool } from "../../../interfaces/aave/ILendingPool.sol";
+
+
 import { WithdrawData } from "../../../core/types/Aave.sol";
 import { AAVE_POOL, AAVE_L2_ENCODER } from "../../../core/constants/Aave.sol";
-import { IPoolV3 } from "../../../interfaces/aaveV3/IPoolV3.sol";
+
 import { IServiceRegistry } from "../../../interfaces/IServiceRegistry.sol";
 
 /**
@@ -45,7 +45,7 @@ contract AaveV3L2Withdraw is Executable, UseStorageSlot {
 
     // TODO: This must beresolved before prod. L2Pool.withdraw doesn't return the final amount being withdrawn
     // The value stored in the storage and the one used in the event MUST be changed!
-    storeInSlot("transaction").write(bytes32(withdraw.amount));
+    getTransactionStorageSlot().write(bytes32(withdraw.amount));
   }
 
   function parseInputs(bytes memory _callData) public pure returns (WithdrawData memory params) {

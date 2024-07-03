@@ -4,9 +4,9 @@ pragma solidity ^0.8.15;
 
 import "../actions/common/Executable.sol";
 import { UseStorageSlot, StorageSlot } from "../libs/UseStorageSlot.sol";
-import { OperationStorage } from "../core/OperationStorage.sol";
-import "../interfaces/tokens/IERC20.sol";
-import "../core/ServiceRegistry.sol";
+
+
+
 import "../interfaces/tokens/IWETH.sol";
 import "../interfaces/IExchange.sol";
 import "../core/OperationStorage.sol";
@@ -47,6 +47,6 @@ contract DummySwap is Executable, UseStorageSlot {
 
     require(amountBought >= swap.receiveAtLeast, "Exchange / Received less");
 
-    storeInSlot("transaction").write(bytes32(amountBought));
+    getTransactionStorageSlot().write(bytes32(amountBought));
   }
 }

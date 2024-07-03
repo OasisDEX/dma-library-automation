@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
-pragma solidity ^0.8.15;
+pragma solidity 0.8.24;
 
 import { Executable } from "../common/Executable.sol";
 import { SafeERC20, IERC20 } from "../../libs/SafeERC20.sol";
@@ -28,7 +28,7 @@ contract SetApproval is Executable, UseStorageSlot, UseRegistry {
   function execute(bytes calldata data, uint8[] memory paramsMap) external payable override {
     SetApprovalData memory approval = parseInputs(data);
 
-    uint256 mappedApprovalAmount = storeInSlot("transaction").readUint(
+    uint256 mappedApprovalAmount = getTransactionStorageSlot().readUint(
       bytes32(approval.amount),
       paramsMap[2]
     );

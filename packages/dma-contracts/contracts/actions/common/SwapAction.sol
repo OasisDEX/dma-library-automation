@@ -1,13 +1,13 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
-pragma solidity ^0.8.15;
+pragma solidity 0.8.24;
 
 import { Executable } from "../common/Executable.sol";
-import { ServiceRegistry } from "../../core/ServiceRegistry.sol";
+
 import { SafeERC20, IERC20 } from "../../libs/SafeERC20.sol";
-import { IWETH } from "../../interfaces/tokens/IWETH.sol";
+
 import { SwapData } from "../../core/types/Common.sol";
 import { Swap } from "../../swap/Swap.sol";
-import { WETH, SWAP } from "../../core/constants/Common.sol";
+import { SWAP } from "../../core/constants/Common.sol";
 import { UseStorageSlot, StorageSlot, StorageSlot } from "../../libs/UseStorageSlot.sol";
 import { ServiceRegistry } from "../../core/ServiceRegistry.sol";
 import { UseRegistry } from "../../libs/UseRegistry.sol";
@@ -35,7 +35,7 @@ contract SwapAction is Executable, UseStorageSlot, UseRegistry {
 
     uint256 received = Swap(swapAddress).swapTokens(swap);
 
-    storeInSlot("transaction").write(bytes32(received));
+    getTransactionStorageSlot().write(bytes32(received));
   }
 
   function parseInputs(bytes memory _callData) public pure returns (SwapData memory params) {

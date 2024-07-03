@@ -3,9 +3,9 @@ pragma solidity ^0.8.15;
 
 import { Executable } from "../actions/common/Executable.sol";
 import { SafeERC20, IERC20 } from "../libs/SafeERC20.sol";
-import { SetApprovalData } from "../core/types/Common.sol";
+
 import { UseStorageSlot, StorageSlot } from "../libs/UseStorageSlot.sol";
-import { OperationStorage } from "../core/OperationStorage.sol";
+
 
 contract DummyOptionalAction is Executable, UseStorageSlot {
   using SafeERC20 for IERC20;

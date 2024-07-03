@@ -1,9 +1,9 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
-pragma solidity ^0.8.15;
+pragma solidity 0.8.24;
 
-import { OperationStorage } from "../core/OperationStorage.sol";
+
 import { ServiceRegistry } from "../core/ServiceRegistry.sol";
-import { OPERATION_STORAGE } from "../core/constants/Common.sol";
+
 
 /**
  * @title UseRegistry contract

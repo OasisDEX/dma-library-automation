@@ -1,15 +1,14 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
-pragma solidity ^0.8.15;
+pragma solidity 0.8.24;
 
 import { OperationsRegistry } from "./OperationsRegistry.sol";
 import { ServiceRegistry } from "../core/ServiceRegistry.sol";
 import { ChainLogView } from "../core/views/ChainLogView.sol";
 import { StorageSlot, UseStorageSlot } from "../libs/UseStorageSlot.sol";
 import { ActionAddress } from "../libs/ActionAddress.sol";
-import { TakeFlashloan } from "../actions/common/TakeFlashloan.sol";
-import { Executable } from "../actions/common/Executable.sol";
+
 import { IERC3156FlashBorrower } from "../interfaces/flashloan/IERC3156FlashBorrower.sol";
-import { IERC3156FlashLender } from "../interfaces/flashloan/IERC3156FlashLender.sol";
+
 import { IFlashLoanRecipient } from "../interfaces/flashloan/balancer/IFlashLoanRecipient.sol";
 import { SafeERC20, IERC20 } from "../libs/SafeERC20.sol";
 import { FlashloanData, Call } from "./types/Common.sol";
@@ -37,12 +36,12 @@ contract OperationExecutor is IERC3156FlashBorrower, IFlashLoanRecipient, UseSto
   using SafeERC20 for IERC20;
   using StorageSlot for bytes32;
 
-  ServiceRegistry immutable REGISTRY;
-  OperationsRegistry immutable OPERATIONS_REGISTRY;
-  ChainLogView immutable CHAINLOG_VIEWER;
-  address immutable BALANCER_VAULT;
-  address immutable OPERATION_EXECUTOR;
-  uint8 private isFlashloanInProgress = 1;
+  ServiceRegistry public immutable REGISTRY;
+  OperationsRegistry public immutable OPERATIONS_REGISTRY;
+  ChainLogView public immutable CHAINLOG_VIEWER;
+  address public immutable BALANCER_VAULT;
+  address public immutable OPERATION_EXECUTOR;
+  bytes32 public constant FLASHLOAN_LOCK_SLOT = keccak256("summerfi.flashloan.lock");
 
   bytes32 public constant ERC3156_FLASHLOAN_MSG = keccak256("ERC3156FlashBorrower.onFlashLoan");
 
@@ -84,11 +83,15 @@ contract OperationExecutor is IERC3156FlashBorrower, IFlashLoanRecipient, UseSto
    *
    * @param calls List of action calls to be executed.
    */
-  function executeOp(Call[] memory calls) public payable returns (bytes32) {
+  function executeOp(Call[] memory calls) external payable returns (bytes32) {
     aggregate(calls);
 
-    bytes32[] memory actions = storeInSlot("actions").returnStoredArray();
+    bytes32[] memory actions = getActionsStorageSlot().returnStoredArray();
     bytes32 operationName = getOperation(keccak256(abi.encodePacked(actions)));
+
+    /* Transient storage cleared in case of `executeOp ` being called multiple times in one transaction */
+    getTransactionStorageSlot().clear();
+    getActionsStorageSlot().clear();
 
     emit Operation(operationName, calls);
 
@@ -99,7 +102,7 @@ contract OperationExecutor is IERC3156FlashBorrower, IFlashLoanRecipient, UseSto
     for (uint256 current = 0; current < calls.length; current++) {
       bytes32 targetHash = calls[current].targetHash;
       address target = REGISTRY.getServiceAddress(targetHash);
-      storeInSlot("actions").write(targetHash);
+      getActionsStorageSlot().write(targetHash);
       target.execute(calls[current].callData);
     }
   }
@@ -198,8 +201,28 @@ contract OperationExecutor is IERC3156FlashBorrower, IFlashLoanRecipient, UseSto
   }
 
   function checkIfFlashloanIsInProgress() private view {
-    if (isFlashloanInProgress == 2) {
-      revert FlashloanReentrancyAttempt();
+    bytes4 errorSelector = FlashloanReentrancyAttempt.selector;
+    bytes32 key = FLASHLOAN_LOCK_SLOT;
+    assembly {
+      let isFlashloanInProgress := tload(key)
+      if eq(isFlashloanInProgress, 1) {
+        mstore(0, errorSelector)
+        revert(0, 0x04)
+      }
+    }
+  }
+
+  function lockFlashloan() internal {
+    bytes32 key = FLASHLOAN_LOCK_SLOT;
+    assembly {
+      tstore(key, 1)
+    }
+  }
+
+  function unlockFlashloan() internal {
+    bytes32 key = FLASHLOAN_LOCK_SLOT;
+    assembly {
+      tstore(key, 0)
     }
   }
 
@@ -228,7 +251,7 @@ contract OperationExecutor is IERC3156FlashBorrower, IFlashLoanRecipient, UseSto
    * @param initiator The address of the proxy that initiated the flashloan
    */
   function processFlashloan(FlashloanData memory flData, address initiator) private {
-    isFlashloanInProgress = 2;
+    lockFlashloan();
 
     IERC20(flData.asset).safeTransfer(initiator, flData.amount);
     IProxy(payable(initiator)).execute(
@@ -236,6 +259,6 @@ contract OperationExecutor is IERC3156FlashBorrower, IFlashLoanRecipient, UseSto
       abi.encodeWithSelector(this.callbackAggregate.selector, flData.calls)
     );
 
-    isFlashloanInProgress = 1;
+    unlockFlashloan();
   }
 }

@@ -1,12 +1,12 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
-pragma solidity ^0.8.15;
+pragma solidity 0.8.24;
 
 import { Executable } from "../../common/Executable.sol";
 import { UseStorageSlot, StorageSlot, StorageSlot } from "../../../libs/UseStorageSlot.sol";
 import { ServiceRegistry } from "../../../core/ServiceRegistry.sol";
-import { IVariableDebtToken } from "../../../interfaces/aave/IVariableDebtToken.sol";
-import { IWETHGateway } from "../../../interfaces/aave/IWETHGateway.sol";
-import { ILendingPool } from "../../../interfaces/aave/ILendingPool.sol";
+
+
+
 import { BorrowData } from "../../../core/types/Aave.sol";
 import { AAVE_POOL } from "../../../core/constants/Aave.sol";
 import { IPoolV3 } from "../../../interfaces/aaveV3/IPoolV3.sol";
@@ -28,7 +28,7 @@ contract AaveV3Borrow is Executable, UseStorageSlot, UseRegistry {
   function execute(bytes calldata data, uint8[] memory paramsMap) external payable override {
     BorrowData memory borrow = parseInputs(data);
 
-    uint256 mappedBorrowAmount = storeInSlot("transaction").readUint(
+    uint256 mappedBorrowAmount = getTransactionStorageSlot().readUint(
       bytes32(borrow.amount),
       paramsMap[1]
     );
@@ -41,7 +41,7 @@ contract AaveV3Borrow is Executable, UseStorageSlot, UseRegistry {
       address(this)
     );
 
-    storeInSlot("transaction").write(bytes32(mappedBorrowAmount));
+    getTransactionStorageSlot().write(bytes32(mappedBorrowAmount));
   }
 
   function parseInputs(bytes memory _callData) public pure returns (BorrowData memory params) {

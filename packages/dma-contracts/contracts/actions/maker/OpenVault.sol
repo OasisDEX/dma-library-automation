@@ -4,7 +4,7 @@ pragma solidity >=0.8.5;
 import { Executable } from "../common/Executable.sol";
 import { UseStorageSlot, StorageSlot } from "../../libs/UseStorageSlot.sol";
 import { IManager } from "../../interfaces/maker/IManager.sol";
-import { OperationStorage } from "../../core/OperationStorage.sol";
+
 import { OpenVaultData } from "../../core/types/Maker.sol";
 import { MCD_MANAGER } from "../../core/constants/Maker.sol";
 import { IServiceRegistry } from "../../interfaces/IServiceRegistry.sol";
@@ -21,7 +21,7 @@ contract MakerOpenVault is Executable, UseStorageSlot {
     OpenVaultData memory openVaultData = parseInputs(data);
 
     uint256 vaultId = _openVault(openVaultData);
-    storeInSlot("transaction").write(bytes32(vaultId));
+    getTransactionStorageSlot().write(bytes32(vaultId));
   }
 
   function _openVault(OpenVaultData memory data) internal returns (uint256) {

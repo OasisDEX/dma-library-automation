@@ -1,13 +1,13 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
-pragma solidity ^0.8.15;
+pragma solidity 0.8.24;
 
 import { Executable } from "../../common/Executable.sol";
 import { UseStorageSlot, StorageSlot, StorageSlot } from "../../../libs/UseStorageSlot.sol";
 import { ServiceRegistry } from "../../../core/ServiceRegistry.sol";
-import { IVariableDebtToken } from "../../../interfaces/aave/IVariableDebtToken.sol";
-import { IWETHGateway } from "../../../interfaces/aave/IWETHGateway.sol";
+
+
 import { PaybackData } from "../../../core/types/Aave.sol";
-import { ILendingPool } from "../../../interfaces/aave/ILendingPool.sol";
+
 import { IPoolV3 } from "../../../interfaces/aaveV3/IPoolV3.sol";
 import { AAVE_POOL } from "../../../core/constants/Aave.sol";
 import { UseRegistry } from "../../../libs/UseRegistry.sol";
@@ -29,7 +29,7 @@ contract AaveV3Payback is Executable, UseStorageSlot, UseRegistry {
    */
   function execute(bytes calldata data, uint8[] memory paramsMap) external payable override {
     PaybackData memory payback = parseInputs(data);
-    payback.amount = storeInSlot("transaction").readUint(bytes32(payback.amount), paramsMap[1]);
+    payback.amount = getTransactionStorageSlot().readUint(bytes32(payback.amount), paramsMap[1]);
 
     if (payback.onBehalf == address(0)) {
       payback.onBehalf = address(this);
@@ -42,7 +42,7 @@ contract AaveV3Payback is Executable, UseStorageSlot, UseRegistry {
       payback.onBehalf
     );
 
-    storeInSlot("transaction").write(bytes32(payback.amount));
+    getTransactionStorageSlot().write(bytes32(payback.amount));
   }
 
   function parseInputs(bytes memory _callData) public pure returns (PaybackData memory params) {

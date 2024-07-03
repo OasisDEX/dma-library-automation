@@ -1,9 +1,9 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
-pragma solidity ^0.8.15;
+pragma solidity 0.8.24;
 
 import { Executable } from "../common/Executable.sol";
 import { UseStorageSlot, StorageSlot } from "../../libs/UseStorageSlot.sol";
-import { OperationStorage } from "../../core/OperationStorage.sol";
+
 import { WithdrawData } from "../../core/types/MorphoBlue.sol";
 import { MORPHO_BLUE } from "../../core/constants/MorphoBlue.sol";
 import { IMorpho } from "../../interfaces/morpho-blue/IMorpho.sol";
@@ -35,7 +35,7 @@ contract MorphoBlueWithdraw is Executable, UseStorageSlot {
       withdrawData.to
     );
 
-    storeInSlot("transaction").write(bytes32(withdrawData.amount));
+    getTransactionStorageSlot().write(bytes32(withdrawData.amount));
   }
 
   function parseInputs(bytes memory _callData) public pure returns (WithdrawData memory params) {

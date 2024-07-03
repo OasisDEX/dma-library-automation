@@ -3,7 +3,7 @@ pragma solidity >=0.8.5;
 
 import { Executable } from "../common/Executable.sol";
 import { UseStorageSlot, StorageSlot } from "../../libs/UseStorageSlot.sol";
-import { OperationStorage } from "../../core/OperationStorage.sol";
+
 import { MathUtils } from "../../libs/MathUtils.sol";
 import { WithdrawData } from "../../core/types/Maker.sol";
 import { IManager } from "../../interfaces/maker/IManager.sol";
@@ -23,13 +23,13 @@ contract MakerWithdraw is Executable, UseStorageSlot {
 
   function execute(bytes calldata data, uint8[] memory paramsMap) external payable override {
     WithdrawData memory withdrawData = parseInputs(data);
-    withdrawData.vaultId = storeInSlot("transaction").readUint(
+    withdrawData.vaultId = getTransactionStorageSlot().readUint(
       bytes32(withdrawData.vaultId),
       paramsMap[0]
     );
 
     uint256 amountWithdrawn = _withdraw(withdrawData);
-    storeInSlot("transaction").write(bytes32(amountWithdrawn));
+    getTransactionStorageSlot().write(bytes32(amountWithdrawn));
   }
 
   function _withdraw(WithdrawData memory data) internal returns (uint256) {

@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
-pragma solidity ^0.8.15;
+pragma solidity 0.8.24;
 
 import { Executable } from "../common/Executable.sol";
 import { ServiceRegistry } from "../../core/ServiceRegistry.sol";
@@ -8,11 +8,11 @@ import { IERC3156FlashBorrower } from "../../interfaces/flashloan/IERC3156FlashB
 import { IERC3156FlashLender } from "../../interfaces/flashloan/IERC3156FlashLender.sol";
 import { IFlashLoanRecipient } from "../../interfaces/flashloan/balancer/IFlashLoanRecipient.sol";
 import { FlashloanData, FlashloanProvider } from "../../core/types/Common.sol";
-import { OPERATION_EXECUTOR, DAI, CHAINLOG_VIEWER } from "../../core/constants/Common.sol";
+import { OPERATION_EXECUTOR, CHAINLOG_VIEWER } from "../../core/constants/Common.sol";
 import { MCD_FLASH } from "../../core/constants/Maker.sol";
 import { BALANCER_VAULT } from "../../core/constants/Balancer.sol";
 import { ChainLogView } from "../../core/views/ChainLogView.sol";
-import { ProxyPermission } from "../../libs/DS/ProxyPermission.sol";
+
 import { ProxyPermission } from "../../libs/DS/ProxyPermission.sol";
 import { IERC20 } from "../../libs/SafeERC20.sol";
 import { UseRegistry } from "../../libs/UseRegistry.sol";

@@ -1,12 +1,12 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
-pragma solidity ^0.8.15;
+pragma solidity 0.8.24;
 
 import { Executable } from "../../common/Executable.sol";
 import { UseStorageSlot, StorageSlot, StorageSlot } from "../../../libs/UseStorageSlot.sol";
 import { ServiceRegistry } from "../../../core/ServiceRegistry.sol";
-import { IVariableDebtToken } from "../../../interfaces/aave/IVariableDebtToken.sol";
-import { IWETHGateway } from "../../../interfaces/aave/IWETHGateway.sol";
-import { ILendingPool } from "../../../interfaces/aave/ILendingPool.sol";
+
+
+
 import { SetEModeData } from "../../../core/types/Aave.sol";
 import { AAVE_POOL } from "../../../core/constants/Aave.sol";
 import { IPoolV3 } from "../../../interfaces/aaveV3/IPoolV3.sol";
@@ -31,7 +31,7 @@ contract AaveV3SetEMode is Executable, UseStorageSlot, UseRegistry {
 
     IPoolV3(getRegisteredService(AAVE_POOL)).setUserEMode(emode.categoryId);
 
-    storeInSlot("transaction").write(bytes32(uint256(emode.categoryId)));
+    getTransactionStorageSlot().write(bytes32(uint256(emode.categoryId)));
   }
 
   function parseInputs(bytes memory _callData) public pure returns (SetEModeData memory params) {

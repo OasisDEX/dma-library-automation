@@ -43,7 +43,7 @@
     "refinance:getdefinition": "npx hardhat refinance-get-definition"
   },
   "dependencies": {
-    "@openzeppelin/contracts": "^4.9.3",
+    "@openzeppelin/contracts": "4.9.6",
     "glob": "^10.1.0"
   },
   "files": [

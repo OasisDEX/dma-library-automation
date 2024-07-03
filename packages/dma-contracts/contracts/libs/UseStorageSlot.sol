@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
-pragma solidity ^0.8.15;
+pragma solidity 0.8.24;
 
 /**
  * @title A library that operates on a storage slot
@@ -16,7 +16,7 @@ library StorageSlot {
    * @return slotPosition The storage slot position as a bytes32 value.
    */
   function getStorageSlotPosition(string memory salt) internal pure returns (bytes32 slotPosition) {
-    slotPosition = bytes32(uint256(keccak256(abi.encodePacked("summer.proxy.storage", salt))));
+    slotPosition = keccak256(abi.encodePacked("summer.proxy.storage", salt));
   }
 
   /**
@@ -25,12 +25,7 @@ library StorageSlot {
    * @return An array of bytes32 values stored in the specified slot.
    */
   function returnStoredArray(bytes32 slotPosition) internal view returns (bytes32[] memory) {
-    bytes32 lengthKey = keccak256(abi.encodePacked(slotPosition, "length"));
-    uint256 length;
-
-    assembly {
-      length := tload(lengthKey)
-    }
+    uint256 length = _getLength(slotPosition);
 
     bytes32[] memory values = new bytes32[](length);
 
@@ -47,18 +42,28 @@ library StorageSlot {
   }
 
   /**
+   * @dev Clears the stored array at the specified slot position.
+   * 
+   * @param slotPosition The position of the storage slot.
+   * @notice This function clears the length of the stored array by setting it to 0.
+   */
+  function clear(bytes32 slotPosition) internal {
+    bytes32 lengthKey = keccak256(abi.encodePacked(slotPosition, "length"));
+
+    assembly {
+      tstore(lengthKey, 0)
+    }
+  }
+
+  /**
    * @dev Pushes the value to the array stored in slotPosition.
    * @param slotPosition The position of the storage slot, where the array is stored.
    * @param value The value to be pushed to the array.
    * @notice This function updates the length of the storage slot by incrementing it by 1.
    */
   function write(bytes32 slotPosition, bytes32 value) internal {
-    // each arryas length is stored in a separate key
     bytes32 lengthKey = keccak256(abi.encodePacked(slotPosition, "length"));
-    uint256 length;
-    assembly {
-      length := tload(lengthKey)
-    }
+    uint256 length = _getLengthByLengthKey(lengthKey);
     bytes32 key = _getKey(slotPosition, length);
     assembly {
       // store the value at the key
@@ -82,6 +87,9 @@ library StorageSlot {
   ) internal view returns (bytes32) {
     // if paramMapping is 0, return the param
     if (paramMapping == 0) return param;
+    uint256 length = _getLength(slotPosition);
+
+    require(paramMapping <= length, "StorageSlot: Index out of bounds");
     bytes32 key = _getKey(slotPosition, paramMapping - 1);
     bytes32 value;
     assembly {
@@ -114,6 +122,29 @@ library StorageSlot {
   function _getKey(bytes32 slotPosition, uint256 index) internal pure returns (bytes32) {
     return keccak256(abi.encodePacked(slotPosition, index));
   }
+
+  /**
+   * @dev Retrieves the length of an array based on the provided slot position.
+   * @param slotPosition The position of the storage slot.
+   * @return length The length of the storage slot.
+   */
+  function _getLength(bytes32 slotPosition) internal view returns (uint256 length) {
+    bytes32 lengthKey = keccak256(abi.encodePacked(slotPosition, "length"));
+    length = _getLengthByLengthKey(lengthKey);
+    return length;
+  }
+
+  /**
+   * @dev Retrieves the length of an array based on the provided length key.
+   * @param lengthKey Key to the length of the storage slot.
+   * @return length The length of the storage slot.
+   */
+  function _getLengthByLengthKey(bytes32 lengthKey) internal view returns (uint256 length) {
+    assembly {
+      length := tload(lengthKey)
+    }
+    return length;
+  }
 }
 
 /**
@@ -122,13 +153,31 @@ library StorageSlot {
  */
 abstract contract UseStorageSlot {
   using StorageSlot for bytes32;
+  string public constant ACTIONS_STORAGE = "actions";
+  string public constant TRANSACTION_STORAGE = "transaction";
 
   /**
    * @dev Returns byte32 store slot position based on the given salt.
    * @param salt The salt used to calculate the storage slot position.
    * @return The position of the storage slot.
    */
-  function storeInSlot(string memory salt) internal pure returns (bytes32) {
+  function _getStorageSlotPosition(string memory salt) internal pure returns (bytes32) {
     return StorageSlot.getStorageSlotPosition(salt);
+  }
+
+  /**
+   * @dev Returns the storage slot position for the transaction storage.
+   * @return The position of the transaction storage slot.
+   */
+  function getTransactionStorageSlot() internal pure returns (bytes32) {
+    return _getStorageSlotPosition(TRANSACTION_STORAGE);
+  }
+
+  /**
+   * @dev Returns the storage slot position for the actions storage.
+   * @return The position of the actions storage slot.
+   */
+  function getActionsStorageSlot() internal pure returns (bytes32) {
+    return _getStorageSlotPosition(ACTIONS_STORAGE);
   }
 }

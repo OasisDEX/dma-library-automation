@@ -1,11 +1,11 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
-pragma solidity ^0.8.15;
+pragma solidity 0.8.24;
 
 import "../../libs/DS/DSMath.sol";
 
 import "../../interfaces/maker/IManager.sol";
 import "../../interfaces/maker/ISpotter.sol";
-import "../../interfaces/maker/IVat.sol";
+
 
 /// @title Getter contract for Position info from Maker protocol
 contract McdView is DSMath {

@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
-pragma solidity ^0.8.15;
+pragma solidity 0.8.24;
 
 import { Executable } from "../common/Executable.sol";
 import { UseStorageSlot, StorageSlot, StorageSlot } from "../../libs/UseStorageSlot.sol";
@@ -26,7 +26,7 @@ contract SparkSetEMode is Executable, UseStorageSlot, UseRegistry {
 
     IPool(getRegisteredService(SPARK_LENDING_POOL)).setUserEMode(emode.categoryId);
 
-    storeInSlot("transaction").write(bytes32(uint256(emode.categoryId)));
+    getTransactionStorageSlot().write(bytes32(uint256(emode.categoryId)));
   }
 
   function parseInputs(bytes memory _callData) public pure returns (SetEModeData memory params) {

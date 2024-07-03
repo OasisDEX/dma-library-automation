@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
-pragma solidity ^0.8.15;
+pragma solidity 0.8.24;
 
 import { Executable } from "../../common/Executable.sol";
 import { UseStorageSlot, StorageSlot, StorageSlot } from "../../../libs/UseStorageSlot.sol";
@@ -30,7 +30,7 @@ contract AaveV3Deposit is Executable, UseStorageSlot, UseRegistry {
   function execute(bytes calldata data, uint8[] memory paramsMap) external payable override {
     DepositData memory deposit = parseInputs(data);
 
-    uint256 mappedDepositAmount = storeInSlot("transaction").readUint(bytes32(deposit.amount), paramsMap[1]);
+    uint256 mappedDepositAmount = getTransactionStorageSlot().readUint(bytes32(deposit.amount), paramsMap[1]);
 
     uint256 actualDepositAmount = deposit.sumAmounts
       ? mappedDepositAmount.add(deposit.amount)
@@ -50,7 +50,7 @@ contract AaveV3Deposit is Executable, UseStorageSlot, UseRegistry {
       );
     }
 
-    storeInSlot("transaction").write(bytes32(actualDepositAmount));
+    getTransactionStorageSlot().write(bytes32(actualDepositAmount));
   }
 
   function parseInputs(bytes memory _callData) public pure returns (DepositData memory params) {

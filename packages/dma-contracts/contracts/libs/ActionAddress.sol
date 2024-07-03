@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
-pragma solidity ^0.8.15;
+pragma solidity 0.8.24;
 import "./Address.sol";
 import "../actions/common/Executable.sol";
 
@@ -12,15 +12,13 @@ library ActionAddress {
   }
 
   function isCallingAnExecutable(bytes memory callData) private pure returns (bool) {
-    bytes4 executeSelector = convertBytesToBytes4(
-      abi.encodeWithSelector(Executable.execute.selector)
-    );
+    bytes4 executeSelector = Executable.execute.selector;
     bytes4 selector = convertBytesToBytes4(callData);
     return selector == executeSelector;
   }
 
   function convertBytesToBytes4(bytes memory inBytes) private pure returns (bytes4 outBytes4) {
-    if (inBytes.length == 0) {
+    if (inBytes.length < 4) {
       return 0x0;
     }
 

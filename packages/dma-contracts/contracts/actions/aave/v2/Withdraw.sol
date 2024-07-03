@@ -1,9 +1,9 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
-pragma solidity ^0.8.15;
+pragma solidity 0.8.24;
 
 import { Executable } from "../../common/Executable.sol";
 import { UseStorageSlot, StorageSlot } from "../../../libs/UseStorageSlot.sol";
-import { OperationStorage } from "../../../core/OperationStorage.sol";
+
 import { ILendingPool } from "../../../interfaces/aave/ILendingPool.sol";
 import { WithdrawData } from "../../../core/types/Aave.sol";
 import { AAVE_LENDING_POOL } from "../../../core/constants/Aave.sol";
@@ -30,7 +30,7 @@ contract AaveWithdraw is Executable, UseStorageSlot {
     uint256 amountWithdrawn = ILendingPool(registry.getRegisteredService(AAVE_LENDING_POOL))
       .withdraw(withdraw.asset, withdraw.amount, withdraw.to);
 
-    storeInSlot("transaction").write(bytes32(amountWithdrawn));
+    getTransactionStorageSlot().write(bytes32(amountWithdrawn));
   }
 
   function parseInputs(bytes memory _callData) public pure returns (WithdrawData memory params) {

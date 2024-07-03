@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
-pragma solidity ^0.8.15;
+pragma solidity 0.8.24;
 
 import { Executable } from "../common/Executable.sol";
 import { UseStorageSlot, StorageSlot, StorageSlot } from "../../libs/UseStorageSlot.sol";
@@ -19,7 +19,7 @@ contract CollectFee is Executable, UseStorageSlot, UseRegistry {
     // Fee percentage (e.g., 1% = 100, 0.5% = 50)
     uint256 public immutable feePercentage;
     address public immutable feeRecipient;
-    uint256 constant DIVISOR = 10000;
+    uint256 public constant DIVISOR = 10000;
 
     constructor(address _registry, uint256 _feePercentage, address _feeRecipient) UseRegistry(ServiceRegistry(_registry)) {
         feePercentage = _feePercentage;
@@ -33,7 +33,7 @@ contract CollectFee is Executable, UseStorageSlot, UseRegistry {
      */
     function execute(bytes calldata data, uint8[] memory paramsMap) external payable override {
         address asset = parseInputs(data);
-        uint256 transactionAmount = storeInSlot("transaction").readUint(bytes32(0), paramsMap[0]);
+        uint256 transactionAmount = getTransactionStorageSlot().readUint(bytes32(0), paramsMap[0]);
         uint256 feeAmount = (transactionAmount * feePercentage) / DIVISOR;
 
         // Transfer fee from the user's proxy to the feeRecipient

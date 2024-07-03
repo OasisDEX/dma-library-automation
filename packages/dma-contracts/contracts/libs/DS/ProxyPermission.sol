@@ -1,12 +1,12 @@
 //SPDX-License-Identifier: Unlicense
 
-pragma solidity ^0.8.15;
+pragma solidity 0.8.24;
 
-import { FlashloanData } from "../../core/types/Common.sol";
+
 import { IAccountImplementation } from "../../interfaces/dpm/IAccountImplementation.sol";
 import { IAccountGuard } from "../../interfaces/dpm/IAccountGuard.sol";
-import { ServiceRegistry } from "../../core/ServiceRegistry.sol";
-import { DS_GUARD_FACTORY } from "../../core/constants/Common.sol";
+
+
 import { IDSGuardFactory, IDSGuard, IDSAuth, IDSAuthority } from "../../interfaces/ds/IDSProxy.sol";
 
 contract ProxyPermission {
@@ -17,7 +17,7 @@ contract ProxyPermission {
     dsGuardFactory = IDSGuardFactory(_dsGuardFactory);
   }
 
-  function givePermission(bool isDPMProxy, address _contractAddr) public {
+  function givePermission(bool isDPMProxy, address _contractAddr) internal {
     if (isDPMProxy) {
       // DPM permission
       IAccountGuard(IAccountImplementation(address(this)).guard()).permit(
@@ -40,7 +40,7 @@ contract ProxyPermission {
     }
   }
 
-  function removePermission(bool isDPMProxy, address _contractAddr) public {
+  function removePermission(bool isDPMProxy, address _contractAddr) internal {
     if (isDPMProxy) {
       // DPM permission
       IAccountGuard(IAccountImplementation(address(this)).guard()).permit(

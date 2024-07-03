@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
-pragma solidity ^0.8.15;
+pragma solidity 0.8.24;
 
 import { Executable } from "../common/Executable.sol";
 import { SafeERC20, IERC20 } from "../../libs/SafeERC20.sol";
@@ -24,7 +24,7 @@ contract SendToken is Executable, UseStorageSlot, UseRegistry {
    */
   function execute(bytes calldata data, uint8[] memory paramsMap) external payable override {
     SendTokenData memory send = parseInputs(data);
-    send.amount = storeInSlot("transaction").readUint(bytes32(send.amount), paramsMap[2]);
+    send.amount = getTransactionStorageSlot().readUint(bytes32(send.amount), paramsMap[2]);
 
     if (send.asset != ETH) {
       if (send.amount == type(uint256).max) {

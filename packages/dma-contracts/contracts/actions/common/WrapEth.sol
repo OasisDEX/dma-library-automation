@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
-pragma solidity ^0.8.15;
+pragma solidity 0.8.24;
 
 import { Executable } from "../common/Executable.sol";
-import { ServiceRegistry } from "../../core/ServiceRegistry.sol";
+
 import { SafeERC20, IERC20 } from "../../libs/SafeERC20.sol";
 import { IWETH } from "../../interfaces/tokens/IWETH.sol";
 import { WrapEthData } from "../../core/types/Common.sol";
@@ -28,7 +28,7 @@ contract WrapEth is Executable, UseStorageSlot, UseRegistry {
    */
   function execute(bytes calldata data, uint8[] memory paramsMap) external payable override {
     WrapEthData memory wrapData = parseInputs(data);
-    wrapData.amount = storeInSlot("transaction").readUint(bytes32(wrapData.amount), paramsMap[0]);
+    wrapData.amount = getTransactionStorageSlot().readUint(bytes32(wrapData.amount), paramsMap[0]);
 
     if (wrapData.amount == type(uint256).max) {
       wrapData.amount = address(this).balance;

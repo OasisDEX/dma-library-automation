@@ -1,19 +1,18 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
-pragma solidity ^0.8.15;
+pragma solidity 0.8.24;
 
 import { Executable } from "../common/Executable.sol";
 import { ServiceRegistry } from "../../core/ServiceRegistry.sol";
 import { IVault } from "../../interfaces/balancer/IVault.sol";
 import { IProtocolFeesCollector } from "../../interfaces/balancer/IProtocolFeesCollector.sol";
-import { IERC3156FlashBorrower } from "../../interfaces/flashloan/IERC3156FlashBorrower.sol";
-import { IERC3156FlashLender } from "../../interfaces/flashloan/IERC3156FlashLender.sol";
+
 import { IFlashLoanRecipient } from "../../interfaces/flashloan/balancer/IFlashLoanRecipient.sol";
-import { FlashloanData, FlashloanProvider } from "../../core/types/Common.sol";
-import { OPERATION_EXECUTOR, DAI, CHAINLOG_VIEWER } from "../../core/constants/Common.sol";
+import { FlashloanData } from "../../core/types/Common.sol";
+import { OPERATION_EXECUTOR } from "../../core/constants/Common.sol";
 import { BALANCER_VAULT } from "../../core/constants/Balancer.sol";
 import { ProxyPermission } from "../../libs/DS/ProxyPermission.sol";
 import { IERC20 } from "../../libs/SafeERC20.sol";
-import { OperationStorage } from "../../core/OperationStorage.sol";
+
 import "../../libs/FixedPoint.sol";
 import { UseStorageSlot, StorageSlot, StorageSlot } from "../../libs/UseStorageSlot.sol";
 import { UseRegistry } from "../../libs/UseRegistry.sol";
@@ -24,6 +23,7 @@ import { UseRegistry } from "../../libs/UseRegistry.sol";
  */
 contract TakeFlashloanBalancer is Executable, ProxyPermission, UseStorageSlot, UseRegistry {
   address internal immutable dai;
+  uint256 internal constant ONE = 1e18;
   using StorageSlot for bytes32;
 
   constructor(
@@ -56,10 +56,11 @@ contract TakeFlashloanBalancer is Executable, ProxyPermission, UseStorageSlot, U
       IVault(getRegisteredService(BALANCER_VAULT)).getProtocolFeesCollector()
     ).getFlashLoanFeePercentage();
     if (feePercentage > 0) {
-      uint256 fullFlashloanAmount = amounts[0] + FixedPoint.mulUp(amounts[0], feePercentage);
-      storeInSlot("transaction").write(bytes32(fullFlashloanAmount));
+      uint256 product = amounts[0] * feePercentage;
+      uint256 fullFlashloanAmount = amounts[0] + (product == 0 ? 0 : ((product - 1) / ONE) + 1);
+      getTransactionStorageSlot().write(bytes32(fullFlashloanAmount));
     } else {
-      storeInSlot("transaction").write(bytes32(amounts[0]));
+      getTransactionStorageSlot().write(bytes32(amounts[0]));
     }
 
     IVault(getRegisteredService(BALANCER_VAULT)).flashLoan(

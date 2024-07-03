@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
-pragma solidity ^0.8.15;
+pragma solidity 0.8.24;
 
 import { Executable } from "../common/Executable.sol";
 import { SafeERC20, IERC20 } from "../../libs/SafeERC20.sol";
@@ -30,7 +30,7 @@ contract UnwrapEth is Executable, UseStorageSlot, UseRegistry {
 
     UnwrapEthData memory unwrapData = parseInputs(data);
 
-    unwrapData.amount = storeInSlot("transaction").readUint(bytes32(unwrapData.amount), paramsMap[0]);
+    unwrapData.amount = getTransactionStorageSlot().readUint(bytes32(unwrapData.amount), paramsMap[0]);
 
     if (unwrapData.amount == type(uint256).max) {
       unwrapData.amount = weth.balanceOf(address(this));
