@@ -1,7 +1,6 @@
 import { getMorphoBlueAdjustDownOperationDefinition } from '@deploy-configurations/operation-definitions'
-import { FEE_BASE, MAX_UINT, ZERO } from "@dma-common/constants";
+import { ZERO } from '@dma-common/constants'
 import { actions } from '@dma-library/actions'
-import { BALANCER_FEE } from '@dma-library/config/flashloan-fees'
 import { IOperation } from '@dma-library/types'
 import {
   WithCollateralAndWithdrawal,
@@ -111,7 +110,7 @@ export const adjustRiskDown: MorphoBlueAdjustDownOperation = async ({
     paybackDebt,
     withdrawCollateral,
     swapCollateralTokensForDebtTokens,
-    sendDebtTokenToOpExecutor
+    sendDebtTokenToOpExecutor,
   ]
 
   const takeAFlashLoan = actions.common.takeAFlashLoanBalancer(network, {

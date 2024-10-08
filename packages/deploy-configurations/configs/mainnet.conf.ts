@@ -503,6 +503,16 @@ export const config: SystemConfig = {
     }
   },
   common: {
+    OneInchAggregator5: {
+      name: 'OneInchAggregator5',
+      address: '0x1111111254EEB25477B68fb85Ed929f73A960582',
+      serviceRegistryName: SERVICE_REGISTRY_NAMES.common.ONE_INCH_AGGREGATOR5
+    },
+    "USDC.E": {
+      name: 'USDC.E',
+      address: '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',
+      serviceRegistryName: SERVICE_REGISTRY_NAMES.common.USDC_E
+    },
     GnosisSafe: {
       name: 'GnosisSafe',
       address: '0x85f9b7408afE6CEb5E46223451f5d4b832B522dc'
@@ -884,7 +894,7 @@ export const config: SystemConfig = {
       },
       PoolDataProvider: {
         name: 'PoolDataProvider',
-        address: '0x7B4EB56E7CD4b454BA8ff71E4518426369a138a3'
+        address: '0x41393e5e337606dc3821075Af65AeE84D7688CBD'
       },
       L2Encoder: {
         name: 'L2Encoder',
@@ -1504,6 +1514,11 @@ export const config: SystemConfig = {
       name: 'MorphoBlue',
       address: '0x0000000000000000000000000000000000000000',
       serviceRegistryName: SERVICE_REGISTRY_NAMES.morphoblue.MORPHO_BLUE
+    },
+    AdaptiveCurveIrm: {
+      name: 'AdaptiveCurveIrm',
+      address: '0x0000000000000000000000000000000000000000',
+
     }
   }
 }

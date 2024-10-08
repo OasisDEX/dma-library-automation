@@ -5,9 +5,7 @@ import type { GetCumulativesData, GetEarnData } from './ajna'
 import { getEarnPosition, getPosition } from './ajna'
 import { getErc4626Position } from './common'
 import { getMorphoPosition } from './morpho'
-import {
-  getCurrentSparkPosition, SparkView
-} from "./spark";
+import { getCurrentSparkPosition, SparkView } from './spark'
 
 const aave: AaveView = {
   v2: (args, dependencies) =>

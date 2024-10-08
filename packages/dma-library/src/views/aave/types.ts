@@ -7,12 +7,12 @@ import BigNumber from 'bignumber.js'
 export type AaveGetCurrentPositionArgs = IViewPositionParams<AaveLikeTokens>
 export type AaveV2GetCurrentPositionDependencies =
   StrategyParams.WithViewPositionDependencies<AaveLikeStrategyAddresses> & {
-  protocolVersion: AaveVersion.v2
-}
+    protocolVersion: AaveVersion.v2
+  }
 export type AaveV3GetCurrentPositionDependencies =
   StrategyParams.WithViewPositionDependencies<AaveLikeStrategyAddresses> & {
-  protocolVersion: AaveVersion.v3
-}
+    protocolVersion: AaveVersion.v3
+  }
 
 type AaveV2ReserveDataReply = {
   availableLiquidity: BigNumber

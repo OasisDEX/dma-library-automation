@@ -130,6 +130,14 @@ export const config: SystemConfig = {
       },
     },
     actions: {
+      CollectFee: {
+        name: 'CollectFee',
+        deploy: true,
+        address: '',
+        serviceRegistryName: SERVICE_REGISTRY_NAMES.common.COLLECT_FEE,
+        history: [],
+        constructorArgs: [],
+      },
       PositionCreated: {
         name: 'PositionCreated',
         deploy: true,
@@ -357,6 +365,16 @@ export const config: SystemConfig = {
     },
   },
   common: {
+    OneInchAggregator5: {
+      name: 'OneInchAggregator5',
+      address: '0x1111111254EEB25477B68fb85Ed929f73A960582',
+      serviceRegistryName: SERVICE_REGISTRY_NAMES.common.ONE_INCH_AGGREGATOR5
+    },
+    "USDC.E": {
+      name: 'USDC.E',
+      address: '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',
+      serviceRegistryName: SERVICE_REGISTRY_NAMES.common.USDC_E
+    },
     GnosisSafe: {
       name: 'GnosisSafe',
       address: '0x0000000000000000000000000000000000000000',
@@ -1340,6 +1358,10 @@ export const config: SystemConfig = {
       name: 'MorphoBlue',
       address: ADDRESS_ZERO,
       serviceRegistryName: SERVICE_REGISTRY_NAMES.morphoblue.MORPHO_BLUE,
+    },
+    AdaptiveCurveIrm: {
+      name: 'AdaptiveCurveIrm',
+      address: ADDRESS_ZERO
     },
   },
 }
