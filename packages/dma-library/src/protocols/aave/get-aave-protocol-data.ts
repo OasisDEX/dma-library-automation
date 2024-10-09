@@ -170,7 +170,6 @@ export async function getAaveV3ProtocolData({
       // If either the collateral or debt is not valid in this eMode,
       // treat it as if the user is not in an eMode for this specific token pair
       if (!isCollateralValidInEMode || !isDebtValidInEMode) {
-        userEModeCategory = 0
         eModeCategoryData = undefined
       }
     }
