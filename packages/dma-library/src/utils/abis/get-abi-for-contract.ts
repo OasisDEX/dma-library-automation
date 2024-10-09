@@ -66,8 +66,8 @@ const abiByContractName: Partial<
   },
   [Network.OPTIMISM]: {
     AAVE_V3: {
-      PoolDataProvider: aaveV3ProtocolDataProviderOptimismABI,
-      LendingPool: aaveV3PoolOptimismABI,
+      PoolDataProvider: aaveV3PoolABI,
+      LendingPool: aaveV3ProtocolDataProviderABI,
       Oracle: aaveV3PriceOracleOptimismABI,
     },
     Spark: {

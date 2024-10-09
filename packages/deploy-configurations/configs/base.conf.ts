@@ -326,7 +326,7 @@ export const config: SystemConfig = {
     OneInchAggregator5: {
       name: 'OneInchAggregator5',
       address: '0x1111111254EEB25477B68fb85Ed929f73A960582',
-      serviceRegistryName: SERVICE_REGISTRY_NAMES.common.ONE_INCH_AGGREGATOR5
+      serviceRegistryName: SERVICE_REGISTRY_NAMES.common.ONE_INCH_AGGREGATOR5,
     },
     GnosisSafe: {
       name: 'GnosisSafe',
@@ -1319,12 +1319,12 @@ export const config: SystemConfig = {
   morphoblue: {
     MorphoBlue: {
       name: 'MorphoBlue',
-      address: '0x0000000000000000000000000000000000000000',
+      address: '0xBBBBBbbBBb9cC5e90e3b3Af64bdAF62C37EEFFCb',
       serviceRegistryName: SERVICE_REGISTRY_NAMES.morphoblue.MORPHO_BLUE,
     },
     AdaptiveCurveIrm: {
       name: 'AdaptiveCurveIrm',
-      address: '0x0000000000000000000000000000000000000000'
+      address: '0x46415998764C29aB2a25CbeA6254146D50D22687',
     },
   },
 }
