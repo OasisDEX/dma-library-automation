@@ -3,7 +3,6 @@ import {
   SharedAaveLikeProtocolDataArgs,
 } from '@dma-library/protocols/aave-like/types'
 import {
-  determineReserveEModeCategory,
   fetchAssetPrice,
   fetchReserveData,
   fetchUserReserveData,
@@ -12,6 +11,7 @@ import {
 import * as AaveCommon from '@dma-library/strategies/aave/common'
 import { AaveVersion } from '@dma-library/types/aave'
 import BigNumber from 'bignumber.js'
+import { ethers } from 'ethers'
 
 export type AaveV2ProtocolDataArgs = SharedAaveLikeProtocolDataArgs & {
   protocolVersion: AaveVersion.v2
@@ -114,16 +114,38 @@ export async function getAaveV3ProtocolData({
     proxy ? fetchUserReserveData(poolDataProvider, collateralTokenAddress, proxy) : undefined,
   ])
 
-  const collateralEModeCategoryAsNumber = new BigNumber(0).toNumber()
-  const debtEModeCategoryAsNumber = new BigNumber(0).toNumber()
-  const reserveEModeCategory = determineReserveEModeCategory(
-    collateralEModeCategoryAsNumber,
-    debtEModeCategoryAsNumber,
-  )
-
+  // New approach to handle eModes
+  let reserveEModeCategory = 0
   let eModeCategoryData
-  if (pool && reserveEModeCategory !== 0) {
-    eModeCategoryData = await pool.getEModeCategoryData(reserveEModeCategory)
+
+  if (pool) {
+    // Iterate through possible eMode categories (1-255)
+    for (let categoryId = 1; categoryId < 256; categoryId++) {
+      const collateralConfig = await pool.getEModeCategoryCollateralConfig(categoryId)
+
+      // Check if this is an active eMode
+      if (collateralConfig.liquidationThreshold.gt(0)) {
+        const collateralBitmap = await pool.getEModeCategoryCollateralBitmap(categoryId)
+        const borrowableBitmap = await pool.getEModeCategoryBorrowableBitmap(categoryId)
+
+        const isCollateralInEMode = await isReserveEnabledInEMode(
+          pool,
+          collateralBitmap,
+          collateralTokenAddress,
+        )
+        const isDebtInEMode = await isReserveEnabledInEMode(
+          pool,
+          borrowableBitmap,
+          debtTokenAddress,
+        )
+
+        if (isCollateralInEMode && isDebtInEMode) {
+          reserveEModeCategory = categoryId
+          eModeCategoryData = collateralConfig
+          break
+        }
+      }
+    }
   }
 
   return {
@@ -132,9 +154,20 @@ export async function getAaveV3ProtocolData({
     collateralTokenPriceInEth: collateralPrice,
     reserveDataForFlashloan: flashloanReserveData,
     reserveDataForCollateral: collateralReserveData,
-    reserveEModeCategory: reserveEModeCategory,
+    reserveEModeCategory,
     userReserveDataForDebtToken: userDebtData,
     userReserveDataForCollateral: userCollateralData,
-    eModeCategoryData: eModeCategoryData,
+    eModeCategoryData,
   }
+}
+
+async function isReserveEnabledInEMode(
+  pool: ethers.Contract,
+  bitmap: BigNumber,
+  tokenAddress: string,
+): Promise<boolean> {
+  const reserveData = await pool.getReserveData(tokenAddress)
+  const id = reserveData.id.toNumber()
+  const mask = new BigNumber(1).shiftedBy(id)
+  return new BigNumber(bitmap.toString(16), 16).bitAnd(mask).gt(0)
 }
