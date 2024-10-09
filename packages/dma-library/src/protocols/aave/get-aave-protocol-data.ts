@@ -11,7 +11,6 @@ import {
 import * as AaveCommon from '@dma-library/strategies/aave/common'
 import { AaveVersion } from '@dma-library/types/aave'
 import BigNumber from 'bignumber.js'
-import { ethers } from 'ethers'
 
 export type AaveV2ProtocolDataArgs = SharedAaveLikeProtocolDataArgs & {
   protocolVersion: AaveVersion.v2
@@ -82,6 +81,23 @@ export async function getAaveV2ProtocolData({
   }
 }
 
+/**
+ * Fetches and processes Aave V3 protocol data, including eMode information.
+ *
+ * @param addresses - Contract addresses for the Aave V3 protocol
+ * @param provider - Ethereum provider
+ * @param debtTokenAddress - Address of the debt token
+ * @param collateralTokenAddress - Address of the collateral token
+ * @param flashloanTokenAddress - Address of the flashloan token
+ * @param proxy - User's proxy address
+ * @returns Promise resolving to AaveProtocolData
+ *
+ * @note This function checks if the user's current eMode category is compatible with the
+ * supplied collateral and debt tokens. If they are not compatible (i.e., either token is not
+ * enabled for the user's eMode), the function will return as if the user is not in any eMode
+ * (userEModeCategory = 0 and eModeCategoryData = undefined). This ensures that the returned
+ * data accurately reflects the effective eMode status for the given token pair.
+ */
 export async function getAaveV3ProtocolData({
   addresses,
   provider,
@@ -89,7 +105,9 @@ export async function getAaveV3ProtocolData({
   collateralTokenAddress,
   flashloanTokenAddress,
   proxy,
-}: SharedAaveLikeProtocolDataArgs & { protocolVersion: AaveVersion.v3 }) {
+}: SharedAaveLikeProtocolDataArgs & {
+  protocolVersion: AaveVersion.v3
+}): Promise<AaveProtocolData> {
   const { oracle, poolDataProvider, pool } = await getAaveLikeSystemContracts(
     addresses,
     provider,
@@ -114,36 +132,46 @@ export async function getAaveV3ProtocolData({
     proxy ? fetchUserReserveData(poolDataProvider, collateralTokenAddress, proxy) : undefined,
   ])
 
-  // New approach to handle eModes
-  let reserveEModeCategory = 0
   let eModeCategoryData
 
-  if (pool) {
-    // Iterate through possible eMode categories (1-255)
-    for (let categoryId = 1; categoryId < 256; categoryId++) {
-      const collateralConfig = await pool.getEModeCategoryCollateralConfig(categoryId)
+  if (pool && proxy) {
+    // Get the user's current eMode category
+    const userEModeCategory = await pool.getUserEMode(proxy)
 
-      // Check if this is an active eMode
-      if (collateralConfig.liquidationThreshold.gt(0)) {
-        const collateralBitmap = await pool.getEModeCategoryCollateralBitmap(categoryId)
-        const borrowableBitmap = await pool.getEModeCategoryBorrowableBitmap(categoryId)
+    if (userEModeCategory !== 0) {
+      // Fetch eMode category data if the user is in an eMode
+      eModeCategoryData = await pool.getEModeCategoryCollateralConfig(userEModeCategory)
 
-        const isCollateralInEMode = await isReserveEnabledInEMode(
-          pool,
-          collateralBitmap,
-          collateralTokenAddress,
-        )
-        const isDebtInEMode = await isReserveEnabledInEMode(
-          pool,
-          borrowableBitmap,
-          debtTokenAddress,
-        )
+      // Check if the collateral and debt tokens are valid for this eMode
+      const [collateralReserveData, debtReserveData] = await Promise.all([
+        pool.getReserveData(collateralTokenAddress),
+        pool.getReserveData(debtTokenAddress),
+      ])
 
-        if (isCollateralInEMode && isDebtInEMode) {
-          reserveEModeCategory = categoryId
-          eModeCategoryData = collateralConfig
-          break
-        }
+      const collateralReserveIndex = collateralReserveData.id.toNumber()
+      const debtReserveIndex = debtReserveData.id.toNumber()
+
+      // Fetch the collateral and borrowable bitmaps for the user's eMode
+      const [eModeCategoryCollateralBitmap, eModeCategoryBorrowableBitmap] = await Promise.all([
+        pool.getEModeCategoryCollateralBitmap(userEModeCategory),
+        pool.getEModeCategoryBorrowableBitmap(userEModeCategory),
+      ])
+
+      // Check if the collateral and debt tokens are enabled in the user's eMode
+      const isCollateralValidInEMode = isReserveEnabledOnBitmap(
+        eModeCategoryCollateralBitmap,
+        collateralReserveIndex,
+      )
+      const isDebtValidInEMode = isReserveEnabledOnBitmap(
+        eModeCategoryBorrowableBitmap,
+        debtReserveIndex,
+      )
+
+      // If either the collateral or debt is not valid in this eMode,
+      // treat it as if the user is not in an eMode for this specific token pair
+      if (!isCollateralValidInEMode || !isDebtValidInEMode) {
+        userEModeCategory = 0
+        eModeCategoryData = undefined
       }
     }
   }
@@ -154,20 +182,35 @@ export async function getAaveV3ProtocolData({
     collateralTokenPriceInEth: collateralPrice,
     reserveDataForFlashloan: flashloanReserveData,
     reserveDataForCollateral: collateralReserveData,
-    reserveEModeCategory,
     userReserveDataForDebtToken: userDebtData,
     userReserveDataForCollateral: userCollateralData,
     eModeCategoryData,
   }
 }
 
-async function isReserveEnabledInEMode(
-  pool: ethers.Contract,
-  bitmap: BigNumber,
-  tokenAddress: string,
-): Promise<boolean> {
-  const reserveData = await pool.getReserveData(tokenAddress)
-  const id = reserveData.id.toNumber()
-  const mask = new BigNumber(1).shiftedBy(id)
-  return new BigNumber(bitmap.toString(16), 16).bitAnd(mask).gt(0)
+/**
+ * Checks if a reserve is enabled in a specific bitmap.
+ * This function replicates the behavior of the Solidity `isReserveEnabledOnBitmap` function
+ * from the EModeConfiguration library, adapted for use with BigNumber.js.
+ *
+ * @param bitmap - A BigNumber representing the bitmap of enabled reserves
+ * @param reserveIndex - The index of the reserve to check
+ * @returns true if the reserve is enabled in the bitmap, false otherwise
+ * @throws Error if the reserveIndex is out of the valid range
+ */
+function isReserveEnabledOnBitmap(bitmap: BigNumber, reserveIndex: number): boolean {
+  // Aave V3 uses a 128-bit bitmap to represent reserves
+  // Valid reserve indices are 0 to 127 (inclusive)
+  if (reserveIndex < 0 || reserveIndex >= 128) {
+    throw new Error('Invalid reserve index: must be between 0 and 127 inclusive')
+  }
+
+  // Create a mask: 2^reserveIndex
+  // This is equivalent to 1 << reserveIndex in bitwise operations
+  const mask = new BigNumber(2).pow(reserveIndex)
+
+  // Check if the bit is set:
+  // We use modulo and comparison instead of bitwise AND
+  // If bitmap % (2^(reserveIndex+1)) >= 2^reserveIndex, then the reserveIndex-th bit is set
+  return bitmap.mod(mask.times(2)).gte(mask)
 }

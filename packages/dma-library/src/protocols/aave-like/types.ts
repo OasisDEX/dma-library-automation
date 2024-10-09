@@ -29,7 +29,7 @@ export type AaveLikeProtocolData = {
   collateralTokenPriceInEth: PriceResult
   reserveDataForFlashloan: ReserveDataResult
   reserveDataForCollateral: ReserveDataResult
-  reserveEModeCategory: number | undefined
+  reserveEModeCategory?: number | undefined
   userReserveDataForDebtToken: any
   userReserveDataForCollateral: any
   eModeCategoryData: EModeCategoryData | undefined
