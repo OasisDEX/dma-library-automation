@@ -148,8 +148,9 @@ export async function getAaveV3ProtocolData({
         pool.getReserveData(debtTokenAddress),
       ])
 
-      const collateralReserveIndex = collateralReserveData.id.toNumber()
-      const debtReserveIndex = debtReserveData.id.toNumber()
+      // Use the id directly as it's already a uint16
+      const collateralReserveIndex = collateralReserveData.id
+      const debtReserveIndex = debtReserveData.id
 
       // Fetch the collateral and borrowable bitmaps for the user's eMode
       const [eModeCategoryCollateralBitmap, eModeCategoryBorrowableBitmap] = await Promise.all([
@@ -159,11 +160,11 @@ export async function getAaveV3ProtocolData({
 
       // Check if the collateral and debt tokens are enabled in the user's eMode
       const isCollateralValidInEMode = isReserveEnabledOnBitmap(
-        eModeCategoryCollateralBitmap,
+        new BigNumber(eModeCategoryCollateralBitmap.toString()),
         collateralReserveIndex,
       )
       const isDebtValidInEMode = isReserveEnabledOnBitmap(
-        eModeCategoryBorrowableBitmap,
+        new BigNumber(eModeCategoryBorrowableBitmap.toString()),
         debtReserveIndex,
       )
 
@@ -175,7 +176,7 @@ export async function getAaveV3ProtocolData({
     }
   }
 
-  return {
+  const result = {
     flashloanAssetPriceInEth: flashloanPrice,
     debtTokenPriceInEth: debtPrice,
     collateralTokenPriceInEth: collateralPrice,
@@ -185,6 +186,8 @@ export async function getAaveV3ProtocolData({
     userReserveDataForCollateral: userCollateralData,
     eModeCategoryData,
   }
+
+  return result
 }
 
 /**

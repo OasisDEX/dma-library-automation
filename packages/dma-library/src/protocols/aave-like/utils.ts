@@ -66,5 +66,6 @@ export async function getAaveLikeSystemContracts(
     protocol,
   )
   const pool = await getContract(addresses.lendingPool, 'LendingPool', provider, protocol)
+
   return { oracle, poolDataProvider, pool }
 }
