@@ -15,7 +15,7 @@ import {
   SwapData,
 } from '@dma-library/types'
 import { StrategyError, StrategyWarning } from '@dma-library/types/ajna/ajna-validations'
-import * as StrategyParams from "@dma-library/types/strategy-params";
+import * as StrategyParams from '@dma-library/types/strategy-params'
 import { encodeOperation } from '@dma-library/utils/operation'
 import * as SwapUtils from '@dma-library/utils/swap'
 import * as Domain from '@domain'

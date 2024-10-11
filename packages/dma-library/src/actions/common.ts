@@ -354,7 +354,7 @@ export function erc4626Withdraw(
 export function collectFee(
   network: Network,
   args: { asset: string },
-  paramsMapping: [amount: number] = [0]
+  paramsMapping: [amount: number] = [0],
 ) {
   const SERVICE_REGISTRY_NAMES = loadContractNames(network)
 

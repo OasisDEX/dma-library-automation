@@ -30,24 +30,24 @@ export async function getSwapDataForCloseToDebt({
   getSwapData,
   __feeOverride,
 }: GetSwapDataForCloseToDebtArgs) {
-  console.log("CLOSING TO DEBT")
+  console.log('CLOSING TO DEBT')
   const collectFeeFrom = SwapUtils.acceptedFeeTokenByAddress({
     fromTokenAddress: fromToken.address,
     toTokenAddress: toToken.address,
   })
-  console.log("CollectFeeFrom", collectFeeFrom)
+  console.log('CollectFeeFrom', collectFeeFrom)
 
   const fee = __feeOverride || SwapUtils.feeResolver(fromToken.symbol, toToken.symbol)
-  console.log("fee", fee.toString())
+  console.log('fee', fee.toString())
 
   const preSwapFee =
     collectFeeFrom === 'sourceToken' ? calculateFee(swapAmountBeforeFees, fee.toNumber()) : ZERO
-  console.log("pre-swap-fee", preSwapFee.toString());
+  console.log('pre-swap-fee', preSwapFee.toString())
 
   const swapAmountAfterFees = swapAmountBeforeFees
     .minus(preSwapFee)
     .integerValue(BigNumber.ROUND_DOWN)
-  console.log("swapAmountAfterFees", swapAmountAfterFees.toString())
+  console.log('swapAmountAfterFees', swapAmountAfterFees.toString())
 
   const swapData = await getSwapData(
     fromToken.address,
@@ -55,8 +55,8 @@ export async function getSwapDataForCloseToDebt({
     swapAmountAfterFees,
     slippage,
   )
-  console.log("fromAmount", swapData.fromTokenAmount.toString())
-  console.log("toAmount", swapData.toTokenAmount.toString())
+  console.log('fromAmount', swapData.fromTokenAmount.toString())
+  console.log('toAmount', swapData.toTokenAmount.toString())
 
   return { swapData, collectFeeFrom, preSwapFee }
 }

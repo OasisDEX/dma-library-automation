@@ -37,6 +37,7 @@ export type MorphoBlueActions =
   | `MorphoBlueDeposit`
   | `MorphoBlueWithdraw`
   | `MorphoBluePayback`
+  | `MorphoBlueWithdrawAuto`
 
 export type Actions = CommonActions | AaveV3Actions | AjnaActions
 

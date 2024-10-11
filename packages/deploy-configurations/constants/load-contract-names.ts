@@ -14,6 +14,7 @@ export function loadContractNames(network: Network) {
  */
 export const SERVICE_REGISTRY_NAMES = {
   common: {
+    USDC_E: 'USDC.E',
     PULL_TOKEN: 'PullToken_7',
     SEND_TOKEN: 'SendToken_7',
     SEND_TOKEN_AUTO: 'SendTokenAuto_7',
@@ -50,6 +51,9 @@ export const SERVICE_REGISTRY_NAMES = {
     STETH: 'STETH',
     WSTETH: 'WSTETH',
     WBTC: 'WBTC',
+    TOKEN_BALANCE: 'TokenBalance',
+    RETURN_MULTIPLE_TOKENS: 'ReturnMultipleTokens',
+    PULL_TOKEN_MAX_AMOUNT: 'PullTokenMaxAmount',
   },
   aave: {
     v2: {

@@ -1,7 +1,6 @@
 import {
   arbitrumConfig,
   baseConfig,
-  goerliConfig,
   mainnetConfig,
   optimismConfig,
   sepoliaConfig,
@@ -72,7 +71,6 @@ export type Addresses = {
   [Network.OPTIMISM]: DefaultDeployment
   [Network.ARBITRUM]: DefaultDeployment
   [Network.BASE]: DefaultDeployment
-  [Network.GOERLI]: DefaultDeployment
   [Network.SEPOLIA]: DefaultDeployment
   [Network.TEST]: DefaultDeployment
 }
@@ -151,7 +149,6 @@ function extractAddressesFromConfig<T extends Contracts>(
 export const ADDRESSES: Addresses = {
   [Network.MAINNET]: createAddressesStructure(mainnetConfig),
   [Network.OPTIMISM]: createAddressesStructure(optimismConfig),
-  [Network.GOERLI]: createAddressesStructure(goerliConfig),
   [Network.ARBITRUM]: createAddressesStructure(arbitrumConfig),
   [Network.BASE]: createAddressesStructure(baseConfig),
   [Network.TEST]: createAddressesStructure(testConfig),

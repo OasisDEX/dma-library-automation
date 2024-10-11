@@ -109,6 +109,14 @@ export const config: SystemConfig = {
       },
     },
     actions: {
+      SendTokenAuto: {
+        name: 'SendTokenAuto',
+        deploy: false,
+        address: '0x0000000000000000000000000000000000000000',
+        serviceRegistryName: SERVICE_REGISTRY_NAMES.common.SEND_TOKEN_AUTO,
+        history: [],
+        constructorArgs: [],
+      },
       PositionCreated: {
         name: 'PositionCreated',
         deploy: false,
@@ -320,6 +328,11 @@ export const config: SystemConfig = {
     },
   },
   common: {
+    OneInchAggregator5: {
+      name: 'OneInchAggregator5',
+      address: '0x1111111254EEB25477B68fb85Ed929f73A960582',
+      serviceRegistryName: SERVICE_REGISTRY_NAMES.common.ONE_INCH_AGGREGATOR5,
+    },
     GnosisSafe: { name: 'GnosisSafe', address: '' },
     UniswapRouterV3: {
       name: 'UniswapRouterV3',
@@ -624,7 +637,7 @@ export const config: SystemConfig = {
       },
       PoolDataProvider: {
         name: 'PoolDataProvider',
-        address: '0x69FA688f1Dc47d4B5d8029D5a35FB7a548310654',
+        address: '0x7F23D86Ee20D869112572136221e173428DD740B',
       },
       L2Encoder: {
         name: 'L2Encoder',
@@ -896,6 +909,10 @@ export const config: SystemConfig = {
       name: 'MorphoBlue',
       address: '0x0000000000000000000000000000000000000000',
       serviceRegistryName: SERVICE_REGISTRY_NAMES.morphoblue.MORPHO_BLUE,
+    },
+    AdaptiveCurveIrm: {
+      name: 'AdaptiveCurveIrm',
+      address: '0x0000000000000000000000000000000000000000'
     },
   },
 }

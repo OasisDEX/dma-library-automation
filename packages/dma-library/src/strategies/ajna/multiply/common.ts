@@ -12,6 +12,12 @@ import {
 import { validateLiquidationPriceCloseToMarketPrice } from '@dma-library/strategies/ajna/validation/borrowish/liquidationPriceCloseToMarket'
 import { validateDustLimitMultiply } from '@dma-library/strategies/ajna/validation/multiply/dustLimit'
 import { validateGenerateCloseToMaxLtv } from '@dma-library/strategies/validation/closeToMaxLtv'
+import { AjnaCommonDMADependencies } from '@dma-library/types/ajna'
+import { encodeOperation } from '@dma-library/utils/operation'
+import * as SwapUtils from '@dma-library/utils/swap'
+import * as Domain from '@domain'
+import BigNumber from 'bignumber.js'
+
 import {
   AjnaMultiplyPayload,
   IOperation,
@@ -20,11 +26,6 @@ import {
   // eslint-disable-next-line import/no-unresolved
 } from '../../../types'
 import { AjnaPosition } from '../../../types/ajna/ajna-position'
-import { AjnaCommonDMADependencies } from '@dma-library/types/ajna'
-import { encodeOperation } from '@dma-library/utils/operation'
-import * as SwapUtils from '@dma-library/utils/swap'
-import * as Domain from '@domain'
-import BigNumber from 'bignumber.js'
 
 export async function simulateAdjustment(
   args: AjnaMultiplyPayload,
