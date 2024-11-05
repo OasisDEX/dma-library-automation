@@ -17,7 +17,13 @@ contract MorphoBlueDeposit is Executable, UseStorageSlot, UseRegistry {
   using Write for StorageSlot.TransactionStorage;
   using Read for StorageSlot.TransactionStorage;
 
-  constructor(address _registry) UseRegistry(ServiceRegistry(_registry)) {}
+  constructor(address _registry) UseRegistry(ServiceRegistry(_registry)) {
+    require(_registry != address(0), "MorphoBlueDeposit: Invalid registry address");
+    require(
+      getRegisteredService(MORPHO_BLUE) != address(0),
+      "MorphoBlueDeposit: MorphoBlue not registered"
+    );
+  }
 
   /**
    * @param data Encoded calldata that conforms to the DepositData struct
@@ -26,14 +32,11 @@ contract MorphoBlueDeposit is Executable, UseStorageSlot, UseRegistry {
   function execute(bytes calldata data, uint8[] memory paramsMap) external payable override {
     DepositData memory depositData = parseInputs(data);
 
-    uint256 mappedDepositAmount = store().readUint(
-      bytes32(depositData.amount),
-      paramsMap[1]
-    );
+    uint256 mappedDepositAmount = store().readUint(bytes32(depositData.amount), paramsMap[1]);
 
     uint256 actualDepositAmount = depositData.sumAmounts
-    ? mappedDepositAmount + depositData.amount
-    : mappedDepositAmount;
+      ? mappedDepositAmount + depositData.amount
+      : mappedDepositAmount;
 
     IMorpho morphoBlue = IMorpho(getRegisteredService(MORPHO_BLUE));
     morphoBlue.supplyCollateral(

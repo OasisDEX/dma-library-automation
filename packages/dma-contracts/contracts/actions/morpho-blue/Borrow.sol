@@ -16,7 +16,10 @@ import { UseRegistry } from "../../libs/UseRegistry.sol";
 contract MorphoBlueBorrow is Executable, UseStorageSlot, UseRegistry {
   using Write for StorageSlot.TransactionStorage;
 
-  constructor(address _registry) UseRegistry(ServiceRegistry(_registry)) {}
+  constructor(address _registry) UseRegistry(ServiceRegistry(_registry)) {
+    require(_registry != address(0), "MorphoBlueBorrow: Invalid registry address");
+    require(getRegisteredService(MORPHO_BLUE) != address(0), "MorphoBlueBorrow: MorphoBlue not registered");
+  }
 
   /**
    * @param data Encoded calldata that conforms to the BorrowData struct
