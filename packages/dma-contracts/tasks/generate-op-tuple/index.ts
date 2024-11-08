@@ -1,5 +1,4 @@
 import { Network } from '@deploy-configurations/types/network'
-import { utils } from 'ethers'
 import { task } from 'hardhat/config'
 
 import { OperationsDatabase } from '../common'

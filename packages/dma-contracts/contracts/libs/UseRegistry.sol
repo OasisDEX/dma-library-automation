@@ -10,13 +10,14 @@ import { OPERATION_STORAGE } from "../core/constants/Common.sol";
  * @notice Provides common interface for all Actions to access the ServiceRegistry contract
  */
 
-contract UseRegistry { 
+contract UseRegistry {
   ServiceRegistry private immutable _registry;
+
   constructor(ServiceRegistry registry_) {
     _registry = registry_;
-  } 
+  }
 
   function getRegisteredService(string memory service) internal view returns (address) {
-    return _registry.getRegisteredService(service); 
+    return _registry.getRegisteredService(service);
   }
 }

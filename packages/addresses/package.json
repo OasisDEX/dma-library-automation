@@ -1,6 +1,6 @@
 {
   "name": "@oasisdex/addresses",
-  "version": "0.1.22-automation",
+  "version": "0.1.23-automation",
   "typings": "lib/index.d.ts",
   "types": "lib/index.d.ts",
   "main": "lib/index.js",
@@ -23,5 +23,8 @@
     "implicitDependencies": [
       "@oasisdex/deploy-configurations"
     ]
+  },
+  "dependencies": {
+    "parcel": "2.8.3"
   }
 }

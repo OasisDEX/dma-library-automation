@@ -17,7 +17,13 @@ import { UseRegistry } from "../../libs/UseRegistry.sol";
 contract MorphoBlueWithdraw is Executable, UseStorageSlot, UseRegistry {
   using Write for StorageSlot.TransactionStorage;
 
-  constructor(address _registry) UseRegistry(ServiceRegistry(_registry)) {}
+  constructor(address _registry) UseRegistry(ServiceRegistry(_registry)) {
+    require(_registry != address(0), "MorphoBlueWithdraw: Invalid registry address");
+    require(
+      getRegisteredService(MORPHO_BLUE) != address(0),
+      "MorphoBlueWithdraw: MorphoBlue not registered"
+    );
+  }
 
   /**
    * @param data Encoded calldata that conforms to the WithdrawData struct

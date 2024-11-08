@@ -23,7 +23,13 @@ contract MorphoBluePayback is Executable, UseStorageSlot, UseRegistry {
   using MorphoLib for IMorpho;
   using SharesMathLib for uint256;
 
-  constructor(address _registry) UseRegistry(ServiceRegistry(_registry)) {}
+  constructor(address _registry) UseRegistry(ServiceRegistry(_registry)) {
+    require(_registry != address(0), "MorphoBluePayback: Invalid registry address");
+    require(
+      getRegisteredService(MORPHO_BLUE) != address(0),
+      "MorphoBluePayback: MorphoBlue not registered"
+    );
+  }
 
   /**
    * @param data Encoded calldata that conforms to the PaybackData struct

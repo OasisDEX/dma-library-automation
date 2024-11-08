@@ -84,16 +84,15 @@ contract OperationExecutor is IERC3156FlashBorrower, IFlashLoanRecipient {
    * @param calls List of action calls to be executed.
    */
   function executeOp(Call[] memory calls) public payable returns (bytes32) {
-    
     StorageSlot.TransactionStorage storage txStorage = StorageSlot.getTransactionStorage();
-    
+
     delete txStorage.actions;
     delete txStorage.returnedValues;
 
     aggregate(calls);
 
     bytes32 operationName = getOperation(keccak256(abi.encodePacked(txStorage.actions)));
-    
+
     emit Operation(operationName, calls);
 
     delete txStorage.actions;
@@ -182,13 +181,9 @@ contract OperationExecutor is IERC3156FlashBorrower, IFlashLoanRecipient {
     uint256[] memory feeAmounts,
     bytes memory data
   ) external override {
-
     checkIfFlashloanIsInProgress();
     address asset = address(tokens[0]);
-    (FlashloanData memory flData, address initiator) = abi.decode(
-      data,
-      (FlashloanData, address)
-    );
+    (FlashloanData memory flData, address initiator) = abi.decode(data, (FlashloanData, address));
 
     checkIfLenderIsTrusted(BALANCER_VAULT);
     checkIfFlashloanedAssetIsTheRequiredOne(asset, flData.asset);
@@ -249,6 +244,6 @@ contract OperationExecutor is IERC3156FlashBorrower, IFlashLoanRecipient {
       abi.encodeWithSelector(this.callbackAggregate.selector, flData.calls)
     );
 
-    isFlashloanInProgress = 1;    
+    isFlashloanInProgress = 1;
   }
 }
