@@ -21,6 +21,7 @@ export type Tokens =
   | 'LUSD'
   | 'MANA'
   | 'MATIC'
+  | 'MKR'
   | 'PAX'
   | 'PAXUSD'
   | 'RENBTC'
