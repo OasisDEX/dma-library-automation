@@ -715,6 +715,10 @@ export const config: SystemConfig = {
       name: 'MATIC',
       address: '0x7D1AfA7B718fb893dB30A3aBc0Cfc608AaCfeBB0',
     },
+    MKR: {
+      name: 'MKR',
+      address: '0x9f8F72aA9304c8B593d555F12eF6589cC3A579A2',
+    },
     PAX: {
       name: 'PAX',
       address: '0x8E870D67F660D95d5be530380D0eC0bd388289E1',
