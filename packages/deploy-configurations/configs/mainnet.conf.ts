@@ -622,10 +622,6 @@ export const config: SystemConfig = {
       name: 'SdaiOracle',
       address: '0xb9E6DBFa4De19CCed908BcbFe1d015190678AB5f',
     },
-    MKR: {
-      name: 'MKR',
-      address: '0x9f8F72aA9304c8B593d555F12eF6589cC3A579A2',
-    },
     AAVE: {
       name: 'AAVE',
       address: '0x7Fc66500c84A76Ad7e9c93437bFc5Ac33E2DDaE9',
