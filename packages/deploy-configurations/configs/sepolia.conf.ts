@@ -280,6 +280,10 @@ export const config: SystemConfig = {
     },
   },
   common: {
+    MKR: {
+      name: 'MKR',
+      address: '0x0000000000000000000000000000000000000000',
+    },
     OneInchAggregator5: {
       name: 'OneInchAggregator5',
       address: '0x1111111254EEB25477B68fb85Ed929f73A960582',

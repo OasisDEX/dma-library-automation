@@ -93,6 +93,36 @@ export const config: SystemConfig = {
       },
     },
     actions: {
+      SendTokenAuto: {
+        name: 'SendTokenAuto',
+        deploy: false,
+        address: '0x0000000000000000000000000000000000000000',
+        serviceRegistryName: SERVICE_REGISTRY_NAMES.common.SEND_TOKEN_AUTO,
+        history: [],
+        constructorArgs: [],
+      },
+      AaveV3WithdrawAuto: {
+        name: 'AaveV3WithdrawAuto',
+        deploy: false,
+        address: '0x0000000000000000000000000000000000000000',
+        serviceRegistryName: SERVICE_REGISTRY_NAMES.aave.v3.WITHDRAW_AUTO,
+        history: [],
+        constructorArgs: [],
+      },
+      TakeFlashloanBalancer: {
+        name: 'TakeFlashloanBalancer',
+        deploy: false,
+        address: '0x0000000000000000000000000000000000000000',
+        history: [],
+        constructorArgs: [],
+      },
+      CollectFee: {
+        name: 'CollectFee',
+        deploy: false,
+        address: '0x0000000000000000000000000000000000000000',
+        history: [],
+        constructorArgs: [],
+      },
       PositionCreated: {
         name: 'PositionCreated',
         deploy: false,
@@ -224,6 +254,20 @@ export const config: SystemConfig = {
     },
   },
   common: {
+    MKR: {
+      name: 'MKR',
+      address: '0x0000000000000000000000000000000000000000',
+    },
+    "USDC.E": {
+      name: 'USDC.E',
+      address: '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',
+      serviceRegistryName: SERVICE_REGISTRY_NAMES.common.USDC_E
+    },
+    OneInchAggregator5: {
+      name: 'OneInchAggregator5',
+      address: '0x1111111254EEB25477B68fb85Ed929f73A960582',
+      serviceRegistryName: SERVICE_REGISTRY_NAMES.common.ONE_INCH_AGGREGATOR5,
+    },
     GnosisSafe: { name: 'GnosisSafe', address: '' },
     UniswapRouterV3: {
       name: 'UniswapRouterV3',
@@ -778,6 +822,10 @@ export const config: SystemConfig = {
       name: 'MorphoBlue',
       address: '0x0000000000000000000000000000000000000000',
       serviceRegistryName: SERVICE_REGISTRY_NAMES.morphoblue.MORPHO_BLUE,
+    },
+    AdaptiveCurveIrm: {
+      name: 'AdaptiveCurveIrm',
+      address: '0x0000000000000000000000000000000000000000',
     },
   },
 }

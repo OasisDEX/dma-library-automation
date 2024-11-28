@@ -88,12 +88,41 @@ export const config: SystemConfig = {
         name: 'Swap',
         deploy: false,
         address: '0x826E9f2E79cEEA850dF4d4757e0D12115A720D74',
-        serviceRegistryName: 'Swap',
         history: [],
         constructorArgs: [],
       },
     },
     actions: {
+      SendTokenAuto: {
+        name: 'SendTokenAuto',
+        deploy: true,
+        address: '',
+        serviceRegistryName: SERVICE_REGISTRY_NAMES.common.SEND_TOKEN_AUTO,
+        history: [],
+        constructorArgs: [],
+      },
+      TakeFlashloanBalancer: {
+        name: 'TakeFlashloanBalancer',
+        deploy: true,
+        address: '',
+        history: [],
+        constructorArgs: [],
+      },
+      CollectFee: {
+        name: 'CollectFee',
+        deploy: true,
+        address: '',
+        history: [],
+        constructorArgs: [],
+      },
+      AaveV3WithdrawAuto: {
+        name: 'AaveV3WithdrawAuto',
+        deploy: true,
+        address: '',
+        serviceRegistryName: SERVICE_REGISTRY_NAMES.aave.v3.WITHDRAW_AUTO,
+        history: [],
+        constructorArgs: [],
+      },
       PositionCreated: {
         name: 'PositionCreated',
         deploy: true,
@@ -206,7 +235,6 @@ export const config: SystemConfig = {
         name: 'AaveV3Borrow',
         deploy: true,
         address: '0x18ca8bE41D32727383bC0F98705f7662ed0B7E28',
-        serviceRegistryName: 'AaveV3Borrow',
         history: [],
         constructorArgs: ['address:ServiceRegistry'],
       },
@@ -230,7 +258,6 @@ export const config: SystemConfig = {
         name: 'AaveV3Payback',
         deploy: true,
         address: '0xdB736d13CE851Ee81ac2109DF37EBAb8Ce525C42',
-        serviceRegistryName: 'AaveV3Payback',
         history: [],
         constructorArgs: ['address:ServiceRegistry'],
       },
@@ -238,7 +265,6 @@ export const config: SystemConfig = {
         name: 'AaveV3SetEMode',
         deploy: true,
         address: '0xd4DB3799DEe98Fe752d952Ba6F84Bb99Af829920',
-        serviceRegistryName: 'AaveV3SetEMode',
         history: [],
         constructorArgs: ['address:ServiceRegistry'],
       },
@@ -261,6 +287,20 @@ export const config: SystemConfig = {
     },
   },
   common: {
+    "USDC.E": {
+      name: 'USDC.E',
+      address: '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',
+      serviceRegistryName: SERVICE_REGISTRY_NAMES.common.USDC_E,
+    },
+    OneInchAggregator5: {
+      name: 'OneInchAggregator5',
+      address: '0x1111111254EEB25477B68fb85Ed929f73A960582',
+      serviceRegistryName: SERVICE_REGISTRY_NAMES.common.ONE_INCH_AGGREGATOR5,
+    },
+    MKR: {
+      name: 'MKR',
+      address: '0x9f8F72aA9304c8B593d555F12eF6589cC3A579A2',
+    },
     GnosisSafe: {
       name: 'GnosisSafe',
       address: ADDRESS_ZERO,
@@ -1119,6 +1159,10 @@ export const config: SystemConfig = {
       name: 'MorphoBlue',
       address: '0x0000000000000000000000000000000000000000',
       serviceRegistryName: SERVICE_REGISTRY_NAMES.morphoblue.MORPHO_BLUE,
+    },
+    AdaptiveCurveIrm: {
+      name: 'AdaptiveCurveIrm',
+      address: '0x0000000000000000000000000000000000000000',
     },
   },
 }
