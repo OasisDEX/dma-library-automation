@@ -484,7 +484,9 @@ export async function getTokenSymbol(
     ],
     provider,
   )
-
+  if (token.toLowerCase() === '0x9f8f72aa9304c8b593d555f12ef6589cc3a579a2'.toLowerCase()) {
+    return 'MKR'
+  }
   const symbol = await erc20.symbol()
 
   return symbol
@@ -542,11 +544,11 @@ export function prepareMorphoMultiplyDMAPayload(
 
   const withdrawUndercollateralized = !riskIsIncreasing
     ? validateWithdrawUndercollateralized(
-        targetPosition,
-        position,
-        args.collateralTokenPrecision,
-        position.collateralAmount.minus(collateralAmount).abs(),
-      )
+      targetPosition,
+      position,
+      args.collateralTokenPrecision,
+      position.collateralAmount.minus(collateralAmount).abs(),
+    )
     : []
 
   const errors = [

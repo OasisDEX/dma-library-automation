@@ -324,6 +324,10 @@ export const config: SystemConfig = {
     },
   },
   common: {
+    MKR: {
+      name: 'MKR',
+      address: '0x0000000000000000000000000000000000000000',
+    },
     GnosisSafe: {
       name: 'GnosisSafe',
       address: '0x0000000000000000000000000000000000000000',
