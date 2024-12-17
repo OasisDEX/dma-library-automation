@@ -507,6 +507,10 @@ export const config: SystemConfig = {
       name: 'COMP',
       address: '0x0000000000000000000000000000000000000000'
     },
+    CBBTC: {
+      name: 'CBBTC',
+      address: '0xcbB7C0000aB88B473b1f5aFd9ef808440eed33Bf',
+    },
     CBETH: {
       name: 'CBETH',
       address: '0x2ae3f1ec7f1f5012cfeab0185bfc7aa3cf0dec22'
@@ -697,6 +701,10 @@ export const config: SystemConfig = {
       name: 'WBTC',
       address: '0x0000000000000000000000000000000000000000',
       serviceRegistryName: SERVICE_REGISTRY_NAMES.common.WBTC
+    },
+    WEETH: {
+      name: 'WEETH',
+      address: '0x04C0599Ae5A44757c0af6F9eC3b93da8976c150A',
     },
     WETH: {
       name: 'WETH',

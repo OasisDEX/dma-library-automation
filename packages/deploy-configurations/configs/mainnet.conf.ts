@@ -638,6 +638,10 @@ export const config: SystemConfig = {
       name: 'BAT',
       address: '0x0D8775F648430679A709E98d2b0Cb6250d2887EF',
     },
+    CBBTC: {
+      name: 'CBBTC',
+      address: '0xcbB7C0000aB88B473b1f5aFd9ef808440eed33Bf',
+    },
     CBETH: {
       name: 'CBETH',
       address: '0xbe9895146f7af43049ca1c1ae358b0541ea49704',
@@ -838,6 +842,10 @@ export const config: SystemConfig = {
       name: 'WETH',
       address: '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2',
       serviceRegistryName: SERVICE_REGISTRY_NAMES.common.WETH,
+    },
+    WEETH: {
+      name: 'WEETH',
+      address: '0xcd5fe23c85820f7b72d0926fc9b05b43e359b7ee',
     },
     WLD: {
       name: 'WLD',
