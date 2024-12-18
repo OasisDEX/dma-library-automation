@@ -398,6 +398,10 @@ export const config: SystemConfig = {
       name: 'BAT',
       address: '0x0000000000000000000000000000000000000000',
     },
+    CBBTC: {
+      name: 'CBBTC',
+      address: '0xcbB7C0000aB88B473b1f5aFd9ef808440eed33Bf',
+    },
     CBETH: {
       name: 'CBETH',
       address: '0x0000000000000000000000000000000000000000',
@@ -525,6 +529,7 @@ export const config: SystemConfig = {
       name: 'TBTC',
       address: '0x0000000000000000000000000000000000000000',
     },
+    
     UNI: {
       name: 'UNI',
       address: '0x0000000000000000000000000000000000000000',
@@ -595,6 +600,10 @@ export const config: SystemConfig = {
       name: 'WETH',
       address: '0x82aF49447D8a07e3bd95BD0d56f35241523fBab1',
       serviceRegistryName: SERVICE_REGISTRY_NAMES.common.WETH,
+    },
+    WEETH: {
+      name: 'WEETH',
+      address: '0x35751007a407ca6FEFfE80b3cB397736D2cf4dbe',
     },
     WLD: {
       name: 'WLD',
