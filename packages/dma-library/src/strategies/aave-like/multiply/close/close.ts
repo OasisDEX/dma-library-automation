@@ -36,6 +36,13 @@ export const close: AaveLikeClose = async (args, dependencies) => {
       },
     }).flashloan
 
+  console.log('DEBUG >> Protocol Data params:', {
+    collateralTokenAddress,
+    debtTokenAddress,
+    flashloanTokenAddress: flashloanArgs.token.address,
+    addresses: dependencies.addresses,
+    provider: dependencies.provider,
+  })
   const protocolData = await resolveProtocolData(
     {
       collateralTokenAddress,
@@ -46,6 +53,16 @@ export const close: AaveLikeClose = async (args, dependencies) => {
     },
     dependencies.protocolType,
   )
+  console.log('DEBUG >> Protocol Data:', {
+    collateralTokenPriceInEth: protocolData.collateralTokenPriceInEth?.toString(),
+    debtTokenPriceInEth: protocolData.debtTokenPriceInEth?.toString(),
+    protocolType: dependencies.protocolType,
+    flashloanTokenAddress: flashloanArgs.token.address,
+    flashloanTokenSymbol: flashloanArgs.token.symbol,
+    flashloanTokenPrecision: flashloanArgs.token.precision,
+    flashloanToken: flashloanArgs,
+    protocolData,
+  })
 
   const expandedArgs: AaveLikeExpandedCloseArgs = {
     ...args,
