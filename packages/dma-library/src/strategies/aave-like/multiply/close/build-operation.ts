@@ -230,24 +230,19 @@ function handleFlashloanForAaveV3(
 
   // Ratios are unaffected by scaling so long as both prices are scaled by the same amount
   const oraclePriceRatio = collateralTokenPriceInUsdTerms.div(flashloanTokenPriceInUsdTerms)
-  console.log('DEBUG >> Oracle price ratio:', oraclePriceRatio.toString())
+
   // The collateral in the position that we need to replace with the flashloan
   const positionCollateralAmount = dependencies.currentPosition.collateral.amount
-  console.log('DEBUG >> Position collateral amount:', positionCollateralAmount.toString())
+
   // Adjust for different token decimal precisions
   const decimalAdjustment = new BigNumber(10).pow(
     args.flashloan.token.precision - dependencies.currentPosition.collateral.precision,
   )
-  console.log('DEBUG >> Decimal adjustment:', decimalAdjustment.toString())
+
   const collateralValueInFlashloanTokens = positionCollateralAmount
     .times(oraclePriceRatio)
     .times(decimalAdjustment)
     .integerValue(BigNumber.ROUND_DOWN)
-
-  console.log(
-    'DEBUG >> Collateral value in flashloan tokens:',
-    collateralValueInFlashloanTokens.toString(),
-  )
 
   // Get max LTV for the flashloan token when used as collateral
   const maxLoanToValueForFL = new BigNumber(
