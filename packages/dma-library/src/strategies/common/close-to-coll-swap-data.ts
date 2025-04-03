@@ -65,6 +65,7 @@ export async function getSwapDataForCloseToCollateral({
     fee.div(new BigNumber(FEE_BASE).plus(fee)),
     slippage,
   )
+  console.log('[shared-logic] collateralNeeded', collateralNeeded.toString())
 
   // 3 Get latest market price
   // If you check i.e. https://data.chain.link/ethereum/mainnet/stablecoins/usdc-eth ,
@@ -116,7 +117,7 @@ export async function getSwapDataForCloseToCollateral({
   const amountToSwap = (
     hasZeroDebt ? TEN : amountNeededToEnsureRemainingDebtIsRepaid.minus(preSwapFee)
   ).integerValue(BigNumber.ROUND_DOWN)
-  console.log('[shared-logic] amountToSwap', amountToSwap)
+  console.log('[shared-logic] amountToSwap', amountToSwap.toString())
   const swapData = await getSwapData(
     collateralToken.address,
     debtToken.address,
@@ -140,6 +141,13 @@ function calculateNeededCollateralToPaybackDebt(
   fee: BigNumber,
   slippage: BigNumber,
 ) {
+  console.log('[shared-logic] calculateNeededCollateralToPaybackDebt')
+  console.log('debtPrice', debtPrice.toString())
+  console.log('debtPrecision', debtPrecision)
+  console.log('colPrice', colPrice.toString())
+  console.log('colPrecision', colPrecision)
+  console.log('debtAmount', debtAmount.toString())
+  console.log('fee', fee.toString())
   // Depending on the protocol the price  could be anything.
   // i.e AAVEv3 returns the prices in USD
   //     AAVEv2 returns the prices in ETH

@@ -58,7 +58,11 @@ export const closeMultiply: MorphoCloseStrategy = async (args, dependencies) => 
     args.position.marketParams.loanToken,
     dependencies.provider,
   )
-
+  console.log('closeMultiply [morphoblue -lib]')
+  console.log('args', args)
+  console.log('position', position)
+  console.log('collateralTokenSymbol', collateralTokenSymbol)
+  console.log('debtTokenSymbol', debtTokenSymbol)
   const { swapData, collectFeeFrom, preSwapFee } = await getSwapData(
     args,
     dependencies,
@@ -127,11 +131,14 @@ async function getMorphoSwapDataToCloseToDebt(
   collateralTokenSymbol: string,
   debtTokenSymbol: string,
 ) {
+  console.log('getMorphoSwapDataToCloseToDebt')
+  console.log('position-debtAmount', position.debtAmount)
+  console.log('args-quoteTokenPrecision', args.quoteTokenPrecision)
   const swapAmountBeforeFees = amountToWei(
     position.collateralAmount,
     args.collateralTokenPrecision,
   ).integerValue(BigNumber.ROUND_DOWN)
-
+  console.log('swapAmountBeforeFees', swapAmountBeforeFees.toString())
   const fromToken = {
     symbol: collateralTokenSymbol,
     precision: args.collateralTokenPrecision,
@@ -160,12 +167,12 @@ async function getMorphoSwapDataToCloseToCollateral(
   debtTokenSymbol: string,
 ) {
   console.log('getMorphoSwapDataToCloseToCollateral')
-  console.log('position-debtAmount', position.debtAmount)
+  console.log('position-debtAmount', position.debtAmount.toString())
   console.log('args-quoteTokenPrecision', args.quoteTokenPrecision)
   const outstandingDebt = amountToWei(position.debtAmount, args.quoteTokenPrecision).integerValue(
     BigNumber.ROUND_DOWN,
   )
-  console.log('outstandingDebt', outstandingDebt)
+  console.log('outstandingDebt', outstandingDebt.toString())
 
   const collateralToken = {
     symbol: collateralTokenSymbol,
