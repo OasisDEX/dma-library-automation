@@ -159,9 +159,13 @@ async function getMorphoSwapDataToCloseToCollateral(
   collateralTokenSymbol: string,
   debtTokenSymbol: string,
 ) {
+  console.log('getMorphoSwapDataToCloseToCollateral')
+  console.log('position-debtAmount', position.debtAmount)
+  console.log('args-quoteTokenPrecision', args.quoteTokenPrecision)
   const outstandingDebt = amountToWei(position.debtAmount, args.quoteTokenPrecision).integerValue(
     BigNumber.ROUND_DOWN,
   )
+  console.log('outstandingDebt', outstandingDebt)
 
   const collateralToken = {
     symbol: collateralTokenSymbol,
