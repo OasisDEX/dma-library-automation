@@ -116,6 +116,7 @@ export async function getSwapDataForCloseToCollateral({
   const amountToSwap = (
     hasZeroDebt ? TEN : amountNeededToEnsureRemainingDebtIsRepaid.minus(preSwapFee)
   ).integerValue(BigNumber.ROUND_DOWN)
+  console.log('[shared-logic] amountToSwap', amountToSwap)
   const swapData = await getSwapData(
     collateralToken.address,
     debtToken.address,
