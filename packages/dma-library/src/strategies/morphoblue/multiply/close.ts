@@ -181,15 +181,38 @@ async function getMorphoSwapDataToCloseToCollateral(
   const colPrice = args.position.collateralPrice
   const debtPrice = args.position.debtPrice
 
-  return StrategiesCommon.getSwapDataForCloseToCollateral({
-    collateralToken,
-    debtToken,
-    colPrice,
-    debtPrice,
-    slippage: args.slippage,
-    outstandingDebt,
-    getSwapData: dependencies.getSwapData,
-  })
+  // Use the oracle price when the prices are zero or invalid
+  if (colPrice.isZero() || debtPrice.isZero()) {
+    // Set base price to 1 for debt token
+    const basePrice = new BigNumber(1)
+
+    // Use the oracle price from the position to calculate the relative price ratio
+    // The position.price property contains the oracle price already normalized
+    const oraclePrice = args.position.price
+    console.log('oraclePrice', oraclePrice.toString())
+
+    return StrategiesCommon.getSwapDataForCloseToCollateral({
+      collateralToken,
+      debtToken,
+      colPrice: basePrice.times(oraclePrice), // Calculate collateral price based on oracle price
+      debtPrice: basePrice, // Use 1 as the base price for debt
+      slippage: args.slippage,
+      outstandingDebt,
+      getSwapData: dependencies.getSwapData,
+    })
+  } else {
+    console.log('colPrice', colPrice.toString())
+    console.log('debtPrice', debtPrice.toString())
+    return StrategiesCommon.getSwapDataForCloseToCollateral({
+      collateralToken,
+      debtToken,
+      colPrice,
+      debtPrice,
+      slippage: args.slippage,
+      outstandingDebt,
+      getSwapData: dependencies.getSwapData,
+    })
+  }
 }
 
 async function buildOperation(
