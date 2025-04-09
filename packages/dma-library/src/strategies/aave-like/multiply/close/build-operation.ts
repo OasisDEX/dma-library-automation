@@ -51,6 +51,8 @@ export async function buildOperation(
     dependencies,
   )
 
+  console.log('DEBUG >> Flashloan params:', flashloanParams)
+
   const closeArgs = {
     collateral: {
       address: collateralTokenAddress,
@@ -132,13 +134,27 @@ function handleFlashloanForSpark(
   args: AaveLikeExpandedCloseArgs,
   dependencies: AaveLikeCloseDependencies,
 ) {
-  console.log('Handling Spark flashloan - close - using Balancer')
   const currentDebtAmount = dependencies.currentPosition.debt.amount
 
   const amountToFlashloan = currentDebtAmount.times(ONE.plus(SAFETY_MARGIN))
   console.log('DEBUG >> Amount to flashloan:', amountToFlashloan.toString())
 
   const amount = Domain.debtToCollateralSwapFlashloan(amountToFlashloan)
+
+  if (dependencies.currentPosition.debt.symbol === 'DAI' && dependencies.network === 'mainnet') {
+    console.log('Handling Spark flashloan - close - DAI')
+    return {
+      token: {
+        amount,
+        symbol: args.debtToken.symbol,
+        precision: args.debtToken.precision ?? TYPICAL_PRECISION,
+        address: args.debtToken.address,
+      },
+      provider: FlashloanProvider.DssFlash,
+    }
+  }
+
+  console.log('Handling Spark flashloan - close - using Balancer')
   console.log('DEBUG >> Amount:', amount.toString())
   return {
     token: {
