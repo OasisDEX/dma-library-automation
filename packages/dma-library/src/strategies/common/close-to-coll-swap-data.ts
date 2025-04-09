@@ -156,12 +156,15 @@ function calculateNeededCollateralToPaybackDebt(
   const paybackAmountInclFee = paybackAmount.times(ONE.plus(fee))
   // Same rule applies for @collateralAmountNeeded. @colPrice is either in USDC ( AAVEv3 ) or ETH ( AAVEv2 )
   // or could be anything eles in the following versions.
+  const BUFFER = ONE.plus(0.03) // Often times oracle price differences are given inaccurate values for collateral needed
   const collateralAmountNeeded = new BigNumber(
     paybackAmount
       .plus(paybackAmount.times(fee))
       .plus(paybackAmountInclFee.times(slippage))
       .div(colPrice),
-  ).integerValue(BigNumber.ROUND_DOWN)
+  )
+    .times(BUFFER)
+    .integerValue(BigNumber.ROUND_DOWN)
   return collateralAmountNeeded
     .times(TEN.pow(colPrecision - debtPrecision))
     .integerValue(BigNumber.ROUND_DOWN)

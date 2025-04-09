@@ -1,6 +1,5 @@
 import { getForkedNetwork } from '@deploy-configurations/utils/network'
 import { FEE_BASE, ONE, TYPICAL_PRECISION } from '@dma-common/constants'
-import { amountFromWei, amountToWei } from '@dma-common/utils/common'
 import { resolveAaveLikeMultiplyOperations } from '@dma-library/operations/aave-like/resolve-aavelike-operations'
 import { SAFETY_MARGIN } from '@dma-library/strategies/aave-like/multiply/close/constants'
 import { FlashloanProvider, IOperation, SwapData } from '@dma-library/types'
@@ -11,7 +10,6 @@ import { FLASHLOAN_SAFETY_MARGIN } from '@domain/constants'
 import BigNumber from 'bignumber.js'
 
 import { AaveLikeCloseDependencies, AaveLikeExpandedCloseArgs, CloseFlashloanArgs } from './types'
-import { PriceResult } from '@dma-library/protocols/aave-like/types'
 
 export async function buildOperation(
   swapData: SwapData & {
@@ -109,12 +107,13 @@ export async function buildCloseFlashloan(
   const flashloanProvider = resolveFlashloanProvider(
     await getForkedNetwork(dependencies.provider),
     dependencies.protocolType,
+    args.debtToken.address,
   )
   const isSpark = dependencies.protocolType === 'Spark'
   const isAaveV2 = dependencies.protocolType === 'AAVE'
   const isAaveV3 = dependencies.protocolType === 'AAVE_V3'
 
-  if (flashloanProvider === FlashloanProvider.Balancer && isSpark) {
+  if (isSpark) {
     return handleFlashloanForSpark(args, dependencies)
   }
 
@@ -137,9 +136,10 @@ function handleFlashloanForSpark(
   const currentDebtAmount = dependencies.currentPosition.debt.amount
 
   const amountToFlashloan = currentDebtAmount.times(ONE.plus(SAFETY_MARGIN))
+  console.log('DEBUG >> Amount to flashloan:', amountToFlashloan.toString())
 
   const amount = Domain.debtToCollateralSwapFlashloan(amountToFlashloan)
-
+  console.log('DEBUG >> Amount:', amount.toString())
   return {
     token: {
       amount,
