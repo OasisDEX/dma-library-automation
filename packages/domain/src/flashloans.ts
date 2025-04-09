@@ -50,7 +50,7 @@ export const debtToCollateralSwapFlashloan = (swapAmountBeforeSwapFeeIsApplied: 
   // We do not need to inflate this value to account for the flashloan fee because
   // This is already factored into the debt (or quote token) deltas produced
   // by the adjustPosition domain logic
-  return swapAmountBeforeSwapFeeIsApplied
+  return swapAmountBeforeSwapFeeIsApplied.integerValue(BigNumber.ROUND_DOWN)
 }
 
 export const collateralToDebtSwapFlashloan = (swapMinToAmount$: BigNumber) => {
@@ -58,5 +58,5 @@ export const collateralToDebtSwapFlashloan = (swapMinToAmount$: BigNumber) => {
   // This insures we have enough debt token in hand to repay the loan
   // According to the debt delta (before the swap)
   // And have enough tokens to repay the FL afterwards
-  return swapMinToAmount$
+  return swapMinToAmount$.integerValue(BigNumber.ROUND_DOWN)
 }
