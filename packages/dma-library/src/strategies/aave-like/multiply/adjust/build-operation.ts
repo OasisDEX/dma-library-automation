@@ -139,47 +139,48 @@ export async function buildAdjustFlashloan(
   },
   dependencies: AaveLikeAdjustDependencies,
 ) {
-  const lendingProtocol = dependencies.protocolType
-  const flashloanProvider = resolveFlashloanProvider(
-    await getForkedNetwork(dependencies.provider),
-    lendingProtocol,
-  )
+  const flashloanProvider = resolveFlashloanProvider(await getForkedNetwork(dependencies.provider))
 
-  if (flashloanProvider === FlashloanProvider.Balancer && dependencies.protocolType === 'Spark') {
-    // Need to add fees to the swap amount
-    const fromSwapAmountBeforeFees = swap.fromTokenAmount.plus(preSwapFee)
-    const receivedAmountAfterSwap = swap.minToTokenAmount
+  switch (flashloanProvider) {
+    case FlashloanProvider.Balancer: {
+      // Need to add fees to the swap amount
+      const fromSwapAmountBeforeFees = swap.fromTokenAmount.plus(preSwapFee)
+      const receivedAmountAfterSwap = swap.minToTokenAmount
 
-    if (riskIsIncreasing) {
-      return {
-        token: {
-          symbol: args.debtToken.symbol,
+      if (riskIsIncreasing) {
+        return {
+          token: {
+            symbol: args.debtToken.symbol,
+            amount: Domain.debtToCollateralSwapFlashloan(fromSwapAmountBeforeFees),
+            address: args.debtToken.address,
+          },
           amount: Domain.debtToCollateralSwapFlashloan(fromSwapAmountBeforeFees),
-          address: args.debtToken.address,
-        },
-        amount: Domain.debtToCollateralSwapFlashloan(fromSwapAmountBeforeFees),
-        provider: FlashloanProvider.Balancer,
-      }
-    } else {
-      return {
-        token: {
-          symbol: args.debtToken.symbol,
+          provider: FlashloanProvider.Balancer,
+        }
+      } else {
+        return {
+          token: {
+            symbol: args.debtToken.symbol,
+            amount: Domain.collateralToDebtSwapFlashloan(receivedAmountAfterSwap),
+            address: args.debtToken.address,
+          },
           amount: Domain.collateralToDebtSwapFlashloan(receivedAmountAfterSwap),
-          address: args.debtToken.address,
-        },
-        amount: Domain.collateralToDebtSwapFlashloan(receivedAmountAfterSwap),
-        provider: FlashloanProvider.Balancer,
+          provider: FlashloanProvider.Balancer,
+        }
       }
     }
-  }
-
-  return {
-    token: {
-      amount: simulation.flashloan.amount,
-      symbol: simulation.flashloan.token.symbol,
-      address: dependencies.addresses.tokens[simulation.flashloan.token.symbol],
-    },
-    amount: simulation.flashloan.amount,
-    provider: flashloanProvider,
+    case FlashloanProvider.DssFlash: {
+      return {
+        token: {
+          amount: simulation.flashloan.amount,
+          symbol: simulation.flashloan.token.symbol,
+          address: dependencies.addresses.tokens[simulation.flashloan.token.symbol],
+        },
+        amount: simulation.flashloan.amount,
+        provider: flashloanProvider,
+      }
+    }
+    default:
+      throw new Error(`Unsupported flashloan provider: ${flashloanProvider}`)
   }
 }

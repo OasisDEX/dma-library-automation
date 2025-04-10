@@ -19,13 +19,10 @@ export function getFlashloanToken({
   protocol,
   debt,
 }: FlashloanDependencies): WithFlashLoanArgs {
-  // packages/dma-library/src/utils/flashloan/resolve-provider.ts
-  // Note: needs to be aligned with resolveFlashloanProvider
-
-  const { USDC, DAI } = addresses.tokens
+  const { USDC } = addresses.tokens
   console.log('DEBUG >> Get flashloan token for:', protocol)
   console.log('DEBUG >> Network:', network)
-  if (network === 'mainnet' && protocol === 'Spark') {
+  if (protocol === 'Spark') {
     const flashloanToken = { token: debt }
     console.log('DEBUG >> Spark protocol flashloan token:', flashloanToken)
     return {
@@ -33,20 +30,10 @@ export function getFlashloanToken({
     }
   }
 
-  if (network === 'mainnet' && protocol !== 'Spark') {
-    const flashloanToken = { symbol: 'DAI' as const, address: DAI, precision: 18 }
-    console.log('DEBUG >> Flashloan token:', flashloanToken)
-    return {
-      flashloan: {
-        token: flashloanToken,
-      },
-    }
-  }
-
-  // For all other networks, use USDC as the flashloan token
+  // All operations relevant to Automation use Balancer as the flashloan action
+  // There's currently no DAI balance on Balancer
+  // So we're using USDC as the flashloan token for all operations
   const flashloanToken = { symbol: 'USDC' as const, address: USDC, precision: 6 }
-
-  console.log('DEBUG >> Flashloan token:', flashloanToken)
 
   return {
     flashloan: {
